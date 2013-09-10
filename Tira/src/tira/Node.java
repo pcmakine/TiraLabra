@@ -13,13 +13,13 @@ import java.util.*;
 
 public class Node {
     
-    private Map<Integer ,Node> neighbours;
+    private ArrayList neighbours;
     private int id;
     private int x;
     private int y;
 
     public Node(int id) {
-        neighbours = new HashMap();
+        neighbours = new ArrayList();
         this.id = id;
     }
 
@@ -27,12 +27,12 @@ public class Node {
         return id;
     }
     
-    public Map getNeighbours(){
+    public ArrayList getNeighbours(){
         return neighbours;
     }
     
     public void setNeighbour(Node neighbour){
-        neighbours.put(id, neighbour);
+        neighbours.add(neighbour);
     }
     
     
