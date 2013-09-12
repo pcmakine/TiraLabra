@@ -38,6 +38,7 @@ public class Graph {
             int key = (int) pairs.getKey();
             Node node = new Node(key);
             nodes.put(key, node);
+            numberofNodes++;
 
             
             it.remove(); // avoids a ConcurrentModificationException

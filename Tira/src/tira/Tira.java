@@ -21,13 +21,19 @@ public class Tira {
         Graph graph = makeTestGraph();
 
         System.out.println(graph);
+        
+        PathFinder finder = new PathFinder(graph);
+        
+        int startId = 1;
+        int goalId = 6;
+        System.out.println(finder.bfs(startId, goalId));
     }
 
     private static Graph makeTestGraph() {
         Integer key;
         List neighbours;
         HashMap<Integer, List> cities = new HashMap();
-        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4, 6}, {2, 3, 5, 6}, {4}, {4, 3}};
+        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};
         int maxNode = neighboursarray.length;
 
         for (int i = 0; i < maxNode; i++) {
