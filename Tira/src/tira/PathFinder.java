@@ -5,6 +5,7 @@
 package tira;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  *
@@ -38,18 +39,20 @@ public class PathFinder {
                 handled.put(node.getId(), node);
                 
                 if (node == goal) {
+                    //return solution
                     printSolution();
                 }
-                add();
+                add(node.getNeighbours(), nodeMap, handled, graph);
             }
-            
         }
-        
-
+        //TODO return no solution
     }
     
-    private void add(){
-        
+    private void add(ArrayList<Node> neighbours, HashMap nodeMap, HashMap handled, Graph graph){
+        for (int i = 0; i < neighbours.size(); i++) {
+            Node neighbour = neighbours.get(i);
+            
+        }
     }
     
     private void printSolution(){
