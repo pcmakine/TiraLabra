@@ -71,11 +71,12 @@ public class PathFinderTest {
         assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.bfs(7, 5)));
     }
 
+    //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
         Graph small = makeRandomUndirectedGraph(1000, 5);
         Graph bigger = makeRandomUndirectedGraph(10000, 5);
-        Graph big = makeRandomUndirectedGraph(100000, 10);
+        Graph big = makeRandomUndirectedGraph(100000, 5);
         Graph huge = makeRandomUndirectedGraph(1000000, 5);
         int testRuns = 10;
         
