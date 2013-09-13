@@ -4,9 +4,12 @@
  */
 package tira;
 
+import gui.DrawingBoardWithMatrix;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.SwingUtilities;
+import gui.MainWindow;
 
 /**
  *
@@ -18,16 +21,26 @@ public class Tira {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Graph graph = makeTestGraph();
 
-        System.out.println(graph);
-        
-        PathFinder finder = new PathFinder(graph);
-        
-        int startId = 1;
-        int goalId = 6;
-        System.out.println(finder.bfs(startId, goalId));
-    }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new DrawingBoardWithMatrix();
+            }
+        });
+  
+    Graph graph = makeTestGraph();
+
+    System.out.println (graph);
+    PathFinder finder = new PathFinder(graph);
+    int startId = 1;
+    int goalId = 6;
+
+    System.out.println (finder.bfs
+
+(startId, goalId));
+      }
+
 
     private static Graph makeTestGraph() {
         Integer key;
@@ -56,3 +69,4 @@ public class Tira {
 
     }
 }
+

@@ -68,9 +68,37 @@ public class PathFinderTest {
 
         assertEquals(true, expected.equalsIgnoreCase(result));
         assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-        assertEquals(true, makeResultString(new int[] {7, 3, 4, 5}).equalsIgnoreCase(finder1.bfs(7, 5)));
+        assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.bfs(7, 5)));
     }
-    
+
+    @Test
+    public void testbfsTime() {
+        Graph small = makeRandomUndirectedGraph(1000, 5);
+        Graph bigger = makeRandomUndirectedGraph(10000, 5);
+        Graph big = makeRandomUndirectedGraph(100000, 10);
+        Graph huge = makeRandomUndirectedGraph(1000000, 5);
+        int testRuns = 10;
+        
+
+       System.out.println("Elapsed time for small: " + runBfs(small, testRuns) + "ms");
+       System.out.println("Elapsed time for bigger: " + runBfs(bigger, testRuns) + "ms");
+       System.out.println("Elapsed time for big: " + runBfs(big, testRuns) + "ms");
+       System.out.println("Elapsed time for huge: " + runBfs(huge, testRuns) + "ms");
+    }
+
+    private long runBfs(Graph graph, int testRuns) {
+        long elapsedAverage;
+        PathFinder finder = new PathFinder(graph);
+        
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < testRuns; i++) {
+            finder.bfs(980, 4);
+        }
+        long stopTime = System.currentTimeMillis();
+        elapsedAverage = (stopTime - startTime) / testRuns;
+        return elapsedAverage;
+    }
+
     private String makeResultString(int[] route) {
         String result = "";
         for (int i = 0; i < route.length; i++) {
@@ -78,45 +106,44 @@ public class PathFinderTest {
         }
         return result;
     }
-    
-    @Test
-    public void testRandomGraph(){
-            Graph test = makeRandomUndirectedGraph(10, 3);
-            System.out.println(test);
-            PathFinder finder = new PathFinder(test);
-            
-            
-            System.out.println(finder.bfs(4, 9));
-        }
 
-    public Graph makeRandomUndirectedGraph(int nodes, int maxNeighbours){
+    public void testRandomGraph() {
+        Graph test = makeRandomUndirectedGraph(10, 3);
+        System.out.println(test);
+        PathFinder finder = new PathFinder(test);
+
+
+        System.out.println(finder.bfs(4, 9));
+    }
+
+    public Graph makeRandomUndirectedGraph(int nodes, int maxNeighbours) {
         Graph random;
         int[] neighboursMade = new int[nodes];
         int neighbours[][] = new int[nodes][maxNeighbours];
         for (int i = 0; i < nodes; i++) {
-            int origin = i +1;
-            for (int j = 0; j < maxNeighbours; j++) {          
-                int neighbour = (int) (Math.random()*nodes) +1;
-                if (neighboursMade[i] < maxNeighbours && neighboursMade[neighbour-1] < maxNeighbours && neighbour-1 != i && !isNeighbourSetAlready(neighbours[i], neighbour)) {
+            int origin = i + 1;
+            for (int j = 0; j < maxNeighbours; j++) {
+                int neighbour = (int) (Math.random() * nodes) + 1;
+                if (neighboursMade[i] < maxNeighbours && neighboursMade[neighbour - 1] < maxNeighbours && neighbour - 1 != i && !isNeighbourSetAlready(neighbours[i], neighbour)) {
                     neighbours[i][neighboursMade[i]] = neighbour;
-                    neighboursMade[i]++;               
-                    neighbours[neighbour-1][neighboursMade[neighbour-1]] = origin;
-                    neighboursMade[neighbour-1]++;
+                    neighboursMade[i]++;
+                    neighbours[neighbour - 1][neighboursMade[neighbour - 1]] = origin;
+                    neighboursMade[neighbour - 1]++;
                 }
-            }                            
+            }
         }
         HashMap<Integer, List> cities = GraphTest.buildCityHash(neighbours);
         random = GraphTest.makeTestGraph(cities);
         return random;
     }
-    
-    private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour){
+
+    private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour) {
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] == neighbour) {
                 return true;
             }
         }
         return false;
-        
+
     }
 }
