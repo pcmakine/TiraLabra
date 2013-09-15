@@ -18,9 +18,11 @@ public class Node {
     private int x;
     private int y;
 
-    public Node(int id) {
+    public Node(int id, int x, int y) {
         neighbours = new ArrayList();
         this.id = id;
+        this.x = x;
+        this.y = y;
     }
 
     public int getId() {
@@ -35,6 +37,13 @@ public class Node {
         neighbours.add(neighbour);
     }
     
+    public int getX(){
+        return this.x;
+    }
+    
+    public int getY(){
+        return this.y;
+    }
     
     
     

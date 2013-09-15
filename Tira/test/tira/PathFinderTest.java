@@ -44,11 +44,11 @@ public class PathFinderTest {
     @Before
     public void setUp() {
         int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};
-        HashMap<Integer, List> cities = GraphTest.buildCityHash(neighboursarray);
-        graph = GraphTest.makeTestGraph(cities);
+        HashMap<Integer, List> neighbours = GraphTest.buildNeighboursHash(neighboursarray);
+        graph = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(neighboursarray.length));
 
-        cities = GraphTest.buildCityHash(new int[][]{{2, 5}, {1, 3}, {2, 4, 7}, {3, 5, 6}, {1, 4}, {4, 8}, {3, 8}, {6, 7}});
-        graph1 = GraphTest.makeTestGraph(cities);
+        neighbours = GraphTest.buildNeighboursHash(new int[][]{{2, 5}, {1, 3}, {2, 4, 7}, {3, 5, 6}, {1, 4}, {4, 8}, {3, 8}, {6, 7}});
+        graph1 = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(8));
     }
 
     @After
@@ -93,7 +93,7 @@ public class PathFinderTest {
         
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-            finder.bfs(980, 4);
+            //finder.bfs(980, 4);
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;
@@ -133,8 +133,8 @@ public class PathFinderTest {
                 }
             }
         }
-        HashMap<Integer, List> cities = GraphTest.buildCityHash(neighbours);
-        random = GraphTest.makeTestGraph(cities);
+        HashMap<Integer, List> cities = GraphTest.buildNeighboursHash(neighbours);
+        random = GraphTest.makeTestGraph(cities, GraphTest.makeNodes(nodes));
         return random;
     }
 

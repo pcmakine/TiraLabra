@@ -20,30 +20,30 @@ public class Graph {
     private HashMap<Integer, Node> nodes;
     private int numberofNodes;
 
-    public Graph(HashMap<Integer, List> cities) {
+    public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
         this.nodes = new HashMap();
         numberofNodes = 0;
-        HashMap savedCities = (HashMap) cities.clone();
-        populateNodes(cities);
+        this.nodes = nodes;
+        HashMap savedCities = (HashMap) neighbours.clone();
         setNeighbours(savedCities);
     }
 
-    private void populateNodes(HashMap<Integer, List> cities) {
-        HashMap citiesClone = (HashMap) cities.clone();
-        Iterator it = citiesClone.entrySet().iterator();
-        
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry) it.next();
-
-            int key = (int) pairs.getKey();
-            Node node = new Node(key);
-            nodes.put(key, node);
-            numberofNodes++;
-
-            
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-    }
+//    private void populateNodes(HashMap<Integer, List> cities) {
+//        HashMap citiesClone = (HashMap) cities.clone();
+//        Iterator it = citiesClone.entrySet().iterator();
+//        
+//        while (it.hasNext()) {
+//            Map.Entry pairs = (Map.Entry) it.next();
+//
+//            int key = (int) pairs.getKey();
+//            Node node = new Node(key);
+//            nodes.put(key, node);
+//            numberofNodes++;
+//
+//            
+//            it.remove(); // avoids a ConcurrentModificationException
+//        }
+//    }
 
     public int getNumberofNodes() {
         return numberofNodes;
