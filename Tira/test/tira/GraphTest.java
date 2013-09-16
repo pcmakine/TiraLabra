@@ -17,14 +17,20 @@ import java.util.ArrayList;
  * @author pcmakine
  */
 public class GraphTest extends TestCase {
+    private Graph graph;
 
     public GraphTest(String testName) {
         super(testName);
+        
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        
+        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};   
+        HashMap<Integer, List> cities = buildNeighboursHash(neighboursarray);
+        graph = makeTestGraph(cities, makeNodes(neighboursarray.length));
     }
 
     @Override
@@ -32,61 +38,60 @@ public class GraphTest extends TestCase {
         super.tearDown();
     }
 
-    //Tests whether the constructor in graph class populates correctly the nodes and their neighbours
-    @Test
-    public void testConstructorCreatesNodesAndSetsNeighboursCorrectly() {     
-        Graph graph = makeTestGraph();
-        
-        System.out.println(graph);
-        
-        assertEquals(true, true);
-    }
-
     //Test graph:
     // Node:          Neighbours:
-    //  1               2, 3
-    //  2               1, 4
-    //  3               1, 4, 6
-    //  4               2, 3
-    //  5               4
-    //  6               4, 3
-    private static Graph makeTestGraph() {
-        Integer key;
-        List neighbours;
-        HashMap<Integer, List> cities = new HashMap();
-        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4, 6}, {2, 3, 5, 6}, {4}, {4, 3}};
-        int maxNode = neighboursarray.length;
+    //  1               4
+    //  2               3, 1
+    //  3               2
+    //  4               
+    @Test
+    public void testConstructorCreatesNodesAndSetsNeighboursCorrectly() {
+        int[][] neighboursarray = new int[][]{{4}, {3, 1}, {2}, {}};      
+        HashMap<Integer, List> neighbours = buildNeighboursHash(neighboursarray);
+        Graph testGraph = makeTestGraph(neighbours, makeNodes(neighboursarray.length));
 
-        for (int i = 0; i < maxNode; i++) {
-            neighbours = putNeighboursinList(neighboursarray[i]);
-            cities.put(i + 1, neighbours);
+        System.out.println(testGraph);
+        
+        ArrayList<Node> nodeNeighbours = testGraph.getNode(1).getNeighbours();
+        assertArrayEquals(neighboursarray[0], nodeListToIdArray(nodeNeighbours));
+    }
+    
+    private int[] nodeListToIdArray(List<Node> list){
+        int[] array = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i).getId();
         }
+        return array;
+    }
 
-        Graph graph = new Graph(cities);
+    public static Graph makeTestGraph(HashMap neighbours, HashMap nodes) {
+        Graph graph = new Graph(neighbours, nodes);
         return graph;
     }
-
-    private static List putNeighboursinList(int[] neighboursarray) {
-        ArrayList neighbours = new ArrayList();
+    
+    public static HashMap makeNodes(int numberofNodes){
+        HashMap<Integer, Node> nodes = new HashMap();
         
-        for (int i = 0; i < neighboursarray.length; i++) {
-             neighbours.add(neighboursarray[i]);
+        for (int i = 0; i < numberofNodes; i++) {
+            int id = i+1;
+            nodes.put(id, new Node(id, i*10, 0));           //id, x, y
         }
         
-        return neighbours;
-        
+        return nodes;
     }
 
-//    /**
-//     * Test of getNodes method, of class Graph.
-//     */
-//    public void testGetNodes() {
-//        System.out.println("getNodes");
-//        Graph instance = null;
-//        Map expResult = null;
-//        Map result = instance.getNodes();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    public static HashMap buildNeighboursHash(int[][] neighboursarray) {
+        HashMap<Integer, List> cities = new HashMap();
+        for (int i = 0; i < neighboursarray.length; i++) {
+            ArrayList neighbours = new ArrayList();
+            for (int j = 0; j < neighboursarray[i].length; j++) {
+                int neighbour = neighboursarray[i][j];
+                if (neighbour != 0) {
+                    neighbours.add(neighboursarray[i][j]);
+                }           
+            }
+            cities.put(i + 1, neighbours);         
+        }
+        return cities;
+    }
 }
