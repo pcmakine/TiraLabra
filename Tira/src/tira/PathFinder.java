@@ -68,7 +68,7 @@ public class PathFinder {
         String[] reverse = new String[prev.length];
         int nodes = 0;
         String solution = "";
-        while (prev[node-1] != -1) {
+        while (node != -1) {
             reverse[nodes] = "Node: " + node + "\n";
             nodes++;
             node = prev[node-1];
