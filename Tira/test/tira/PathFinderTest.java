@@ -93,7 +93,7 @@ public class PathFinderTest {
         
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-            //finder.bfs(980, 4);
+            finder.bfs(980, 4);
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;

@@ -80,7 +80,7 @@ public class GraphTest extends TestCase {
         return nodes;
     }
 
-    public static HashMap buildNeighboursHash(int[][] neighboursarray) {
+    public static HashMap<Integer, List> buildNeighboursHash(int[][] neighboursarray) {
         HashMap<Integer, List> cities = new HashMap();
         for (int i = 0; i < neighboursarray.length; i++) {
             ArrayList neighbours = new ArrayList();

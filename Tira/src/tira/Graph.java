@@ -22,31 +22,10 @@ public class Graph {
 
     public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
         this.nodes = new HashMap();
-        numberofNodes = 0;
+        numberofNodes = nodes.size();
         this.nodes = nodes;
         HashMap savedCities = (HashMap) neighbours.clone();
         setNeighbours(savedCities);
-    }
-
-//    private void populateNodes(HashMap<Integer, List> cities) {
-//        HashMap citiesClone = (HashMap) cities.clone();
-//        Iterator it = citiesClone.entrySet().iterator();
-//        
-//        while (it.hasNext()) {
-//            Map.Entry pairs = (Map.Entry) it.next();
-//
-//            int key = (int) pairs.getKey();
-//            Node node = new Node(key);
-//            nodes.put(key, node);
-//            numberofNodes++;
-//
-//            
-//            it.remove(); // avoids a ConcurrentModificationException
-//        }
-//    }
-
-    public int getNumberofNodes() {
-        return numberofNodes;
     }
 
     private void setNeighbours(HashMap<Integer, List> cities) {
@@ -75,6 +54,10 @@ public class Graph {
 
     public Map<Integer, Node> getNodes() {
         return nodes;
+    }
+    
+        public int getNumberofNodes() {
+        return numberofNodes;
     }
 
     @Override
