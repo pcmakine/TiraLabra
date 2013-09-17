@@ -8,15 +8,15 @@ package tira;
  *
  * @author pcmakine
  */
-
 import java.util.*;
 
-public class Node {
-    
+public class Node implements Comparable<Node> {
+
     private ArrayList neighbours;
     private int id;
     private int x;
     private int y;
+    private int heuristics;
 
     public Node(int id, int x, int y) {
         neighbours = new ArrayList();
@@ -28,23 +28,35 @@ public class Node {
     public int getId() {
         return id;
     }
-    
-    public ArrayList getNeighbours(){
+
+    public ArrayList getNeighbours() {
         return neighbours;
     }
-    
-    public void setNeighbour(Node neighbour){
+
+    public void setNeighbour(Node neighbour) {
         neighbours.add(neighbour);
     }
-    
-    public int getX(){
+
+    public int getX() {
         return this.x;
     }
-    
-    public int getY(){
+
+    public int getY() {
         return this.y;
     }
-    
-    
-    
+
+    public void setHeuristics(int heuristics) {
+        this.heuristics = heuristics;
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        if (this.heuristics > node.heuristics) {
+            return 1;
+        }
+        if (this.heuristics < node.heuristics) {
+            return -1;
+        }
+        return 0;
+    }
 }

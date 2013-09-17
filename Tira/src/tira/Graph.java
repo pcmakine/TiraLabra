@@ -14,11 +14,14 @@ import java.util.Iterator;
  * @author pcmakine
  */
 
-//TODO less copy paste. Going through hashmap should be made in one method
 public class Graph {
 
     private HashMap<Integer, Node> nodes;
     private int numberofNodes;
+    
+    public Graph(){
+        this.nodes = new HashMap();
+    }
 
     public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
         this.nodes = new HashMap();
@@ -46,6 +49,15 @@ public class Graph {
 
             it.remove(); // avoids a ConcurrentModificationException
         }
+    }
+    
+    public void addNode(Node node){
+        nodes.put(node.getId(), node);
+        numberofNodes++;
+    }
+    
+    public void clearAllNodes(){
+        nodes.clear();
     }
     
     public Node getNode(int id){

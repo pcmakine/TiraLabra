@@ -4,12 +4,12 @@
  */
 package tira;
 
-import gui.DrawingBoardWithMatrix;
+import gui.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.SwingUtilities;
-import gui.MainWindow;
+import gui.Controller;
 
 /**
  *
@@ -25,11 +25,9 @@ public class Tira {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new DrawingBoardWithMatrix();
+                new Window(new Controller());
             }
         });
-  
-
 
  
       }

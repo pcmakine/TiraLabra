@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 /**
  *
@@ -21,7 +22,7 @@ public class PathFinder {
         this.graph = graph;
     }
 
-    public String bfs(int startId, int goalId) {
+    public Object[] bfs(int startId, int goalId) {
 
         LinkedHashMap<Integer, Node> nodeMap = new LinkedHashMap();
         HashMap<Integer, Node> handled = new HashMap();
@@ -51,7 +52,7 @@ public class PathFinder {
 
         }
 
-        return "no solution";
+        return new Object[]{"no solution"};
     }
 
     private void add(Node node, LinkedHashMap nodeMap, HashMap handled, int[] prev) {
@@ -67,19 +68,33 @@ public class PathFinder {
         }
     }
 
-    private String printSolution(int[] prev, int node) {
+    private Object[] printSolution(int[] prev, int node) {
+        Object[] result = new Object[2];
         String[] reverse = new String[prev.length];
+        Stack<Node> resultStack = new Stack();
+        Node[] reverseOrder = new Node[prev.length];
+        Node[] ordered = new Node[prev.length];
         int nodes = 0;
         String solution = "";
         while (node != -1) {
             reverse[nodes] = "Node: " + node + "\n";
+            reverseOrder[nodes] = graph.getNode(node);
             nodes++;
+            //if (node != 0) {
             node = prev[node - 1];
+            //}
+
         }
+        int j = 0;
         for (int i = nodes - 1; i >= 0; i--) {
             solution = solution + reverse[i];
+            ordered[j] = reverseOrder[i];
+            j++;
         }
-        return solution;
+        result[0] = solution;
+        result[1] = ordered;
+        //result[1] = 
+        return result;
     }
 
     public String aStar(int startId, int goalId) {
@@ -95,21 +110,25 @@ public class PathFinder {
             if (!handled.containsKey(node.getId())) {
                 handled.put(node.getId(), node);
                 if (node == graph.getNode(goalId)) {
-                    return printSolution(prev, node.getId());
+                    return (String) printSolution(prev, node.getId())[0];
                 }
-                //add(node, node.getNeighbours(), nodeMap, handled, prev);
+                addForAstar(node, queue, prev, graph.getNode(goalId));
             }
         }
         return "no solution";
     }
 
     private void addForAstar(Node node, PriorityQueue queue, int[] prev, Node target) {
+
         ArrayList<Node> neighbours = node.getNeighbours();
-        
+
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             double heuristics = getHeuristics(neighbour, target);
+            neighbour.setHeuristics((int) heuristics);
             queue.add(neighbour);
+            prev[neighbour.getId() - 1] = node.getId();
+
         }
 
     }

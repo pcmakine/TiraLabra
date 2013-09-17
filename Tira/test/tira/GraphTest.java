@@ -74,7 +74,9 @@ public class GraphTest extends TestCase {
         
         for (int i = 0; i < numberofNodes; i++) {
             int id = i+1;
-            nodes.put(id, new Node(id, i*10, 0));           //id, x, y
+            int x = (int) (Math.random()*400);
+            int y = (int) (Math.random()*400);
+            nodes.put(id, new Node(id, x, y));           //id, x, y
         }
         
         return nodes;
