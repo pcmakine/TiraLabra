@@ -22,7 +22,7 @@ public class PathFinder {
         this.graph = graph;
     }
 
-    public Object[] bfs(int startId, int goalId) {
+    public Object[] bfsLeastNodes(int startId, int goalId) {
 
         LinkedHashMap<Integer, Node> nodeMap = new LinkedHashMap();
         HashMap<Integer, Node> handled = new HashMap();

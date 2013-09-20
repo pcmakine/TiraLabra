@@ -4,6 +4,7 @@
  */
 package gui;
 
+import java.util.HashMap;
 import tira.*;
 
 /**
@@ -34,10 +35,19 @@ public class Controller {
         neighbours[0].setNeighbour(neighbours[1]);
         neighbours[1].setNeighbour(neighbours[0]);
     }
+    
+    public HashMap makeNodes(int nodes){
+        return graph.makeNodes(nodes);
+    }
+    
+    public void removeNodesAllNeighbours(Node node){
+        node.removeAllNeighbours();
+        
+    }
 
     public Node[] getBfsResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
-        return (Node[]) finder.bfs(startId, targetId)[1];
+        return (Node[]) finder.bfsLeastNodes(startId, targetId)[1];
     }
 
     public String getAstarResult(int startId, int targetId) {

@@ -56,59 +56,59 @@ public class PathFinderTest {
     }
 
     @Test
-    public void bfsFindsTheShortestRoute() {
+    public void bfsLeastNodesFindsTheShortestRoute() {
         PathFinder finder = new PathFinder(graph);
         PathFinder finder1 = new PathFinder(graph1);
 
         String expected = makeResultString(new int[]{1, 2, 4, 5});
-        String result = (String) finder.bfs(1, 5)[0];
+        String result = (String) finder.bfsLeastNodes(1, 5)[0];
 
-        String result1 = (String) finder1.bfs(6, 1)[0];
+        String result1 = (String) finder1.bfsLeastNodes(6, 1)[0];
         String expected1 = makeResultString(new int[]{6, 4, 5, 1});
 
         assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
         assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-        assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase((String)(finder1.bfs(7, 5))[0]));
+        assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase((String) (finder1.bfsLeastNodes(7, 5))[0]));
     }
-    
-        @Test
-        public void aStarFindsTheShortestRoute() {
-        PathFinder finder = new PathFinder(graph);
-        PathFinder finder1 = new PathFinder(graph1);
 
-        String expected = makeResultString(new int[]{1, 2, 4, 5});
-        String result = finder.aStar(1, 5);
-
-        String result1 = finder1.aStar(6, 1);
-        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-
-        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
-    }
+//    @Test
+//    public void aStarFindsTheShortestRoute() {
+//        PathFinder finder = new PathFinder(graph);
+//        PathFinder finder1 = new PathFinder(graph1);
+//
+//        String expected = makeResultString(new int[]{1, 2, 4, 5});
+//        String result = finder.aStar(1, 5);
+//
+//        String result1 = finder1.aStar(6, 1);
+//        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
+//
+//        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
+//        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
+//        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
+//    }
 
     //doesn't seem to be very reliable. Huge variance.
     @Test
-    public void testbfsTime() {
-        Graph small = makeRandomUndirectedGraph(1000, 5);
-        Graph bigger = makeRandomUndirectedGraph(10000, 5);
-        Graph big = makeRandomUndirectedGraph(100000, 5);
-        Graph huge = makeRandomUndirectedGraph(1000000, 5);
+    public void testbfsLeastNodesTime() {
+        Graph small = makeRandomGraph(1000, 5);
+        Graph bigger = makeRandomGraph(10000, 5);
+        Graph big = makeRandomGraph(100000, 5);
+        Graph huge = makeRandomGraph(1000000, 5);
         int testRuns = 1;
-        
-       System.out.println("Elapsed time for small: " + runBfs(small, testRuns) + "ms");
-       System.out.println("Elapsed time for bigger: " + runBfs(bigger, testRuns) + "ms");
-       System.out.println("Elapsed time for big: " + runBfs(big, testRuns) + "ms");
-       System.out.println("Elapsed time for huge: " + runBfs(huge, testRuns) + "ms");
+
+        System.out.println("Elapsed time for small: " + runBfs(small, testRuns) + "ms");
+        System.out.println("Elapsed time for bigger: " + runBfs(bigger, testRuns) + "ms");
+        System.out.println("Elapsed time for big: " + runBfs(big, testRuns) + "ms");
+        System.out.println("Elapsed time for huge: " + runBfs(huge, testRuns) + "ms");
     }
 
     private long runBfs(Graph graph, int testRuns) {
         long elapsedAverage;
         PathFinder finder = new PathFinder(graph);
-        
+
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-            finder.bfs(980, 4);
+            finder.bfsLeastNodes(980, 4);
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;
@@ -124,15 +124,15 @@ public class PathFinderTest {
     }
 
     public void testRandomGraph() {
-        Graph test = makeRandomUndirectedGraph(10, 3);
+        Graph test = makeRandomGraph(10, 3);
         System.out.println(test);
         PathFinder finder = new PathFinder(test);
 
 
-        System.out.println(finder.bfs(4, 9));
+        System.out.println(finder.bfsLeastNodes(4, 9));
     }
 
-    public Graph makeRandomUndirectedGraph(int nodes, int maxNeighbours) {
+    public Graph makeRandomGraph(int nodes, int maxNeighbours) {
         Graph random;
         int[] neighboursMade = new int[nodes];
         int neighbours[][] = new int[nodes][maxNeighbours];
@@ -160,6 +160,5 @@ public class PathFinderTest {
             }
         }
         return false;
-
     }
 }
