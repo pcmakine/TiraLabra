@@ -17,11 +17,13 @@ public class Graph {
 
     private HashMap<Integer, Node> nodes;
     private int numberofNodes;
-    private static final int ROWS = 5;
-    private static final int COLUMNS = 5;
+    private  int ROWS;
+    private int COLUMNS;
 
-    public Graph() {
+    public Graph(int size) {
         this.nodes = new HashMap();
+        this.ROWS = size;
+        this.COLUMNS = size;
     }
 
     public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
@@ -83,8 +85,8 @@ public class Graph {
         nodes = new HashMap();
         for (int i = 0; i < nodeAmount; i++) {
             int id = i + 1;
-            int x = (((id - 1) % Graph.getColumns() * Node.getWidth()) + 5*Node.getWidth());
-            int y = (int) Math.ceil(((id - 1) / Graph.getColumns()) * Node.getHeight()+5*Node.getHeight());
+            int x = (((id - 1) % getColumns() * Node.getWidth()) + 5*Node.getWidth());
+            int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight()+5*Node.getHeight());
             nodes.put(id, new Node(id, x, y));
             numberofNodes++;
         }
@@ -117,11 +119,11 @@ public class Graph {
         return numberofNodes;
     }
 
-    public static int getRows() {
+    public int getRows() {
         return ROWS;
     }
 
-    public static int getColumns() {
+    public int getColumns() {
         return COLUMNS;
     }
 

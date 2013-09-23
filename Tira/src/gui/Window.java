@@ -8,6 +8,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -44,16 +47,18 @@ public class Window extends JFrame {
 
     private Controller controller;
     private JButton graphMaker;
-    private JTextField origin;
-    private JTextField target;
+    private JButton bfs;
+    private JTextField graphSide;
+    private JTextField textfield;
     private JPanel controlArea;
     private PaintSurface drawer;
     private HashMap<Integer, Node> nodeMap;
+    private HashMap<Shape, Color> shapeColors;
     private ArrayList<Node> results;
-    private int numberofNodes;
 
     public Window(Controller controller) {
         this.controller = controller;
+        this.shapeColors = new HashMap();
         createComponents();
         this.setSize(500, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,30 +73,59 @@ public class Window extends JFrame {
         if (funktio.equals("make graph")) {
             graphMaker.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    numberofNodes = Integer.valueOf(origin.getText());
-                    nodeMap = controller.makeNodes(numberofNodes);
-                    drawer.nodes = numberofNodes;
-                    drawer.addRectangleNodes();
-                    repaint();
+                    nodeMap = new HashMap();
+                    drawer.nodeSquares = new HashMap();
+                    drawer.shapes = new ArrayList();
+                    drawer.target = null;
+                    drawer.origin = null;
+                    int graphSize = getNumericValue(graphSide.getText());
+                    if (graphSize != -1) {
+                        controller.createGraph(graphSize);
+                        nodeMap = controller.makeNodes(graphSize * graphSize);
+                        drawer.nodes = graphSize * graphSize;
+                        drawer.addRectangleNodes();
+                        repaint();
+                    }
                 }
             });
-        } else if (funktio.equals("bfs")) {
-            //Execute when button is pressed
-            Node[] result = controller.getBfsResult(Integer.valueOf(origin.getText()), Integer.valueOf(target.getText()));
-            results.addAll(Arrays.asList(result));
-            drawer.showResult(result);
         }
+    }
+
+    private void addBfsListener() {
+        bfs.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (drawer.target != null && drawer.origin != null) {
+                    Node[] result = controller.getBfsResult(drawer.origin.getId(), drawer.target.getId());
+                    drawer.showResult(result);
+                }
+
+            }
+        });
+    }
+
+    private int getNumericValue(String text) {
+        int value;
+        try {
+            value = Integer.valueOf(text);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+        return value;
     }
 
     private void createComponents() {
         this.controlArea = new JPanel();
+        controlArea.setLayout(new FlowLayout());
         this.graphMaker = new JButton("make graph");
         addListener(graphMaker, "make graph");
-        this.origin = new JTextField("25", 10);
-        this.target = new JTextField("", 3);
-        controlArea.add(graphMaker, BorderLayout.WEST);
-        controlArea.add(origin, BorderLayout.CENTER);
-        controlArea.add(target, BorderLayout.EAST);
+        this.bfs = new JButton("Search with bfs");
+        addBfsListener();
+        this.graphSide = new JTextField("10", 10);
+        this.textfield = new JTextField("", 6);
+        controlArea.add(bfs);
+        controlArea.add(graphMaker);
+        controlArea.add(graphSide);
+        controlArea.add(textfield);
     }
 
     private class PaintSurface extends JComponent {
@@ -103,6 +137,8 @@ public class Window extends JFrame {
         Point startDrag, endDrag;
         ArrayList cityXCoords = new ArrayList();
         ArrayList cityYCoords = new ArrayList();
+        Node origin;
+        Node target;
 
         public PaintSurface() {
             this.nodes = 0;
@@ -110,7 +146,7 @@ public class Window extends JFrame {
                 public void mousePressed(MouseEvent e) {
                     if (!cityXCoords.contains(e.getX()) && !cityYCoords.contains(e.getY())) {
 
-                        int radius = 50;
+                        int radius = 15;
                         Shape ellipse = new Ellipse2D.Double(e.getX() - radius, e.getY() - radius, 2.0 * radius, 2.0 * radius);
 
                         //  shapes.add(ellipse);
@@ -121,45 +157,59 @@ public class Window extends JFrame {
                 }
 
                 public void mouseReleased(MouseEvent e) {
-                    Shape toBeRemoved = new Ellipse2D.Double(0, 0, 0, 0);
+
+                    Shape clicked = new Ellipse2D.Double(e.getX() - 0, e.getY() - 0, 1.0 * 0, 1.0 * 0);
                     for (Shape s : shapes) {
                         if (s.contains(e.getX(), e.getY())) {
-                            Node node = nodeSquares.get(s);
-                            controller.removeNodesAllNeighbours(node);
-                            nodeSquares.remove(s);
-                            nodeMap.remove(node.getId());
-                            toBeRemoved = s;
+                            clicked = s;
                         }
-
                     }
-                    shapes.remove(toBeRemoved);
+                    if (Math.abs(lineLength(startDrag.x, startDrag.y, endDrag.x, endDrag.y)) > 10 && !(clicked instanceof Ellipse2D)) {
+                        Node node = nodeSquares.get(clicked);
+                        controller.removeNodesAllNeighbours(node);
+                        nodeSquares.remove(clicked);
+                        nodeMap.remove(node.getId());
+                        shapes.remove(clicked);
+                        shapeColors.remove(clicked);
+
+                    } else {
+                        if (origin == null) {
+                            origin = nodeSquares.get(clicked);
+                            shapeColors.put(clicked, Color.green);
+                        } else if (target == null) {
+                            target = nodeSquares.get(clicked);
+                            shapeColors.put(clicked, Color.red);
+                        }
+                    }
                     startDrag = null;
                     endDrag = null;
                     repaint();
-                    //Shape r = makeRectangle(startDrag.x, startDrag.y, e.getX(), e.getY());
-
-//                    if (Math.abs(lineLength(startDrag.x, startDrag.y, endDrag.x, endDrag.y)) < 20) {
-//                        int radius = 50;
-//                        //Shape ellipse = new Ellipse2D.Double(e.getX() - radius, e.getY() - radius, 1.0 * radius, 1.0 * radius);
-//                        Shape ellipse = getEllipseFromCenter(e.getX(), e.getY(), 25, 25);
-//                        shapes.add(ellipse);
-//                        nodes++;
-//                        Ellipse2D el = (Ellipse2D) ellipse;
-//                        Node node = controller.createNode(nodes, (int) el.getCenterX(), (int) el.getCenterY());
-//                        centers.put(node, endDrag);
-//                        nodeSquares.put(ellipse, node);
-//
-//                    } else {
-//                        Node[] targets = targetNodes(startDrag, endDrag);
-//                        if (targets[0] != null && targets[1] != null) {
-//                            Shape line = new Line2D.Float(targets[0].getX(), targets[0].getY(), (float) targets[1].getX(), (float) targets[1].getY());
-//                            shapes.add(line);
-//                            controller.setNeighbours(targets);
-//                        }
-//                    }
-
                 }
 
+//                @Override
+//                public void mouseDragged(MouseEvent e) {
+//
+//                    endDrag = new Point(e.getX(), e.getY());
+//                    startDrag = new Point(e.getX(), e.getY());
+//                    Shape clicked = new Ellipse2D.Double(e.getX() - 0, e.getY() - 0, 1.0 * 0, 1.0 * 0);
+//                    for (Shape s : shapes) {
+//                        if (s.contains(e.getX(), e.getY())) {
+//                            clicked = s;
+//                        }
+//                    }
+//                    if (Math.abs(lineLength(startDrag.x, startDrag.y, endDrag.x, endDrag.y)) > 10 && !(clicked instanceof Ellipse2D)) {
+//                        Node node = nodeSquares.get(clicked);
+//                        controller.removeNodesAllNeighbours(node);
+//                        nodeSquares.remove(clicked);
+//                        nodeMap.remove(node.getId());
+//                        shapes.remove(clicked);
+//                        shapeColors.remove(clicked);
+//                    }
+////                    startDrag = null;
+////                    endDrag = null;
+//                    repaint();
+//
+//                }
                 private double lineLength(int startX, int startY, int targetX, int targetY) {
                     double a = Math.abs(startX - targetX);
                     double b = Math.abs(startY - targetY);
@@ -178,40 +228,52 @@ public class Window extends JFrame {
                 }
 
                 //checks whether the user is trying to draw the line in an existing node. Returns the center of the node or null if there's no node
-                private Node[] targetNodes(Point start, Point end) {
+                private ArrayList<Node> targetNodes(Point start, Point end) {
                     boolean startin;
                     boolean endin;
-                    Node[] targets = new Node[2];            //point[0] is the start node's center and point[1] the end node's center
+                    ArrayList targets = new ArrayList();
                     Ellipse2D ellipse = null;
                     for (Shape s : shapes) {
-                        if (s instanceof Ellipse2D && s.contains(start)) {
+                        if (s.contains(start)) {
                             ellipse = (Ellipse2D) s;
                             int x = (int) ellipse.getCenterX();
                             int y = (int) ellipse.getCenterY();
-                            targets[0] = nodeSquares.get(s);
+                            targets.add(nodeSquares.get(s));
 
                         } else if (s instanceof Ellipse2D && s.contains(end) && s != ellipse) {
                             ellipse = (Ellipse2D) s;
                             int x = (int) ellipse.getCenterX();
                             int y = (int) ellipse.getCenterY();
-                            targets[1] = nodeSquares.get(s);
+                            targets.add(nodeSquares.get(s));
                         }
                     }
                     return targets;
                 }
             });
 
-            this.addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseDragged(MouseEvent e) {
-                    endDrag = new Point(e.getX(), e.getY());
-                    repaint();
-                }
-            });
+            this.addMouseMotionListener(
+                    new MouseMotionAdapter() {
+                        @Override
+                        public void mouseDragged(MouseEvent e) {
+                            endDrag = new Point(e.getX(), e.getY());
+                            repaint();
+                        }
+                    });
         }
 
         public void showResult(Node[] result) {
-            invalidate();
+            if (target != null && origin != null) {
+                for (int i = 0; i < result.length; i++) {
+
+                    for (Shape s : shapes) {
+                        if (nodeSquares.get(s) == result[i]) {
+                            shapeColors.remove(s);
+                            shapeColors.put(s, Color.yellow);
+                        }
+                    }
+                }
+            }
+            repaint();
         }
 
         private void paintBackground(Graphics2D g2) {
@@ -236,9 +298,11 @@ public class Window extends JFrame {
                     int y = node.getY();
 
                     Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
-                    shapes.add(rect);
+
                     if (!nodeSquares.containsKey(rect)) {
+                        shapes.add(rect);
                         nodeSquares.put(rect, node);
+                        shapeColors.put(rect, Color.BLUE);
                     }
 
                 }
@@ -263,7 +327,7 @@ public class Window extends JFrame {
             for (Shape s : shapes) {
                 g2.setPaint(Color.BLACK);
                 g2.draw(s);
-                g2.setPaint(colors[1]);
+                g2.setPaint(shapeColors.get(s));
 //                g2.setPaint(colors[(colorIndex++) % colors.length]);
                 g2.fill(s);
             }

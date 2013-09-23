@@ -17,12 +17,10 @@ public class Controller {
     private PathFinder finder;
 
     public Controller(){
-        createGraph();
     }
     
-    public void createGraph() {
-        this.graph = new Graph();
-
+    public void createGraph(int size) {
+        this.graph = new Graph(size);
     }
 
     public Node createNode(int id, int x, int y) {
@@ -53,5 +51,9 @@ public class Controller {
     public String getAstarResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
         return finder.aStar(startId, targetId);
+    }
+    
+    public Graph getGraph(){
+      return graph;
     }
 }

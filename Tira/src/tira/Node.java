@@ -29,8 +29,8 @@ public class Node implements Comparable<Node> {
     }
     
     public void removeAllNeighbours(){
-        for (int i = 0; i < neighbours.size(); i++) {
-            Node neighbour = neighbours.get(i);
+        while(neighbours.size() > 0){
+            Node neighbour = neighbours.get(0);
             ArrayList<Node> neighbourlist = neighbour.getNeighbours();
             for (int j = 0; j < neighbourlist.size(); j++) {
                 if (this == neighbourlist.get(j)) {
