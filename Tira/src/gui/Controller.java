@@ -45,10 +45,10 @@ public class Controller {
 
     public Node[] getBfsResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
-        return (Node[]) finder.bfsLeastNodes(startId, targetId)[1];
+        return finder.bfs(startId, targetId);
     }
 
-    public String getAstarResult(int startId, int targetId) {
+    public Node[] getAstarResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
         return finder.aStar(startId, targetId);
     }

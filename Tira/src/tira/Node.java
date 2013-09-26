@@ -18,6 +18,7 @@ public class Node implements Comparable<Node> {
     private int x;
     private int y;
     private int heuristics;
+    private int dist;
     private static int WIDTH = 20;
     private static int HEIGHT = 20;
 
@@ -27,15 +28,15 @@ public class Node implements Comparable<Node> {
         this.x = x;
         this.y = y;
     }
-    
-    public void removeAllNeighbours(){
-        while(neighbours.size() > 0){
+
+    public void removeAllNeighbours() {
+        while (neighbours.size() > 0) {
             Node neighbour = neighbours.get(0);
             ArrayList<Node> neighbourlist = neighbour.getNeighbours();
             for (int j = 0; j < neighbourlist.size(); j++) {
                 if (this == neighbourlist.get(j)) {
-                   neighbourlist.remove(this);
-                   neighbours.remove(neighbour);
+                    neighbourlist.remove(this);
+                    neighbours.remove(neighbour);
                 }
             }
         }
@@ -60,6 +61,9 @@ public class Node implements Comparable<Node> {
     public int getY() {
         return this.y;
     }
+    public int getHeuristics(){
+        return heuristics;
+    }
 
     public static int getWidth() {
         return WIDTH;
@@ -73,12 +77,20 @@ public class Node implements Comparable<Node> {
         this.heuristics = heuristics;
     }
 
+    public void setDist(int dist) {
+        this.dist = dist;
+    }
+
+    public int getDist() {
+        return this.dist;
+    }
+
     @Override
     public int compareTo(Node node) {
-        if (this.heuristics > node.heuristics) {
+        if (this.heuristics + this.dist > node.heuristics + node.dist) {
             return 1;
         }
-        if (this.heuristics < node.heuristics) {
+        if (this.heuristics + this.dist < node.heuristics + node.dist) {
             return -1;
         }
         return 0;

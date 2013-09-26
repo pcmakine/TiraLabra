@@ -48,6 +48,7 @@ public class Window extends JFrame {
     private Controller controller;
     private JButton graphMaker;
     private JButton bfs;
+    private JButton astar;
     private JTextField graphSide;
     private JTextField textfield;
     private JPanel controlArea;
@@ -60,7 +61,7 @@ public class Window extends JFrame {
         this.controller = controller;
         this.shapeColors = new HashMap();
         createComponents();
-        this.setSize(500, 500);
+        this.setSize(600, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         drawer = new PaintSurface();
         this.add(drawer, BorderLayout.CENTER);
@@ -69,8 +70,7 @@ public class Window extends JFrame {
         this.setVisible(true);
     }
 
-    private void addListener(JButton button, String funktio) {
-        if (funktio.equals("make graph")) {
+    private void addMakeGraphListener() {
             graphMaker.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     nodeMap = new HashMap();
@@ -88,14 +88,21 @@ public class Window extends JFrame {
                     }
                 }
             });
-        }
+        
     }
 
-    private void addBfsListener() {
-        bfs.addActionListener(new ActionListener() {
+    private void addRouteSearchListener(final String function, JButton button) {
+        button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (drawer.target != null && drawer.origin != null) {
-                    Node[] result = controller.getBfsResult(drawer.origin.getId(), drawer.target.getId());
+                    results = new ArrayList();
+                    Node[] result;
+                    if (function.equals("bfs")){
+                        result = controller.getBfsResult(drawer.origin.getId(), drawer.target.getId());
+                    }else{
+                        result = controller.getAstarResult(drawer.origin.getId(), drawer.target.getId());
+                    }
+                    
                     drawer.showResult(result);
                 }
 
@@ -116,13 +123,19 @@ public class Window extends JFrame {
     private void createComponents() {
         this.controlArea = new JPanel();
         controlArea.setLayout(new FlowLayout());
+        
         this.graphMaker = new JButton("make graph");
-        addListener(graphMaker, "make graph");
+        addMakeGraphListener();
+        
         this.bfs = new JButton("Search with bfs");
-        addBfsListener();
+        addRouteSearchListener("bfs", bfs);
+        
+        this.astar = new JButton("Search with astar");
+        addRouteSearchListener("astar", astar);
         this.graphSide = new JTextField("10", 10);
         this.textfield = new JTextField("", 6);
         controlArea.add(bfs);
+        controlArea.add(astar);
         controlArea.add(graphMaker);
         controlArea.add(graphSide);
         controlArea.add(textfield);
@@ -176,7 +189,7 @@ public class Window extends JFrame {
                         if (origin == null) {
                             origin = nodeSquares.get(clicked);
                             shapeColors.put(clicked, Color.green);
-                        } else if (target == null) {
+                        } else if (target == null && nodeSquares.get(clicked) != origin) {
                             target = nodeSquares.get(clicked);
                             shapeColors.put(clicked, Color.red);
                         }
@@ -262,17 +275,18 @@ public class Window extends JFrame {
         }
 
         public void showResult(Node[] result) {
-            if (target != null && origin != null) {
-                for (int i = 0; i < result.length; i++) {
-
+                for (int i = 1; i < result.length; i++) {
+                    if (i == result.length -2 || result[i+1] == null) {
+                        break;
+                    }
                     for (Shape s : shapes) {
                         if (nodeSquares.get(s) == result[i]) {
                             shapeColors.remove(s);
-                            shapeColors.put(s, Color.yellow);
+                            shapeColors.put(s, Color.cyan);
                         }
+                        repaint();
                     }
                 }
-            }
             repaint();
         }
 

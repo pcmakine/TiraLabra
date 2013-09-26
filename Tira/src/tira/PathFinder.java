@@ -6,7 +6,9 @@ package tira;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -22,7 +24,7 @@ public class PathFinder {
         this.graph = graph;
     }
 
-    public Object[] bfsLeastNodes(int startId, int goalId) {
+    public Node[] bfs(int startId, int goalId) {
 
         LinkedHashMap<Integer, Node> nodeMap = new LinkedHashMap();
         HashMap<Integer, Node> handled = new HashMap();
@@ -45,14 +47,14 @@ public class PathFinder {
                 handled.put(node.getId(), node);
 
                 if (node == goal) {
-                    return printSolution(prev, node.getId());
+                    return getSolution(prev, node.getId(), startId);
                 }
                 add(node, nodeMap, handled, prev);
             }
 
         }
 
-        return new Object[]{"no solution"};
+        return null;
     }
 
     private void add(Node node, LinkedHashMap nodeMap, HashMap handled, int[] prev) {
@@ -68,78 +70,133 @@ public class PathFinder {
         }
     }
 
-    private Object[] printSolution(int[] prev, int node) {
-        Object[] result = new Object[2];
-        String[] reverse = new String[prev.length];
+    private Node[] getSolution(int[] prev, int node, int origin) {
         Stack<Node> resultStack = new Stack();
         Node[] reverseOrder = new Node[prev.length];
         Node[] ordered = new Node[prev.length];
         int nodes = 0;
-        String solution = "";
         while (node != -1) {
-            reverse[nodes] = "Node: " + node + "\n";
             reverseOrder[nodes] = graph.getNode(node);
             nodes++;
-            //if (node != 0) {
-            node = prev[node - 1];
-            //}
 
+            if (node == origin) {
+                break;
+            }
+            node = prev[node - 1];
         }
         int j = 0;
         for (int i = nodes - 1; i >= 0; i--) {
-            solution = solution + reverse[i];
             ordered[j] = reverseOrder[i];
             j++;
         }
-        result[0] = solution;
-        result[1] = ordered;
-        //result[1] = 
-        return result;
+        return ordered;
     }
 
-    public String aStar(int startId, int goalId) {
+    public Node[] astar2(int startId, int goalId) {
         PriorityQueue<Node> queue = new PriorityQueue();
         HashMap<Integer, Node> handled = new HashMap();
         int[] prev = new int[graph.getNumberofNodes()];
+        int[] toStart = new int[graph.getNumberofNodes()];
+        int[] toTarget = new int[graph.getNumberofNodes()];
 
+        Map nodes = graph.getNodes();
+        Iterator it = nodes.keySet().iterator();
+
+        while (it.hasNext()) {
+            int key = (int) it.next();
+            Node node = (Node) nodes.get(key);
+            node.setDist(Integer.MAX_VALUE);
+            node.setHeuristics((int) (getHeuristics(node, graph.getNode(goalId))));
+            prev[node.getId() - 1] = -1;
+        }
+
+        toStart[startId - 1] = 0;
+
+        queue.add(graph.getNode(startId));
+
+        while (!handled.containsKey(goalId)) {
+            Node node = queue.poll();
+            handled.put(node.getId(), node);
+
+            ArrayList<Node> neighbours = node.getNeighbours();
+            for (int i = 0; i < neighbours.size(); i++) {
+                Node neighbour = neighbours.get(i);
+                if (neighbour.getDist() > node.getDist() + 1) {
+                    neighbour.setDist(node.getDist() + 1);
+                    prev[neighbour.getId() - 1] = node.getId();
+                }
+            }
+
+
+        }
+        return getSolution(prev, goalId, startId);
+    }
+
+    public Node[] aStar(int startId, int goalId) {
+        PriorityQueue<Node> queue = new PriorityQueue();
+        HashMap<Integer, Node> handled = new HashMap();
+        int[] prev = new int[graph.getNumberofNodes()];
+        int prevId = -1;
+
+        Map nodes = graph.getNodes();
+        Iterator it = nodes.keySet().iterator();
+
+        while (it.hasNext()) {
+            int key = (int) it.next();
+            Node node = (Node) nodes.get(key);
+            node.setDist(Integer.MAX_VALUE);
+        }
+
+        graph.getNode(startId).setDist(0);
         queue.add(graph.getNode(startId));
 
         while (!queue.isEmpty()) {
             Node node = queue.poll();
 
             if (!handled.containsKey(node.getId())) {
+                prev[node.getId() - 1] = prevId;
+                prevId = node.getId();
                 handled.put(node.getId(), node);
                 if (node == graph.getNode(goalId)) {
-                    return (String) printSolution(prev, node.getId())[0];
+                    return getSolution(prev, node.getId(), startId);
                 }
                 addForAstar(node, queue, prev, graph.getNode(goalId));
             }
         }
-        return "no solution";
+        return null;
     }
 
     private void addForAstar(Node node, PriorityQueue queue, int[] prev, Node target) {
-
         ArrayList<Node> neighbours = node.getNeighbours();
 
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             double heuristics = getHeuristics(neighbour, target);
             neighbour.setHeuristics((int) heuristics);
+            if (neighbour.getDist() > node.getDist() + 1) {
+                neighbour.setDist(node.getDist() + 1);
+                //  prev[neighbour.getId() - 1] = node.getId();
+            }
             queue.add(neighbour);
-            prev[neighbour.getId() - 1] = node.getId();
-
         }
 
     }
 
     //Returns the euclidian distance of two nodes
-    private double getHeuristics(Node origin, Node target) {
-        double a = Math.abs(origin.getX() - target.getX());
-        double b = Math.abs(origin.getY() - target.getY());
-
-        double distance = Math.sqrt((a * a) + (b * b));
-
+    private int getHeuristics(Node start, Node target) {     
+        int startrow = start.getId()/graph.getColumns();
+        int startcolumn = start.getId()%graph.getColumns();
+        int targetrow = target.getId()%graph.getColumns();
+        int targetcolumn = target.getId()%graph.getColumns();
+        
+        int distance = Math.abs(startrow-targetrow) + Math.abs(startcolumn - targetcolumn);
+        
         return distance;
+//        double a = Math.abs(origin.getX() - target.getX());
+//        double b = Math.abs(origin.getY() - target.getY());
+//
+//        double distance = Math.sqrt((a * a) + (b * b));
+//
+//        return distance / 20;
     }
 }
