@@ -38,20 +38,6 @@ public class MyArrayListTest {
     }
 
     @Test
-    public void sizeIncreasedCorrectly() {
-        int[] arr = new int[15];
-        for (int i = 0; i < 15; i++) {
-            arr[i] = i;
-        }
-        MyArrayList<Integer> list = new MyArrayList(5);
-        for (int i = 0; i < 15; i++) {
-            list.add(i);
-        }
-
-//        assertArrayEquals(expected, list.toIntArray());
-    }
-
-    @Test
     public void elementsInsertedCorrectly() {
 
         int[] expected = new int[16];
