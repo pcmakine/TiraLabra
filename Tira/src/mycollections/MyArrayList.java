@@ -21,23 +21,31 @@ public class MyArrayList<E> {
     }
 
     public MyArrayList(int initialSize) {
+        if (initialSize < 1) {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialSize + ". Capacity must be at least 1");
+        }
         this.size = 0;
-        this.array = new Object[size];
+        this.array = new Object[initialSize];
         this.inflateMultiplier = 3;
     }
 
-    public void insert(E e) {
+    public void add(E e) {
         Object[] inflated;
-        if (this.size < (array.length - 1)) {
-            array[size] = e;
+        if (this.size < array.length) {
+            insert(e);
         } else {
             inflated = new Object[array.length * inflateMultiplier];
-            copy(array, inflated);
+            extendArray(inflated);
+            insert(e);
         }
-
     }
 
-    private void copy(Object[] array, Object[] inflated) {
+    private void insert(E e) {
+        array[size] = e;
+        size++;
+    }
+
+    private void extendArray(Object[] inflated) {
         for (int i = 0; i < array.length; i++) {
             inflated[i] = array[i];
         }
@@ -50,6 +58,7 @@ public class MyArrayList<E> {
     }
 
     public int[] toIntArray() {
+        trim();
         if (array[0] instanceof Integer) {
             int[] intArray = new int[array.length];
             this.toArray();
