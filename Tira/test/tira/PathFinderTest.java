@@ -23,12 +23,17 @@ public class PathFinderTest {
 
     private Graph graph;
     private Graph graph1;
+    private static Graph small;
+    private static Graph bigger;
+    private static Graph big;
+    private static Graph biggest;
 
     public PathFinderTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+        makeRandomGraphsForTimeTests();
     }
 
     @AfterClass
@@ -45,6 +50,7 @@ public class PathFinderTest {
         graph.removeNode(graph.getNode(13));
         graph.removeNode(graph.getNode(14));
         graph.removeNode(graph.getNode(17));
+
     }
 
     @After
@@ -95,56 +101,67 @@ public class PathFinderTest {
     //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
-        Controller c = new Controller();
-        int smallSize = 30;
-        int biggerSize = 100;
-        int bigSize = 150;
-        int biggestSize = 250;
-        Graph small = c.makeCustomGraph(smallSize, (c.decideNodesToRemove(smallSize, ((smallSize*smallSize)/20), 1, smallSize*smallSize)));
-        Graph bigger = c.makeCustomGraph(biggerSize, (c.decideNodesToRemove(biggerSize, ((biggerSize*biggerSize)/20), 1, biggerSize*biggerSize)));
-        Graph big = c.makeCustomGraph(bigSize, (c.decideNodesToRemove(bigSize, ((bigSize*bigSize)/20), 1, bigSize*bigSize)));
-//        Graph biggest = c.makeCustomGraph(biggestSize, (c.decideNodesToRemove(biggestSize, ((biggestSize*biggestSize)/20), 1, biggestSize*biggestSize)));
-//        Graph big = c.makeCustomGraph(300, c.decideNodesToRemove(100, (100*100)/20));
-        int testRuns = 50;
+        int testRuns = 20;
 
-        System.out.println("BFS Elapsed time for small: " + runTimeTests(small, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for bigger: " + runTimeTests(bigger, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for big: " + runTimeTests(big, testRuns) + "ms");
-//        System.out.println("Elapsed time for biggest: " + runBfs(biggest, testRuns) + "ms");
-    }
-    
-        //doesn't seem to be very reliable. Huge variance.
-    @Test
-    public void testAstarTime() {
-        Controller c = new Controller();
-        int smallSize = 30;
-        int biggerSize = 100;
-        int bigSize = 150;
-        int biggestSize = 250;
-        Graph small = c.makeCustomGraph(smallSize, (c.decideNodesToRemove(smallSize, ((smallSize*smallSize)/20), 1, smallSize*smallSize)));
-        Graph bigger = c.makeCustomGraph(biggerSize, (c.decideNodesToRemove(biggerSize, ((biggerSize*biggerSize)/20), 1, biggerSize*biggerSize)));
-        Graph big = c.makeCustomGraph(bigSize, (c.decideNodesToRemove(bigSize, ((bigSize*bigSize)/20), 1, bigSize*bigSize)));
-//        Graph biggest = c.makeCustomGraph(biggestSize, (c.decideNodesToRemove(biggestSize, ((biggestSize*biggestSize)/20), 1, biggestSize*biggestSize)));
-//        Graph big = c.makeCustomGraph(300, c.decideNodesToRemove(100, (100*100)/20));
-        int testRuns = 50;
 
-        System.out.println("Astar Elapsed time for small: " + runTimeTests(small, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for bigger: " + runTimeTests(bigger, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for big: " + runTimeTests(big, testRuns) + "ms");
-//        System.out.println("Elapsed time for biggest: " + runBfs(biggest, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
+
+        System.out.println("BFS Elapsed time for biggest: " + runBFSTimeTests(biggest, testRuns) + "ms");
     }
-    
-    private long runTimeTests(Graph graph, int testRuns) {
+
+    private long runBFSTimeTests(Graph graph, int testRuns) {
         long elapsedAverage;
         PathFinder finder = new PathFinder(graph);
 
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-           finder.bfs(1, graph.getMaxId());
+            finder.bfs(1, graph.getMaxId());
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;
         return elapsedAverage;
+    }
+
+    //doesn't seem to be very reliable. Huge variance.
+    @Test
+    public void testAstarTime() {
+        int testRuns = 20;
+
+        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms");
+    }
+
+    private long runAstarTimeTests(Graph graph, int testRuns) {
+        long elapsedAverage;
+        PathFinder finder = new PathFinder(graph);
+
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < testRuns; i++) {
+            finder.aStar(1, graph.getMaxId());
+        }
+        long stopTime = System.currentTimeMillis();
+        elapsedAverage = (stopTime - startTime) / testRuns;
+        return elapsedAverage;
+    }
+
+    private static void makeRandomGraphsForTimeTests() {
+        Controller c = new Controller();
+        int smallSize = 30;
+        int biggerSize = 100;
+        int bigSize = 150;
+        int biggestSize = 200;
+        small = c.makeRandomGraph(smallSize, (smallSize * smallSize) / 20, 1, smallSize * smallSize);
+        System.out.println("small made");
+        bigger = c.makeRandomGraph(biggerSize, (biggerSize * biggerSize) / 20, 1, biggerSize * biggerSize);
+        System.out.println("bigger made");
+        big = c.makeRandomGraph(bigSize, (bigSize * bigSize) / 20, 1, bigSize * bigSize);
+        System.out.println("big made");
+        biggest = c.makeRandomGraph(biggestSize, (biggestSize * biggestSize) / 20, 1, biggestSize * biggestSize);
+        System.out.println("biggest made");
     }
 
     private String makeResultString(int[] route) {
@@ -161,9 +178,6 @@ public class PathFinderTest {
 //        PathFinder finder = new PathFinder(test);
 //        System.out.println(finder.bfs(4, 9));
 //    }
-
-
-
     private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour) {
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] == neighbour) {

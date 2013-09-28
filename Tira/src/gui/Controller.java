@@ -41,7 +41,7 @@ public class Controller {
             if (randomId != origin && randomId != target) {
                 removed.add(randomId);
             }
-            
+
         }
         return removed;
     }
@@ -53,6 +53,21 @@ public class Controller {
             int id = toBeRemoved.get(i);
             Node removed = graph.getNode(id);
             if (removed != null) {
+                graph.removeNode(removed);
+            }
+        }
+        return graph;
+    }
+
+    //for tests
+    public Graph makeRandomGraph(int size, int maxnodesToRemove, int origin, int target) {
+        graph = new Graph(size);
+
+        graph.makeNodes();
+        for (int i = 0; i < maxnodesToRemove; i++) {
+            int randomId = 1 + (int) (Math.random() * (size * size));
+            Node removed = graph.getNode(randomId);
+            if (removed != null && randomId != origin && randomId != target) {
                 graph.removeNode(removed);
             }
         }
