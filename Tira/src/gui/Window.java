@@ -9,13 +9,11 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -25,17 +23,16 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import tira.Graph;
 import tira.Node;
 
 /**
@@ -49,13 +46,15 @@ public class Window extends JFrame {
     private JButton graphMaker;
     private JButton bfs;
     private JButton astar;
+    private JButton randomGraph;
     private JTextField graphSide;
-    private JTextField textfield;
     private JPanel controlArea;
     private PaintSurface drawer;
     private HashMap<Integer, Node> nodeMap;
     private HashMap<Shape, Color> shapeColors;
     private ArrayList<Node> results;
+    private Color noNode = new Color(255, 100, 255);
+    private int portionofNodesRemoved  = 3;
 
     public Window(Controller controller) {
         this.controller = controller;
@@ -71,24 +70,20 @@ public class Window extends JFrame {
     }
 
     private void addMakeGraphListener() {
-            graphMaker.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    nodeMap = new HashMap();
-                    drawer.nodeSquares = new HashMap();
-                    drawer.shapes = new ArrayList();
-                    drawer.target = null;
-                    drawer.origin = null;
-                    int graphSize = getNumericValue(graphSide.getText());
-                    if (graphSize != -1) {
-                        controller.createGraph(graphSize);
-                        nodeMap = controller.makeNodes(graphSize * graphSize);
-                        drawer.nodes = graphSize * graphSize;
-                        drawer.addRectangleNodes();
-                        repaint();
-                    }
+        graphMaker.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                initdrawerValues();
+                int graphSize = getNumericValue(graphSide.getText());
+                if (graphSize != -1) {
+                    controller.createGraph(graphSize);
+                    nodeMap = controller.makeNodes(graphSize * graphSize);
+                    drawer.nodes = graphSize * graphSize;
+                    drawer.addRectangleNodes(null);
+                    repaint();
                 }
-            });
-        
+            }
+        });
+
     }
 
     private void addRouteSearchListener(final String function, JButton button) {
@@ -97,17 +92,63 @@ public class Window extends JFrame {
                 if (drawer.target != null && drawer.origin != null) {
                     results = new ArrayList();
                     Node[] result;
-                    if (function.equals("bfs")){
+                    if (function.equals("bfs")) {
                         result = controller.getBfsResult(drawer.origin.getId(), drawer.target.getId());
-                    }else{
+                    } else {
                         result = controller.getAstarResult(drawer.origin.getId(), drawer.target.getId());
                     }
-                    
-                    drawer.showResult(result);
+                    if (result != null) {
+                        drawer.showResult(result);
+                    } else {
+                        // TODO: let the user know there was no solution
+                    }
+
                 }
 
             }
         });
+    }
+
+    private void addRandomGraphListener() {
+        randomGraph.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                initdrawerValues();
+
+                int graphSize = getNumericValue(graphSide.getText());
+                if (graphSize != -1) {
+                    ArrayList remove = controller.decideNodesToRemove(graphSize, (graphSize * graphSize) / portionofNodesRemoved);
+                    controller.makeCustomGraph(graphSize, remove);
+                    nodeMap = controller.getGraph().getNodes();
+                    drawer.nodes = graphSize * graphSize;
+                    drawer.addRectangleNodes(remove);
+                    removeManyNodes(remove);
+                    repaint();
+                }
+
+
+            }
+        });
+    }
+
+    private void initdrawerValues() {
+        nodeMap = new HashMap();
+        drawer.nodeSquares = new HashMap();
+        drawer.shapes = new ArrayList();
+        drawer.target = null;
+        drawer.origin = null;
+    }
+
+    private void removeManyNodes(ArrayList<Integer> remove) {
+        for (int i = 0; i < remove.size(); i++) {
+
+            Node node = controller.getGraph().getNode(remove.get(i));
+            Shape s = drawer.shapeNodes.get(node);
+            drawer.nodeSquares.remove(s);
+            // drawer.shapes.remove(s);
+            shapeColors.remove(s);
+            shapeColors.put(s, noNode);
+            drawer.nodes--;
+        }
     }
 
     private int getNumericValue(String text) {
@@ -123,33 +164,35 @@ public class Window extends JFrame {
     private void createComponents() {
         this.controlArea = new JPanel();
         controlArea.setLayout(new FlowLayout());
-        
+
         this.graphMaker = new JButton("make graph");
         addMakeGraphListener();
-        
+
         this.bfs = new JButton("Search with bfs");
         addRouteSearchListener("bfs", bfs);
-        
+
         this.astar = new JButton("Search with astar");
         addRouteSearchListener("astar", astar);
+
+        this.randomGraph = new JButton("Random Graph");
+        addRandomGraphListener();
+
+
         this.graphSide = new JTextField("10", 10);
-        this.textfield = new JTextField("", 6);
         controlArea.add(bfs);
         controlArea.add(astar);
+        controlArea.add(randomGraph);
         controlArea.add(graphMaker);
         controlArea.add(graphSide);
-        controlArea.add(textfield);
     }
 
     private class PaintSurface extends JComponent {
 
         ArrayList<Shape> shapes = new ArrayList<Shape>();
-        HashMap<Node, Point> centers = new HashMap();
         HashMap<Shape, Node> nodeSquares = new HashMap();
+        HashMap<Node, Shape> shapeNodes = new HashMap();
         int nodes;
         Point startDrag, endDrag;
-        ArrayList cityXCoords = new ArrayList();
-        ArrayList cityYCoords = new ArrayList();
         Node origin;
         Node target;
 
@@ -157,33 +200,14 @@ public class Window extends JFrame {
             this.nodes = 0;
             this.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
-                    if (!cityXCoords.contains(e.getX()) && !cityYCoords.contains(e.getY())) {
-
-                        int radius = 15;
-                        Shape ellipse = new Ellipse2D.Double(e.getX() - radius, e.getY() - radius, 2.0 * radius, 2.0 * radius);
-
-                        //  shapes.add(ellipse);
-                        startDrag = new Point(e.getX(), e.getY());
-                        endDrag = startDrag;
-                    }
-                    repaint();
+                    startDrag = new Point(e.getX(), e.getY());
+                    endDrag = startDrag;
                 }
 
                 public void mouseReleased(MouseEvent e) {
-
-                    Shape clicked = new Ellipse2D.Double(e.getX() - 0, e.getY() - 0, 1.0 * 0, 1.0 * 0);
-                    for (Shape s : shapes) {
-                        if (s.contains(e.getX(), e.getY())) {
-                            clicked = s;
-                        }
-                    }
+                    Shape clicked = searchForClicked(e);
                     if (Math.abs(lineLength(startDrag.x, startDrag.y, endDrag.x, endDrag.y)) > 10 && !(clicked instanceof Ellipse2D)) {
-                        Node node = nodeSquares.get(clicked);
-                        controller.removeNodesAllNeighbours(node);
-                        nodeSquares.remove(clicked);
-                        nodeMap.remove(node.getId());
-                        shapes.remove(clicked);
-                        shapeColors.remove(clicked);
+                        removeNode(clicked);
 
                     } else {
                         if (origin == null) {
@@ -191,7 +215,7 @@ public class Window extends JFrame {
                             shapeColors.put(clicked, Color.green);
                         } else if (target == null && nodeSquares.get(clicked) != origin) {
                             target = nodeSquares.get(clicked);
-                            shapeColors.put(clicked, Color.red);
+                            shapeColors.put(clicked, Color.yellow);
                         }
                     }
                     startDrag = null;
@@ -274,19 +298,47 @@ public class Window extends JFrame {
                     });
         }
 
-        public void showResult(Node[] result) {
-                for (int i = 1; i < result.length; i++) {
-                    if (i == result.length -2 || result[i+1] == null) {
-                        break;
-                    }
-                    for (Shape s : shapes) {
-                        if (nodeSquares.get(s) == result[i]) {
-                            shapeColors.remove(s);
-                            shapeColors.put(s, Color.cyan);
-                        }
-                        repaint();
-                    }
+        public Shape searchForClicked(MouseEvent e) {
+            Shape clicked = new Ellipse2D.Double(e.getX() - 0, e.getY() - 0, 1.0 * 0, 1.0 * 0);
+            for (Shape s : shapes) {
+                if (s.contains(e.getX(), e.getY())) {
+                    clicked = s;
+                    return s;
                 }
+            }
+            return clicked;
+        }
+
+        private void removeNode(Shape clicked) {
+            Node node = nodeSquares.get(clicked);
+            controller.removeNode(node);
+            nodeSquares.remove(clicked);
+            nodeMap.remove(node.getId());
+            //  shapes.remove(clicked);
+            shapeColors.remove(clicked);
+            shapeColors.put(clicked, noNode);
+            shapeNodes.remove(node);
+            nodes--;
+        }
+
+        public void showResult(Node[] result) {
+            for (int i = 1; i < result.length; i++) {
+                if (i == result.length - 2 || result[i + 1] == null) {
+                    break;
+                }
+//                for (Shape s : shapes) {
+//                    if (nodeSquares.get(s) == result[i]) {
+//                        shapeColors.remove(s);
+//                        shapeColors.put(s, Color.cyan);
+//                    }
+
+                Shape s = (shapeNodes.get(result[i]));
+                shapeColors.remove(s);
+                shapeColors.put(s, Color.cyan);
+
+
+                repaint();
+            }
             repaint();
         }
 
@@ -303,23 +355,34 @@ public class Window extends JFrame {
             }
         }
 
-        public void addRectangleNodes() {
-            if (nodes > 0) {
-                for (int i = 0; i < nodes; i++) {
+        public void addRectangleNodes(ArrayList<Integer> removed) {
 
-                    Node node = nodeMap.get(i + 1);
-                    int x = node.getX();
-                    int y = node.getY();
+            Iterator it = nodeMap.keySet().iterator();
+            while (it.hasNext()) {
+                int key = (int) it.next();
+                Node node = nodeMap.get(key);
+                int x = node.getX();
+                int y = node.getY();
 
-                    Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
 
-                    if (!nodeSquares.containsKey(rect)) {
-                        shapes.add(rect);
-                        nodeSquares.put(rect, node);
-                        shapeColors.put(rect, Color.BLUE);
-                    }
-
+                if (!nodeSquares.containsKey(rect)) {
+                    shapes.add(rect);
+                    nodeSquares.put(rect, node);
+                    shapeColors.put(rect, Color.BLUE);
+                    shapeNodes.put(node, rect);
                 }
+            }
+            if (removed != null) {
+                Set<Integer> re = new HashSet(removed);
+                for (Integer i : re) {
+                    int x = ((((i - 1) % controller.getGraph().getColumns()) * Node.getWidth()) + (Node.getWidth() * controller.getGraph().getPos()));
+                    int y = ((((i - 1) / controller.getGraph().getColumns()) * Node.getHeight()) + (Node.getHeight() * controller.getGraph().getPos()));
+                    Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                    shapes.add(rect);
+                    shapeColors.put(rect, noNode);
+                }
+
             }
         }
 

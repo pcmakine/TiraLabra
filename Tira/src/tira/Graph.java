@@ -17,15 +17,17 @@ public class Graph {
 
     private HashMap<Integer, Node> nodes;
     private int numberofNodes;
-    private  int ROWS;
+    private int ROWS;
     private int COLUMNS;
     private int graphPos;
+    private int maxId;
 
     public Graph(int size) {
         this.nodes = new HashMap();
         this.ROWS = size;
         this.COLUMNS = size;
         graphPos = 5;
+        this.maxId = size*size;
     }
 
     public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
@@ -55,27 +57,27 @@ public class Graph {
             it.remove(); // avoids a ConcurrentModificationException
         }
     }
-    
-    public void setAllNeighbours(){
+
+    public void setAllNeighbours() {
         for (int i = 0; i < nodes.size(); i++) {
-            Node node = nodes.get(i+1);
+            Node node = nodes.get(i + 1);
             for (int j = 0; j < nodes.size(); j++) {
-                Node possibleNeighbour = nodes.get(j+1);
-                if (i != j && isNeighbour(node, possibleNeighbour)) {
+                Node possibleNeighbour = nodes.get(j + 1);
+                if (i != j && isVerticalOrHorizontalNeighbour(node, possibleNeighbour)) {
                     if (!node.getNeighbours().contains(possibleNeighbour)) {
                         node.setNeighbour(possibleNeighbour);
-                    }                 
+                    }
                 }
             }
         }
     }
-    
-    private boolean isNeighbour(Node node, Node possibleNeighbour){
+
+    public boolean isVerticalOrHorizontalNeighbour(Node node, Node possibleNeighbour) {
         int nodeX = node.getX();
         int nodeY = node.getY();
         int neibX = possibleNeighbour.getX();
         int neibY = possibleNeighbour.getY();
-        
+
         //neighbour on top of (and down from) node
         if (Math.abs(nodeY - neibY) == Node.getHeight() && nodeX == neibX) {
             return true;
@@ -83,34 +85,38 @@ public class Graph {
         if (Math.abs(nodeX - neibX) == Node.getWidth() && nodeY == neibY) {
             return true;
         }
-        
+
         return false;
-        
-        
-        
-//        for (int i = -1; i < 2; i++) {
-//            for (int j = -1; j < 2; j++) {
-//                if (possibleNeighbour.getX() == (nodeX + j* Node.getWidth()) && possibleNeighbour.getY() == (nodeY + i*Node.getHeight())) {
-//                    return true;
-//                }
-//            }
-//        }
     }
 
-    public HashMap makeNodes(int nodeAmount) {
+    private boolean isNeighbour(Node node, Node possibleNeighbour) {
+        int nodeX = node.getX();
+        int nodeY = node.getY();
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (possibleNeighbour.getX() == (nodeX + j * Node.getWidth()) && possibleNeighbour.getY() == (nodeY + i * Node.getHeight())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public HashMap makeNodes() {
         nodes = new HashMap();
-        for (int i = 0; i < nodeAmount; i++) {
+        for (int i = 0; i < (this.COLUMNS * this.ROWS); i++) {
             int id = i + 1;
-            int x = (((id - 1) % getColumns() * Node.getWidth()) + graphPos*Node.getWidth());
-            int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight()+graphPos*Node.getHeight());
+            int x = (((id - 1) % getColumns() * Node.getWidth()) + graphPos * Node.getWidth());
+            int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight() + graphPos * Node.getHeight());
             nodes.put(id, new Node(id, x, y));
             numberofNodes++;
         }
         setAllNeighbours();
         return nodes;
     }
-    
-    public void removeNode(Node node){
+
+    public void removeNode(Node node) {
+        node.removeAllNeighbours();
         nodes.remove(node.getId());
     }
 
@@ -127,7 +133,7 @@ public class Graph {
         return nodes.get(id);
     }
 
-    public Map<Integer, Node> getNodes() {
+    public HashMap<Integer, Node> getNodes() {
         return nodes;
     }
 
@@ -142,9 +148,13 @@ public class Graph {
     public int getColumns() {
         return COLUMNS;
     }
-    
-    public int getPos(){
+
+    public int getPos() {
         return graphPos;
+    }
+    
+    public int getMaxId(){
+        return maxId;
     }
 
     @Override

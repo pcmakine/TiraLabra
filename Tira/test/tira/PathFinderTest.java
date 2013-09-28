@@ -4,6 +4,8 @@
  */
 package tira;
 
+import gui.Controller;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.After;
@@ -33,82 +35,112 @@ public class PathFinderTest {
     public static void tearDownClass() {
     }
 
-    //graph:
-    // Node:          Neighbours:
-    //  1               2, 3
-    //  2               1, 4
-    //  3               1, 4, 6
-    //  4               2, 3, 5, 6
-    //  5               4
-    //  6               4
     @Before
     public void setUp() {
-//        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};
-//        HashMap<Integer, List> neighbours = GraphTest.buildNeighboursHash(neighboursarray);
-//        graph = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(neighboursarray.length));
-//
-//        neighbours = GraphTest.buildNeighboursHash(new int[][]{{2, 5}, {1, 3}, {2, 4, 7}, {3, 5, 6}, {1, 4}, {4, 8}, {3, 8}, {6, 7}});
-//        graph1 = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(8));
+        graph = new Graph(5);
+        graph.makeNodes();
+        graph.removeNode(graph.getNode(2));
+        graph.removeNode(graph.getNode(7));
+        graph.removeNode(graph.getNode(12));
+        graph.removeNode(graph.getNode(13));
+        graph.removeNode(graph.getNode(14));
+        graph.removeNode(graph.getNode(17));
     }
 
     @After
     public void tearDown() {
     }
 
-//    @Test
-//    public void bfsLeastNodesFindsTheShortestRoute() {
-//        PathFinder finder = new PathFinder(graph);
-//        PathFinder finder1 = new PathFinder(graph1);
-//
-//        String expected = makeResultString(new int[]{1, 2, 4, 5});
-//        String result = (String) finder.bfs(1, 5)[0];
-//
-//        String result1 = (String) finder1.bfs(6, 1)[0];
-//        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-//
-//        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-//        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-//        assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase((String) (finder1.bfs(7, 5))[0]));
-//    }
+    @Test
+    public void bfsFindsTheShortestRoute() {
+        PathFinder finder = new PathFinder(graph);
+        PathFinder finder1 = new PathFinder(graph1);
 
-//    @Test
-//    public void aStarFindsTheShortestRoute() {
-//        PathFinder finder = new PathFinder(graph);
-//        PathFinder finder1 = new PathFinder(graph1);
-//
-//        String expected = makeResultString(new int[]{1, 2, 4, 5});
-//        String result = finder.aStar(1, 5);
-//
-//        String result1 = finder1.aStar(6, 1);
-//        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-//
-//        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-//        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-//        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
-//    }
+        int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
+        Node[] result = finder.bfs(21, 8);
+        int[] resultIds = resultArray(result);
+
+        assertArrayEquals(expected, resultIds);
+    }
+
+    private int[] resultArray(Node[] result) {
+        int count = 0;
+        for (int i = 0; i < result.length; i++) {
+            if (result[i] != null) {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        int[] ret = new int[count];
+        for (int i = 0; i < count; i++) {
+            ret[i] = result[i].getId();
+        }
+        return ret;
+    }
+
+    @Test
+    public void aStarFindsTheShortestRoute() {
+        PathFinder finder = new PathFinder(graph);
+
+        int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
+        Node[] result = finder.aStar(21, 8);
+        int[] resultIds = resultArray(result);;
+
+        assertArrayEquals(expected, resultIds);
+
+    }
 
     //doesn't seem to be very reliable. Huge variance.
     @Test
-    public void testbfsLeastNodesTime() {
-        Graph small = makeRandomGraph(1000, 5);
-        Graph bigger = makeRandomGraph(10000, 5);
-        Graph big = makeRandomGraph(100000, 5);
-        Graph huge = makeRandomGraph(1000000, 5);
-        int testRuns = 1;
+    public void testbfsTime() {
+        Controller c = new Controller();
+        int smallSize = 30;
+        int biggerSize = 100;
+        int bigSize = 150;
+        int biggestSize = 250;
+        Graph small = c.makeCustomGraph(smallSize, (c.decideNodesToRemove(smallSize, ((smallSize*smallSize)/20), 1, smallSize*smallSize)));
+        Graph bigger = c.makeCustomGraph(biggerSize, (c.decideNodesToRemove(biggerSize, ((biggerSize*biggerSize)/20), 1, biggerSize*biggerSize)));
+        Graph big = c.makeCustomGraph(bigSize, (c.decideNodesToRemove(bigSize, ((bigSize*bigSize)/20), 1, bigSize*bigSize)));
+//        Graph biggest = c.makeCustomGraph(biggestSize, (c.decideNodesToRemove(biggestSize, ((biggestSize*biggestSize)/20), 1, biggestSize*biggestSize)));
+//        Graph big = c.makeCustomGraph(300, c.decideNodesToRemove(100, (100*100)/20));
+        int testRuns = 50;
 
-        System.out.println("Elapsed time for small: " + runBfs(small, testRuns) + "ms");
-        System.out.println("Elapsed time for bigger: " + runBfs(bigger, testRuns) + "ms");
-        System.out.println("Elapsed time for big: " + runBfs(big, testRuns) + "ms");
-        System.out.println("Elapsed time for huge: " + runBfs(huge, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for small: " + runTimeTests(small, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for bigger: " + runTimeTests(bigger, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for big: " + runTimeTests(big, testRuns) + "ms");
+//        System.out.println("Elapsed time for biggest: " + runBfs(biggest, testRuns) + "ms");
     }
+    
+        //doesn't seem to be very reliable. Huge variance.
+    @Test
+    public void testAstarTime() {
+        Controller c = new Controller();
+        int smallSize = 30;
+        int biggerSize = 100;
+        int bigSize = 150;
+        int biggestSize = 250;
+        Graph small = c.makeCustomGraph(smallSize, (c.decideNodesToRemove(smallSize, ((smallSize*smallSize)/20), 1, smallSize*smallSize)));
+        Graph bigger = c.makeCustomGraph(biggerSize, (c.decideNodesToRemove(biggerSize, ((biggerSize*biggerSize)/20), 1, biggerSize*biggerSize)));
+        Graph big = c.makeCustomGraph(bigSize, (c.decideNodesToRemove(bigSize, ((bigSize*bigSize)/20), 1, bigSize*bigSize)));
+//        Graph biggest = c.makeCustomGraph(biggestSize, (c.decideNodesToRemove(biggestSize, ((biggestSize*biggestSize)/20), 1, biggestSize*biggestSize)));
+//        Graph big = c.makeCustomGraph(300, c.decideNodesToRemove(100, (100*100)/20));
+        int testRuns = 50;
 
-    private long runBfs(Graph graph, int testRuns) {
+        System.out.println("Astar Elapsed time for small: " + runTimeTests(small, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for bigger: " + runTimeTests(bigger, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for big: " + runTimeTests(big, testRuns) + "ms");
+//        System.out.println("Elapsed time for biggest: " + runBfs(biggest, testRuns) + "ms");
+    }
+    
+    private long runTimeTests(Graph graph, int testRuns) {
         long elapsedAverage;
         PathFinder finder = new PathFinder(graph);
 
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-            finder.bfs(980, 4);
+           finder.bfs(1, graph.getMaxId());
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;
@@ -123,36 +155,14 @@ public class PathFinderTest {
         return result;
     }
 
-    public void testRandomGraph() {
-        Graph test = makeRandomGraph(10, 3);
-        System.out.println(test);
-        PathFinder finder = new PathFinder(test);
+//    public void testRandomGraph() {
+//        Graph test = makeRandomGraph(10, 3);
+//        System.out.println(test);
+//        PathFinder finder = new PathFinder(test);
+//        System.out.println(finder.bfs(4, 9));
+//    }
 
 
-        System.out.println(finder.bfs(4, 9));
-    }
-
-    public Graph makeRandomGraph(int nodes, int maxNeighbours) {
-        return null;
-//        Graph random;
-//        int[] neighboursMade = new int[nodes];
-//        int neighbours[][] = new int[nodes][maxNeighbours];
-//        for (int i = 0; i < nodes; i++) {
-//            int origin = i + 1;
-//            for (int j = 0; j < maxNeighbours; j++) {
-//                int neighbour = (int) (Math.random() * nodes) + 1;
-//                if (neighboursMade[i] < maxNeighbours && neighboursMade[neighbour - 1] < maxNeighbours && neighbour - 1 != i && !isNeighbourSetAlready(neighbours[i], neighbour)) {
-//                    neighbours[i][neighboursMade[i]] = neighbour;
-//                    neighboursMade[i]++;
-//                    neighbours[neighbour - 1][neighboursMade[neighbour - 1]] = origin;
-//                    neighboursMade[neighbour - 1]++;
-//                }
-//            }
-//        }
-//        HashMap<Integer, List> cities = GraphTest.buildNeighboursHash(neighbours);
-////        random = GraphTest.makeTestGraph(cities, GraphTest.makeNodes(nodes));
-//        return random;
-    }
 
     private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour) {
         for (int i = 0; i < neighbours.length; i++) {
