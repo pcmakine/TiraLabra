@@ -25,8 +25,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -50,11 +48,11 @@ public class Window extends JFrame {
     private JTextField graphSide;
     private JPanel controlArea;
     private PaintSurface drawer;
-    private HashMap<Integer, Node> nodeMap;
+    private Node[][] nodeMatrix;
     private HashMap<Shape, Color> shapeColors;
     private ArrayList<Node> results;
     private Color noNode = new Color(255, 100, 255);
-    private int portionofNodesRemoved  = 3;
+    private int portionofNodesRemoved = 3;
 
     public Window(Controller controller) {
         this.controller = controller;
@@ -75,10 +73,9 @@ public class Window extends JFrame {
                 initdrawerValues();
                 int graphSize = getNumericValue(graphSide.getText());
                 if (graphSize != -1) {
-                    controller.createGraph(graphSize);
-                    nodeMap = controller.makeNodes(graphSize * graphSize);
+                    nodeMatrix = controller.createGraph(graphSize);
                     drawer.nodes = graphSize * graphSize;
-                    drawer.addRectangleNodes(null);
+                    drawer.addRectangleNodes();
                     repaint();
                 }
             }
@@ -116,40 +113,36 @@ public class Window extends JFrame {
 
                 int graphSize = getNumericValue(graphSide.getText());
                 if (graphSize != -1) {
-                    ArrayList remove = controller.decideNodesToRemove(graphSize, (graphSize * graphSize) / portionofNodesRemoved);
-                    controller.makeCustomGraph(graphSize, remove);
-                    nodeMap = controller.getGraph().getNodes();
+                    controller.makeRandomGraph(graphSize, (graphSize * graphSize) / 10);
+                    nodeMatrix = controller.getGraph().getNodes();
                     drawer.nodes = graphSize * graphSize;
-                    drawer.addRectangleNodes(remove);
-                    removeManyNodes(remove);
+                    drawer.addRectangleNodes();
+                   // removeManyNodes();
                     repaint();
                 }
-
-
             }
         });
     }
 
     private void initdrawerValues() {
-        nodeMap = new HashMap();
         drawer.nodeSquares = new HashMap();
         drawer.shapes = new ArrayList();
         drawer.target = null;
         drawer.origin = null;
     }
 
-    private void removeManyNodes(ArrayList<Integer> remove) {
-        for (int i = 0; i < remove.size(); i++) {
-
-            Node node = controller.getGraph().getNode(remove.get(i));
-            Shape s = drawer.shapeNodes.get(node);
-            drawer.nodeSquares.remove(s);
-            // drawer.shapes.remove(s);
-            shapeColors.remove(s);
-            shapeColors.put(s, noNode);
-            drawer.nodes--;
-        }
-    }
+//    private void removeManyNodes() {
+//        for (int i = 0; i < remove.size(); i++) {
+//
+//            Node node = controller.getGraph().getNode(remove.get(i));
+//            Shape s = drawer.shapeNodes.get(node);
+//            drawer.nodeSquares.remove(s);
+//            // drawer.shapes.remove(s);
+//            shapeColors.remove(s);
+//            shapeColors.put(s, noNode);
+//            drawer.nodes--;
+//        }
+//    }
 
     private int getNumericValue(String text) {
         int value;
@@ -313,7 +306,9 @@ public class Window extends JFrame {
             Node node = nodeSquares.get(clicked);
             controller.removeNode(node);
             nodeSquares.remove(clicked);
-            nodeMap.remove(node.getId());
+            int row = controller.getGraph().idToRow(node.getId());
+            int column = controller.getGraph().idToRow(node.getId());
+            nodeMatrix[row][column] = null;
             //  shapes.remove(clicked);
             shapeColors.remove(clicked);
             shapeColors.put(clicked, noNode);
@@ -355,34 +350,33 @@ public class Window extends JFrame {
             }
         }
 
-        public void addRectangleNodes(ArrayList<Integer> removed) {
+        public void addRectangleNodes() {
 
-            Iterator it = nodeMap.keySet().iterator();
-            while (it.hasNext()) {
-                int key = (int) it.next();
-                Node node = nodeMap.get(key);
-                int x = node.getX();
-                int y = node.getY();
+            for (int i = 0; i < nodeMatrix.length; i++) {
+                for (int j = 0; j < nodeMatrix[0].length; j++) {
+                    Node node = nodeMatrix[i][j];
 
-                Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                    if (node != null) {
 
-                if (!nodeSquares.containsKey(rect)) {
-                    shapes.add(rect);
-                    nodeSquares.put(rect, node);
-                    shapeColors.put(rect, Color.BLUE);
-                    shapeNodes.put(node, rect);
+                        int x = node.getX();
+                        int y = node.getY();
+
+                        Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+
+                        if (!nodeSquares.containsKey(rect)) {
+                            shapes.add(rect);
+                            nodeSquares.put(rect, node);
+                            shapeColors.put(rect, Color.BLUE);
+                            shapeNodes.put(node, rect);
+                        }
+                    } else {
+                        int x = j * Node.getWidth() + (Node.getWidth() * controller.getGraph().getPos());
+                        int y = i * Node.getWidth() + (Node.getHeight() * controller.getGraph().getPos());
+                        Shape r = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                        shapes.add(r);
+                        shapeColors.put(r, noNode);
+                    }
                 }
-            }
-            if (removed != null) {
-                Set<Integer> re = new HashSet(removed);
-                for (Integer i : re) {
-                    int x = ((((i - 1) % controller.getGraph().getColumns()) * Node.getWidth()) + (Node.getWidth() * controller.getGraph().getPos()));
-                    int y = ((((i - 1) / controller.getGraph().getColumns()) * Node.getHeight()) + (Node.getHeight() * controller.getGraph().getPos()));
-                    Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
-                    shapes.add(rect);
-                    shapeColors.put(rect, noNode);
-                }
-
             }
         }
 

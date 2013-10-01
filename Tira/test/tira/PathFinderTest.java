@@ -4,10 +4,6 @@
  */
 package tira;
 
-import gui.Controller;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,6 +30,7 @@ public class PathFinderTest {
     @BeforeClass
     public static void setUpClass() {
         makeRandomGraphsForTimeTests();
+
     }
 
     @AfterClass
@@ -43,7 +40,6 @@ public class PathFinderTest {
     @Before
     public void setUp() {
         graph = new Graph(5);
-        graph.makeNodes();
         graph.removeNode(graph.getNode(2));
         graph.removeNode(graph.getNode(7));
         graph.removeNode(graph.getNode(12));
@@ -98,7 +94,7 @@ public class PathFinderTest {
 
     }
 
-    //doesn't seem to be very reliable. Huge variance.
+     //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
         int testRuns = 20;
@@ -149,19 +145,43 @@ public class PathFinderTest {
     }
 
     private static void makeRandomGraphsForTimeTests() {
-        Controller c = new Controller();
-        int smallSize = 30;
-        int biggerSize = 100;
-        int bigSize = 150;
-        int biggestSize = 200;
-        small = c.makeRandomGraph(smallSize, (smallSize * smallSize) / 20, 1, smallSize * smallSize);
-        System.out.println("small made");
-        bigger = c.makeRandomGraph(biggerSize, (biggerSize * biggerSize) / 20, 1, biggerSize * biggerSize);
-        System.out.println("bigger made");
-        big = c.makeRandomGraph(bigSize, (bigSize * bigSize) / 20, 1, bigSize * bigSize);
-        System.out.println("big made");
-        biggest = c.makeRandomGraph(biggestSize, (biggestSize * biggestSize) / 20, 1, biggestSize * biggestSize);
-        System.out.println("biggest made");
+        int smallSize = 200;
+        int biggerSize = 283;
+        int bigSize = 400;
+        int biggestSize = 566;
+
+        long startTime = System.currentTimeMillis();
+        small = new Graph(smallSize, (smallSize * smallSize) / 20);
+        small.addNode(1);
+        small.addNode(smallSize*smallSize);
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = (stopTime - startTime);
+        System.out.println("small made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / 20);
+        bigger.addNode(1);
+        bigger.addNode(biggerSize*biggerSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("bigger made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        big = new Graph(bigSize, (bigSize * bigSize) / 20);
+        big.addNode(1);
+        big.addNode(bigSize*bigSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("big made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / 20);
+        biggest.addNode(1);
+        biggest.addNode(biggestSize*biggestSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("biggest made in " + elapsedTime + " ms.");
+
     }
 
     private String makeResultString(int[] route) {
@@ -178,12 +198,5 @@ public class PathFinderTest {
 //        PathFinder finder = new PathFinder(test);
 //        System.out.println(finder.bfs(4, 9));
 //    }
-    private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour) {
-        for (int i = 0; i < neighbours.length; i++) {
-            if (neighbours[i] == neighbour) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

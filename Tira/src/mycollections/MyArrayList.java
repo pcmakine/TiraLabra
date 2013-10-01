@@ -14,7 +14,7 @@ public class MyArrayList<E> {
 
     private int size;           //number of elements in the list
     private Object[] array;
-    private int inflateMultiplier;
+    private static int inflateMultiplier; //how much we increase the array's size every time it has to be increased
 
     public MyArrayList() {
         this(20);
@@ -26,7 +26,7 @@ public class MyArrayList<E> {
         }
         this.size = 0;
         this.array = new Object[initialSize];
-        this.inflateMultiplier = 3;
+        inflateMultiplier = 3;
     }
 
     public void add(E e) {

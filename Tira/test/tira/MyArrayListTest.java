@@ -39,7 +39,13 @@ public class MyArrayListTest {
 
     @Test
     public void elementsInsertedCorrectly() {
-
+        MyArrayList test = new MyArrayList();
+        test.add(5);
+        
+        MyArrayList<Node> test2 = new MyArrayList();
+        Node node = new Node(1, 2, 3);
+        test2.add(node);
+        
         int[] expected = new int[16];
         for (int i = 0; i < 16; i++) {
             expected[i] = i;

@@ -34,8 +34,8 @@ public class GraphTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    
-        @Before
+
+    @Before
     public void setUp() {
         smallGraph = new Graph(3);
     }
@@ -44,41 +44,35 @@ public class GraphTest {
     public void tearDown() {
     }
 
-    
     @Test
-    public void isVerticalOrHorizontalNeighbourWorks(){
-        Node node = new Node(1, 0, 0);
-        Node downNode = new Node(2, Node.getHeight(), 0);
-        Node rightNode = new Node(3, 0, Node.getWidth());
-        Node randomNode = new Node(4, 50, 80);
-        boolean result = smallGraph.isVerticalOrHorizontalNeighbour(node, downNode);
-        boolean result2 = smallGraph.isVerticalOrHorizontalNeighbour(node, rightNode);
-        boolean result3 = smallGraph.isVerticalOrHorizontalNeighbour(node, randomNode);
-        
-        assertEquals(true, result);
-        assertEquals(true, result2);
-        assertEquals(false, result3);
+    public void idToColumnReturnsCorrectColumn() {
+        int firstColumn = smallGraph.idToColumn(1);
+        int secondColumn = smallGraph.idToColumn(5);
+        int thirdColumn = smallGraph.idToColumn(9);
+        int thirdColumnagain = smallGraph.idToColumn(3);
+        assertEquals(firstColumn, 0);
+        assertEquals(secondColumn, 1);
+        assertEquals(thirdColumn, 2);
+        assertEquals(thirdColumnagain, 2);
     }
 
-//    Test graph:
-//     Node:          Neighbours:
-//      1               2, 4
-//      3               2, 6
-//      5               2, 4, 6, 8
-//      9               6, 8  
     @Test
-    public void neighboursMadeCorrectlyForSmallGraph() {
-        smallGraph.makeNodes();
-        int[] onesNeibs = {2, 4};
-        int[] threesNeibs = {2, 6};
-        int[] fivesNeibs = {2, 4, 6, 8};
-        int[] ninesNeibs = {6, 8};
+    public void idToRowReturnsCorrectColumn() {
+        int firstRow = smallGraph.idToRow(1);
+        int secondRow = smallGraph.idToColumn(5);
+        int thirdRow = smallGraph.idToRow(9);
+        int thirdRowagain = smallGraph.idToRow(7);
+        assertEquals(firstRow, 0);
+        assertEquals(secondRow, 1);
+        assertEquals(thirdRow, 2);
+        assertEquals(thirdRowagain, 2);
+    }
 
-        ArrayList<Node> nodeoneNeighbours = smallGraph.getNode(1).getNeighbours();
-        assertArrayEquals(onesNeibs, nodeListToIdArray(nodeoneNeighbours));
-        assertArrayEquals(threesNeibs, nodeListToIdArray(smallGraph.getNode(3).getNeighbours()));
-        assertArrayEquals(fivesNeibs, nodeListToIdArray(smallGraph.getNode(5).getNeighbours()));
-        assertArrayEquals(ninesNeibs, nodeListToIdArray(smallGraph.getNode(9).getNeighbours()));
+    @Test
+    public void getVerticalAndHorizontalNeighboursWorks() {
+        int[] firstNeighbours = nodeListToIdArray(smallGraph.getVerticalAndHorizontalNeighbours(1));
+        int[] firstExpected = {2, 4};
+        assertArrayEquals(firstExpected, firstNeighbours);
     }
 
     private int[] nodeListToIdArray(List<Node> list) {
@@ -88,5 +82,4 @@ public class GraphTest {
         }
         return array;
     }
-
 }
