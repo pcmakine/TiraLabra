@@ -8,8 +8,6 @@ package tira;
  *
  * @author pcmakine
  */
-import java.awt.Point;
-import java.util.*;
 
 public class Node implements Comparable<Node> {
 

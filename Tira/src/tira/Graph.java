@@ -54,11 +54,11 @@ public class Graph {
             ret.add(nodeMatrix[idToRow(left)][idToColumn(left)]);
         }
 
-        if (idToColumn(node) != this.COLUMNS - 1 && right < this.COLUMNS * this.ROWS && nodeMatrix[idToRow(right)][idToColumn(right)] != null) {
+        if (idToColumn(node) != this.COLUMNS - 1 && right <= this.COLUMNS * this.ROWS && nodeMatrix[idToRow(right)][idToColumn(right)] != null) {
             ret.add(nodeMatrix[idToRow(right)][idToColumn(right)]);
         }
 
-        if (below > 0 && below < this.COLUMNS * this.ROWS && nodeMatrix[idToRow(below)][idToColumn(below)] != null) {
+        if (below > 0 && below <= this.COLUMNS * this.ROWS && nodeMatrix[idToRow(below)][idToColumn(below)] != null) {
             ret.add(nodeMatrix[idToRow(below)][idToColumn(below)]);
         }
 

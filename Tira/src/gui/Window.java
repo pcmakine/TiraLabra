@@ -48,7 +48,6 @@ public class Window extends JFrame {
     private JTextField graphSide;
     private JPanel controlArea;
     private PaintSurface drawer;
-    private Node[][] nodeMatrix;
     private HashMap<Shape, Color> shapeColors;
     private ArrayList<Node> results;
     private Color noNode = new Color(255, 100, 255);
@@ -73,7 +72,7 @@ public class Window extends JFrame {
                 initdrawerValues();
                 int graphSize = getNumericValue(graphSide.getText());
                 if (graphSize != -1) {
-                    nodeMatrix = controller.createGraph(graphSize);
+                    controller.createGraph(graphSize);
                     drawer.nodes = graphSize * graphSize;
                     drawer.addRectangleNodes();
                     repaint();
@@ -113,8 +112,7 @@ public class Window extends JFrame {
 
                 int graphSize = getNumericValue(graphSide.getText());
                 if (graphSize != -1) {
-                    controller.makeRandomGraph(graphSize, (graphSize * graphSize) / 10);
-                    nodeMatrix = controller.getGraph().getNodes();
+                    controller.makeRandomGraph(graphSize, (graphSize * graphSize) / 5);
                     drawer.nodes = graphSize * graphSize;
                     drawer.addRectangleNodes();
                    // removeManyNodes();
@@ -304,11 +302,11 @@ public class Window extends JFrame {
 
         private void removeNode(Shape clicked) {
             Node node = nodeSquares.get(clicked);
+            int id = node.getId();
             controller.removeNode(node);
             nodeSquares.remove(clicked);
-            int row = controller.getGraph().idToRow(node.getId());
-            int column = controller.getGraph().idToRow(node.getId());
-            nodeMatrix[row][column] = null;
+            int row = controller.getGraph().idToRow(id);
+            int column = controller.getGraph().idToColumn(id);
             //  shapes.remove(clicked);
             shapeColors.remove(clicked);
             shapeColors.put(clicked, noNode);
@@ -351,10 +349,11 @@ public class Window extends JFrame {
         }
 
         public void addRectangleNodes() {
-
-            for (int i = 0; i < nodeMatrix.length; i++) {
-                for (int j = 0; j < nodeMatrix[0].length; j++) {
-                    Node node = nodeMatrix[i][j];
+            Node[][] n = controller.getGraph().getNodes();
+            
+            for (int i = 0; i < n.length; i++) {
+                for (int j = 0; j < n[0].length; j++) {
+                    Node node = n[i][j];
 
                     if (node != null) {
 
