@@ -71,21 +71,21 @@ public class PathFinderTest {
         assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase((String)(finder1.bfs(7, 5))[0]));
     }
     
-        @Test
-        public void aStarFindsTheShortestRoute() {
-        PathFinder finder = new PathFinder(graph);
-        PathFinder finder1 = new PathFinder(graph1);
-
-        String expected = makeResultString(new int[]{1, 2, 4, 5});
-        String result = finder.aStar(1, 5);
-
-        String result1 = finder1.aStar(6, 1);
-        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-
-        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
-    }
+//        @Test
+//        public void aStarFindsTheShortestRoute() {
+//        PathFinder finder = new PathFinder(graph);
+//        PathFinder finder1 = new PathFinder(graph1);
+//
+//        String expected = makeResultString(new int[]{1, 2, 4, 5});
+//        String result = finder.aStar(1, 5);
+//
+//        String result1 = finder1.aStar(6, 1);
+//        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
+//
+//        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
+//        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
+//        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
+//    }
 
     //doesn't seem to be very reliable. Huge variance.
     @Test
