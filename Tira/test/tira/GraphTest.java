@@ -11,89 +11,75 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  *
  * @author pcmakine
  */
-public class GraphTest extends TestCase {
-    private Graph graph;
+public class GraphTest {
 
-    public GraphTest(String testName) {
-        super(testName);
-        
+    private Graph smallGraph;
+
+    public GraphTest() {
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        
-        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};   
-        HashMap<Integer, List> cities = buildNeighboursHash(neighboursarray);
-        graph = makeTestGraph(cities, makeNodes(neighboursarray.length));
+    @BeforeClass
+    public static void setUpClass() {
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @AfterClass
+    public static void tearDownClass() {
     }
 
-    //Test graph:
-    // Node:          Neighbours:
-    //  1               4
-    //  2               3, 1
-    //  3               2
-    //  4               
+    @Before
+    public void setUp() {
+        smallGraph = new Graph(3);
+    }
+
+    @After
+    public void tearDown() {
+    }
+
     @Test
-    public void testConstructorCreatesNodesAndSetsNeighboursCorrectly() {
-        int[][] neighboursarray = new int[][]{{4}, {3, 1}, {2}, {}};      
-        HashMap<Integer, List> neighbours = buildNeighboursHash(neighboursarray);
-        Graph testGraph = makeTestGraph(neighbours, makeNodes(neighboursarray.length));
-
-        System.out.println(testGraph);
-        
-        ArrayList<Node> nodeNeighbours = testGraph.getNode(1).getNeighbours();
-        assertArrayEquals(neighboursarray[0], nodeListToIdArray(nodeNeighbours));
+    public void idToColumnReturnsCorrectColumn() {
+        int firstColumn = smallGraph.idToColumn(1);
+        int secondColumn = smallGraph.idToColumn(5);
+        int thirdColumn = smallGraph.idToColumn(9);
+        int thirdColumnagain = smallGraph.idToColumn(3);
+        assertEquals(firstColumn, 0);
+        assertEquals(secondColumn, 1);
+        assertEquals(thirdColumn, 2);
+        assertEquals(thirdColumnagain, 2);
     }
-    
-    private int[] nodeListToIdArray(List<Node> list){
+
+    @Test
+    public void idToRowReturnsCorrectColumn() {
+        int firstRow = smallGraph.idToRow(1);
+        int secondRow = smallGraph.idToColumn(5);
+        int thirdRow = smallGraph.idToRow(9);
+        int thirdRowagain = smallGraph.idToRow(7);
+        assertEquals(firstRow, 0);
+        assertEquals(secondRow, 1);
+        assertEquals(thirdRow, 2);
+        assertEquals(thirdRowagain, 2);
+    }
+
+    @Test
+    public void getVerticalAndHorizontalNeighboursWorks() {
+        int[] firstNeighbours = nodeListToIdArray(smallGraph.getVerticalAndHorizontalNeighbours(1));
+        int[] firstExpected = {2, 4};
+        assertArrayEquals(firstExpected, firstNeighbours);
+    }
+
+    private int[] nodeListToIdArray(List<Node> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i).getId();
         }
         return array;
-    }
-
-    public static Graph makeTestGraph(HashMap neighbours, HashMap nodes) {
-        Graph graph = new Graph(neighbours, nodes);
-        return graph;
-    }
-    
-    public static HashMap makeNodes(int numberofNodes){
-        HashMap<Integer, Node> nodes = new HashMap();
-        
-        for (int i = 0; i < numberofNodes; i++) {
-            int id = i+1;
-            int x = (int) (Math.random()*400);
-            int y = (int) (Math.random()*400);
-            nodes.put(id, new Node(id, x, y));           //id, x, y
-        }
-        
-        return nodes;
-    }
-
-    public static HashMap<Integer, List> buildNeighboursHash(int[][] neighboursarray) {
-        HashMap<Integer, List> cities = new HashMap();
-        for (int i = 0; i < neighboursarray.length; i++) {
-            ArrayList neighbours = new ArrayList();
-            for (int j = 0; j < neighboursarray[i].length; j++) {
-                int neighbour = neighboursarray[i][j];
-                if (neighbour != 0) {
-                    neighbours.add(neighboursarray[i][j]);
-                }           
-            }
-            cities.put(i + 1, neighbours);         
-        }
-        return cities;
     }
 }

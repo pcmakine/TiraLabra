@@ -4,8 +4,6 @@
  */
 package tira;
 
-import java.util.HashMap;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,34 +19,34 @@ public class PathFinderTest {
 
     private Graph graph;
     private Graph graph1;
+    private static Graph small;
+    private static Graph bigger;
+    private static Graph big;
+    private static Graph biggest;
 
     public PathFinderTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+        makeRandomGraphsForTimeTests();
+
     }
 
     @AfterClass
     public static void tearDownClass() {
     }
 
-    //graph:
-    // Node:          Neighbours:
-    //  1               2, 3
-    //  2               1, 4
-    //  3               1, 4, 6
-    //  4               2, 3, 5, 6
-    //  5               4
-    //  6               4
     @Before
     public void setUp() {
-        int[][] neighboursarray = new int[][]{{2, 3}, {1, 4}, {1, 4}, {2, 3, 5, 6}, {4}, {4}};
-        HashMap<Integer, List> neighbours = GraphTest.buildNeighboursHash(neighboursarray);
-        graph = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(neighboursarray.length));
+        graph = new Graph(5);
+        graph.removeNode(graph.getNode(2));
+        graph.removeNode(graph.getNode(7));
+        graph.removeNode(graph.getNode(12));
+        graph.removeNode(graph.getNode(13));
+        graph.removeNode(graph.getNode(14));
+        graph.removeNode(graph.getNode(17));
 
-        neighbours = GraphTest.buildNeighboursHash(new int[][]{{2, 5}, {1, 3}, {2, 4, 7}, {3, 5, 6}, {1, 4}, {4, 8}, {3, 8}, {6, 7}});
-        graph1 = GraphTest.makeTestGraph(neighbours, GraphTest.makeNodes(8));
     }
 
     @After
@@ -60,59 +58,118 @@ public class PathFinderTest {
         PathFinder finder = new PathFinder(graph);
         PathFinder finder1 = new PathFinder(graph1);
 
-        String expected = makeResultString(new int[]{1, 2, 4, 5});
-        String result = (String) finder.bfs(1, 5)[0];
+        int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
+        Node[] result = finder.bfs(21, 8);
+        int[] resultIds = resultArray(result);
 
-        String result1 = (String) finder1.bfs(6, 1)[0];
-        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-
-        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-        assertEquals(true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase((String)(finder1.bfs(7, 5))[0]));
+        assertArrayEquals(expected, resultIds);
     }
-    
-//        @Test
-//        public void aStarFindsTheShortestRoute() {
-//        PathFinder finder = new PathFinder(graph);
-//        PathFinder finder1 = new PathFinder(graph1);
-//
-//        String expected = makeResultString(new int[]{1, 2, 4, 5});
-//        String result = finder.aStar(1, 5);
-//
-//        String result1 = finder1.aStar(6, 1);
-//        String expected1 = makeResultString(new int[]{6, 4, 5, 1});
-//
-//        assertEquals("Expected string: " + expected + ", Result: " + result, true, expected.equalsIgnoreCase(result));
-//        assertEquals("Expected string: " + expected1 + ", Result: " + result1, true, expected1.equalsIgnoreCase(result1));
-//        assertEquals("Expected string: " + finder1.bfs(7, 5)[0] + ", Result: " + finder1.aStar(7, 5), true, makeResultString(new int[]{7, 3, 4, 5}).equalsIgnoreCase(finder1.aStar(7, 5)));
-//    }
 
-    //doesn't seem to be very reliable. Huge variance.
+    private int[] resultArray(Node[] result) {
+        int count = 0;
+        for (int i = 0; i < result.length; i++) {
+            if (result[i] != null) {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        int[] ret = new int[count];
+        for (int i = 0; i < count; i++) {
+            ret[i] = result[i].getId();
+        }
+        return ret;
+    }
+
+     //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
-        Graph small = makeRandomUndirectedGraph(1000, 5);
-        Graph bigger = makeRandomUndirectedGraph(10000, 5);
-        Graph big = makeRandomUndirectedGraph(100000, 5);
-        Graph huge = makeRandomUndirectedGraph(1000000, 5);
-        int testRuns = 1;
-        
-       System.out.println("Elapsed time for small: " + runBfs(small, testRuns) + "ms");
-       System.out.println("Elapsed time for bigger: " + runBfs(bigger, testRuns) + "ms");
-       System.out.println("Elapsed time for big: " + runBfs(big, testRuns) + "ms");
-       System.out.println("Elapsed time for huge: " + runBfs(huge, testRuns) + "ms");
+        int testRuns = 20;
+
+
+        System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
+        System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
+
+        System.out.println("BFS Elapsed time for biggest: " + runBFSTimeTests(biggest, testRuns) + "ms");
     }
 
-    private long runBfs(Graph graph, int testRuns) {
+    private long runBFSTimeTests(Graph graph, int testRuns) {
         long elapsedAverage;
         PathFinder finder = new PathFinder(graph);
-        
+
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
-            finder.bfs(980, 4);
+            finder.bfs(1, graph.getMaxId());
         }
         long stopTime = System.currentTimeMillis();
         elapsedAverage = (stopTime - startTime) / testRuns;
         return elapsedAverage;
+    }
+
+    //doesn't seem to be very reliable. Huge variance.
+    @Test
+    public void testAstarTime() {
+        int testRuns = 20;
+
+        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms");
+    }
+
+    private long runAstarTimeTests(Graph graph, int testRuns) {
+        long elapsedAverage;
+        PathFinder finder = new PathFinder(graph);
+
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < testRuns; i++) {
+            finder.aStar(1, graph.getMaxId());
+        }
+        long stopTime = System.currentTimeMillis();
+        elapsedAverage = (stopTime - startTime) / testRuns;
+        return elapsedAverage;
+    }
+
+    private static void makeRandomGraphsForTimeTests() {
+        int smallSize = 200;
+        int biggerSize = 283;
+        int bigSize = 400;
+        int biggestSize = 566;
+
+        long startTime = System.currentTimeMillis();
+        small = new Graph(smallSize, (smallSize * smallSize) / 20);
+        small.addNode(1);
+        small.addNode(smallSize*smallSize);
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = (stopTime - startTime);
+        System.out.println("small made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / 20);
+        bigger.addNode(1);
+        bigger.addNode(biggerSize*biggerSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("bigger made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        big = new Graph(bigSize, (bigSize * bigSize) / 20);
+        big.addNode(1);
+        big.addNode(bigSize*bigSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("big made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / 20);
+        biggest.addNode(1);
+        biggest.addNode(biggestSize*biggestSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        System.out.println("biggest made in " + elapsedTime + " ms.");
+
     }
 
     private String makeResultString(int[] route) {
@@ -123,43 +180,11 @@ public class PathFinderTest {
         return result;
     }
 
-    public void testRandomGraph() {
-        Graph test = makeRandomUndirectedGraph(10, 3);
-        System.out.println(test);
-        PathFinder finder = new PathFinder(test);
+//    public void testRandomGraph() {
+//        Graph test = makeRandomGraph(10, 3);
+//        System.out.println(test);
+//        PathFinder finder = new PathFinder(test);
+//        System.out.println(finder.bfs(4, 9));
+//    }
 
-
-        System.out.println(finder.bfs(4, 9));
-    }
-
-    public Graph makeRandomUndirectedGraph(int nodes, int maxNeighbours) {
-        Graph random;
-        int[] neighboursMade = new int[nodes];
-        int neighbours[][] = new int[nodes][maxNeighbours];
-        for (int i = 0; i < nodes; i++) {
-            int origin = i + 1;
-            for (int j = 0; j < maxNeighbours; j++) {
-                int neighbour = (int) (Math.random() * nodes) + 1;
-                if (neighboursMade[i] < maxNeighbours && neighboursMade[neighbour - 1] < maxNeighbours && neighbour - 1 != i && !isNeighbourSetAlready(neighbours[i], neighbour)) {
-                    neighbours[i][neighboursMade[i]] = neighbour;
-                    neighboursMade[i]++;
-                    neighbours[neighbour - 1][neighboursMade[neighbour - 1]] = origin;
-                    neighboursMade[neighbour - 1]++;
-                }
-            }
-        }
-        HashMap<Integer, List> cities = GraphTest.buildNeighboursHash(neighbours);
-        random = GraphTest.makeTestGraph(cities, GraphTest.makeNodes(nodes));
-        return random;
-    }
-
-    private static boolean isNeighbourSetAlready(int[] neighbours, int neighbour) {
-        for (int i = 0; i < neighbours.length; i++) {
-            if (neighbours[i] == neighbour) {
-                return true;
-            }
-        }
-        return false;
-
-    }
 }

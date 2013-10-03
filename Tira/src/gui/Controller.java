@@ -4,6 +4,8 @@
  */
 package gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import tira.*;
 
 /**
@@ -15,33 +17,34 @@ public class Controller {
     private Graph graph;
     private PathFinder finder;
 
-    public Controller(){
-        createGraph();
-    }
-    
-    public void createGraph() {
-        this.graph = new Graph();
-
+    public Controller() {
     }
 
-    public Node createNode(int id, int x, int y) {
-        Node node = new Node(id, x, y);
-        graph.addNode(node);
-        return node;
+    public Node[][] createGraph(int size) {
+        this.graph = new Graph(size);
+        return graph.getNodes();
     }
-    
-    public void setNeighbours(Node[] neighbours){
-        neighbours[0].setNeighbour(neighbours[1]);
-        neighbours[1].setNeighbour(neighbours[0]);
+
+    public void makeRandomGraph(int size, int walls){
+        graph = new Graph(size, walls);
+    }
+
+    public void removeNode(Node node) {
+        graph.removeNode(node);
+
     }
 
     public Node[] getBfsResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
-        return (Node[]) finder.bfs(startId, targetId)[1];
+        return finder.bfs(startId, targetId);
     }
 
-    public String getAstarResult(int startId, int targetId) {
+    public Node[] getAstarResult(int startId, int targetId) {
         this.finder = new PathFinder(graph);
         return finder.aStar(startId, targetId);
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 }

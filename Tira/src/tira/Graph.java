@@ -4,96 +4,164 @@
  */
 package tira;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  *
  * @author pcmakine
  */
-
 public class Graph {
 
-    private HashMap<Integer, Node> nodes;
-    private int numberofNodes;
-    
-    public Graph(){
-        this.nodes = new HashMap();
+    private int ROWS;
+    private int COLUMNS;
+    private int graphPos;
+    private int maxId;
+    private boolean[][] nodeArray;
+    private Node[][] nodeMatrix;
+
+    public Graph(int size) {
+        init(size);
+        makeNodeMatrix();
     }
 
-    public Graph(HashMap<Integer, List> neighbours, HashMap nodes) {
-        this.nodes = new HashMap();
-        numberofNodes = nodes.size();
-        this.nodes = nodes;
-        HashMap savedCities = (HashMap) neighbours.clone();
-        setNeighbours(savedCities);
+    public Graph(int size, int walls) {
+        init(size);
+        if (walls < size * size) {
+            makeRandomMatrix(walls);
+        }
     }
 
-    private void setNeighbours(HashMap<Integer, List> cities) {
-        HashMap nodesClone = (HashMap) nodes.clone();
-        Iterator it = nodesClone.keySet().iterator();
-        while (it.hasNext()) {
-            int key = (int) it.next();
+    private void init(int size) {
+//        this.nodes = new HashMap();
+        this.ROWS = size;
+        this.COLUMNS = size;
+        graphPos = 5;
+        this.maxId = size * size;
 
-            Node node = nodes.get(key);
+    }
 
-            List neighbours = cities.get(key);
-      
-            for (int i = 0; i < neighbours.size(); i++) {
-                int neig = (int) neighbours.get(i);
-                Node neighbour = nodes.get(neig);
-                node.setNeighbour(neighbour);
+    public ArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
+        ArrayList ret = new ArrayList();
+        int top = node - COLUMNS;
+        int below = node + COLUMNS;
+        int left = node - 1;
+        int right = node + 1;
+
+        if (top > 0 && nodeMatrix[idToRow(top)][idToColumn(top)] != null) {
+            ret.add(nodeMatrix[idToRow(top)][idToColumn(top)]);
+        }
+        if (idToColumn(node) != 0 && nodeMatrix[idToRow(left)][idToColumn(left)] != null) {
+            ret.add(nodeMatrix[idToRow(left)][idToColumn(left)]);
+        }
+
+        if (idToColumn(node) != this.COLUMNS - 1 && right <= this.COLUMNS * this.ROWS && nodeMatrix[idToRow(right)][idToColumn(right)] != null) {
+            ret.add(nodeMatrix[idToRow(right)][idToColumn(right)]);
+        }
+
+        if (below > 0 && below <= this.COLUMNS * this.ROWS && nodeMatrix[idToRow(below)][idToColumn(below)] != null) {
+            ret.add(nodeMatrix[idToRow(below)][idToColumn(below)]);
+        }
+
+        return ret;
+    }
+
+    public int idToColumn(int id) {
+        return ((id - 1) % this.COLUMNS);
+    }
+
+    public int idToRow(int id) {
+        return ((id - 1) / this.COLUMNS);
+    }
+
+    public void makeRandomMatrix(int walls) {
+        this.nodeMatrix = new Node[ROWS][COLUMNS];
+        int id = 1;
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (Math.random() > (1.0 * walls / (ROWS * COLUMNS))) {
+                    addNode(id);
+                } else {
+                    nodeMatrix[i][j] = null;
+                }
+                id++;
             }
-
-            it.remove(); // avoids a ConcurrentModificationException
         }
     }
-    
-    public void addNode(Node node){
-        nodes.put(node.getId(), node);
-        numberofNodes++;
-    }
-    
-    public void clearAllNodes(){
-        nodes.clear();
-    }
-    
-    public Node getNode(int id){
-        return nodes.get(id);
-    }
 
-    public Map<Integer, Node> getNodes() {
-        return nodes;
-    }
-    
-        public int getNumberofNodes() {
-        return numberofNodes;
-    }
-
-    @Override
-    public String toString() {
-        String print = "";
-        HashMap nodesClone = (HashMap) nodes.clone();
-        Iterator it = nodesClone.keySet().iterator();
-        while (it.hasNext()) {
-            int key = (int) it.next();
-            Node value = nodes.get(key);
-            print = print + "Node: " + key + ", Neighbours: ";
-            List neighbourList = value.getNeighbours();
-            int i = 0;      
-            while(i < neighbourList.size()){
-                Node neighbour = (Node) neighbourList.get(i);
-                print = print + neighbour.getId() + ", ";
-                i++;
-            }    
-            
-            print = print + "\n";
-            it.remove(); // avoids a ConcurrentModificationException
+    public void makeNodeMatrix() {
+        this.nodeMatrix = new Node[ROWS][COLUMNS];
+        int id = 1;
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                addNode(id);
+                id++;
+            }
         }
-
-        return print;
     }
-    
+
+    public void addNode(int id) {
+        int x = (((id - 1) % getColumns() * Node.getWidth()) + graphPos * Node.getWidth());
+        int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight() + graphPos * Node.getHeight());
+        nodeMatrix[idToRow(id)][idToColumn(id)] = new Node(id, x, y);
+    }
+
+    public void removeNode(Node node) {
+        int id = node.getId();
+        nodeMatrix[idToRow(id)][idToColumn(id)] = null;
+    }
+
+    public void clearAllNodes() {
+        nodeMatrix = null;
+    }
+
+    public Node getNode(int id) {
+        return nodeMatrix[idToRow(id)][idToColumn(id)];
+    }
+
+    public Node[][] getNodes() {
+        return nodeMatrix;
+    }
+
+    public int getNumberofNodes() {
+        return (ROWS * COLUMNS);
+    }
+
+    public int getRows() {
+        return ROWS;
+    }
+
+    public int getColumns() {
+        return COLUMNS;
+    }
+
+    public int getPos() {
+        return graphPos;
+    }
+
+    public int getMaxId() {
+        return maxId;
+    }
+//    @Override
+//    public String toString() {
+//        String print = "";
+//        HashMap nodesClone = (HashMap) nodes.clone();
+//        Iterator it = nodesClone.keySet().iterator();
+//        while (it.hasNext()) {
+//            int key = (int) it.next();
+//            Node value = nodes.get(key);
+//            print = print + "Node: " + key + ", Neighbours: ";
+//            List neighbourList = value.getNeighbours();
+//            int i = 0;
+//            while (i < neighbourList.size()) {
+//                Node neighbour = (Node) neighbourList.get(i);
+//                print = print + neighbour.getId() + ", ";
+//                i++;
+//            }
+//
+//            print = print + "\n";
+//            it.remove(); // avoids a ConcurrentModificationException
+//        }
+//
+//        return print;
+//    }
 }
