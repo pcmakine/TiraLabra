@@ -39,7 +39,7 @@ public class MyPriorityQueueTest {
 
      @Test
      public void addWorksOnEmptyqueue() {
-         MyPriorityQueue q = new MyPriorityQueue();
+         MyPriorityQueue<Integer> q = new MyPriorityQueue();
          
          q.add(1);
          q.add(0);
@@ -47,9 +47,8 @@ public class MyPriorityQueueTest {
          q.add(5);
          q.add(-2);
          
-         q.add(new Node (0,0,0));
          
-         int min = (int) q.poll();
+         int min = q.poll();
          
          assertEquals(-2, min);
      }

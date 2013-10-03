@@ -5,10 +5,7 @@
 package tira;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -128,15 +125,21 @@ public class PathFinder {
 
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
-
+            
             int heuristics = getManhattanHeuristics(neighbour, target);
             neighbour.setHeuristics((int) heuristics);
             if (neighbour.getDist() > node.getDist() + 1) {
                 neighbour.setDist(node.getDist() + 1);
+                updatePriority(neighbour, queue);
                 prev[neighbour.getId() - 1] = node.getId();
             }
             queue.add(neighbour);
         }
+    }
+    
+    private void updatePriority(Node node, PriorityQueue queue){
+        queue.remove(node);
+        queue.add(node);
     }
 
     //Returns the euclidian distance of two nodes

@@ -82,12 +82,22 @@ public class PathFinderTest {
         return ret;
     }
 
+    @Test
+    public void aStarFindsTheShortestRoute() {
+        PathFinder finder = new PathFinder(graph);
+
+        int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
+        Node[] result = finder.aStar(21, 8);
+        int[] resultIds = resultArray(result);;
+
+        assertArrayEquals(expected, resultIds);
+    }
+
+
      //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
         int testRuns = 20;
-
-
         System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
         System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
         System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
@@ -98,7 +108,6 @@ public class PathFinderTest {
     private long runBFSTimeTests(Graph graph, int testRuns) {
         long elapsedAverage;
         PathFinder finder = new PathFinder(graph);
-
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
             finder.bfs(1, graph.getMaxId());
@@ -179,12 +188,4 @@ public class PathFinderTest {
         }
         return result;
     }
-
-//    public void testRandomGraph() {
-//        Graph test = makeRandomGraph(10, 3);
-//        System.out.println(test);
-//        PathFinder finder = new PathFinder(test);
-//        System.out.println(finder.bfs(4, 9));
-//    }
-
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author Pete
  */
-public class MyPriorityQueue<E extends Comparable<? super E>> {
+public class MyPriorityQueue<E extends Comparable<E>> {
 
     private ArrayList<E> elements;
 
