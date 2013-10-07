@@ -82,7 +82,7 @@ public class MyArrayList<E> {
         return this.size;
     }
 
-    public Object get(int index) {
-        return array[index];
+    public E get(int index) {
+        return (E) array[index];
     }
 }

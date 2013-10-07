@@ -52,7 +52,7 @@ public class PathFinderTest {
     @After
     public void tearDown() {
     }
-
+    
     @Test
     public void bfsFindsTheShortestRoute() {
         PathFinder finder = new PathFinder(graph);
@@ -93,11 +93,25 @@ public class PathFinderTest {
         assertArrayEquals(expected, resultIds);
     }
 
+    @Test
+    public void aStarVisitsCorrectNodesNoWalls(){
+        Graph test = new Graph(4);
+        PathFinder finder = new PathFinder(test);
+        
+        finder.aStar(13, 3);
+        boolean[][] expected = {{true, true, true, false}, 
+            {true, false, false, false},
+            {true, false, false, false}, 
+            {true, false, false, false}};
+        boolean[][] visited = finder.getClosed();
+        
+        assertArrayEquals(expected, visited);
+    }
+    
 
-     //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testbfsTime() {
-        int testRuns = 20;
+        int testRuns = 50;
         System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
         System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
         System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
@@ -120,7 +134,7 @@ public class PathFinderTest {
     //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testAstarTime() {
-        int testRuns = 20;
+        int testRuns = 50;
 
         System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms");
         System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms");
@@ -146,9 +160,42 @@ public class PathFinderTest {
         int biggerSize = 283;
         int bigSize = 400;
         int biggestSize = 566;
+        int wallsPortion = 10;
+        
+//                long startTime = System.currentTimeMillis();
+//        small = new Graph(smallSize);
+//        small.addNode(1);
+//        small.addNode(smallSize*smallSize);
+//        long stopTime = System.currentTimeMillis();
+//        long elapsedTime = (stopTime - startTime);
+//        System.out.println("small made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        bigger = new Graph(biggerSize);
+//        bigger.addNode(1);
+//        bigger.addNode(biggerSize*biggerSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("bigger made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        big = new Graph(bigSize);
+//        big.addNode(1);
+//        big.addNode(bigSize*bigSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("big made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        biggest = new Graph(biggestSize);
+//        biggest.addNode(1);
+//        biggest.addNode(biggestSize*biggestSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("biggest made in " + elapsedTime + " ms.");
 
         long startTime = System.currentTimeMillis();
-        small = new Graph(smallSize, (smallSize * smallSize) / 20);
+        small = new Graph(smallSize, (smallSize * smallSize) / wallsPortion);
         small.addNode(1);
         small.addNode(smallSize*smallSize);
         long stopTime = System.currentTimeMillis();
@@ -156,7 +203,7 @@ public class PathFinderTest {
         System.out.println("small made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / 20);
+        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / wallsPortion);
         bigger.addNode(1);
         bigger.addNode(biggerSize*biggerSize);
         stopTime = System.currentTimeMillis();
@@ -164,7 +211,7 @@ public class PathFinderTest {
         System.out.println("bigger made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        big = new Graph(bigSize, (bigSize * bigSize) / 20);
+        big = new Graph(bigSize, (bigSize * bigSize) / wallsPortion);
         big.addNode(1);
         big.addNode(bigSize*bigSize);
         stopTime = System.currentTimeMillis();
@@ -172,20 +219,12 @@ public class PathFinderTest {
         System.out.println("big made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / 20);
+        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / wallsPortion);
         biggest.addNode(1);
         biggest.addNode(biggestSize*biggestSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
         System.out.println("biggest made in " + elapsedTime + " ms.");
 
-    }
-
-    private String makeResultString(int[] route) {
-        String result = "";
-        for (int i = 0; i < route.length; i++) {
-            result = result + "Node: " + route[i] + "\n";
-        }
-        return result;
     }
 }

@@ -54,7 +54,16 @@ public class MyArrayListTest {
         for (int i = 0; i < 16; i++) {
             list.add(i);
         }
-
         assertArrayEquals(expected, list.toIntArray());
+    }
+    
+    @Test
+    public void elementsReturnedCorrectly(){
+        MyArrayList list = new MyArrayList();
+        list.add(2);
+        list.add(4);
+        
+        int four = (int) list.get(1);
+        assertEquals(4, four);
     }
 }

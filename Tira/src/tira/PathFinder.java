@@ -16,7 +16,8 @@ import java.util.Stack;
 //http://www.policyalmanac.org/games/aStarTutorial.htm
 public class PathFinder {
 
-    Graph graph;
+    private Graph graph;
+    private boolean closed[][];
 
     public PathFinder(Graph graph) {
         this.graph = graph;
@@ -24,7 +25,7 @@ public class PathFinder {
 
     public Node[] bfs(int startId, int goalId) {
         LinkedHashMap<Integer, Node> open = new LinkedHashMap();
-        boolean[][] closed = new boolean[graph.getRows()][graph.getColumns()];
+        closed = new boolean[graph.getRows()][graph.getColumns()];
         Node start = graph.getNode(startId);
         Node goal = graph.getNode(goalId);
 
@@ -84,7 +85,7 @@ public class PathFinder {
     }
     public Node[] aStar(int startId, int goalId) {
         PriorityQueue<Node> open = new PriorityQueue();
-        boolean[][] closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
+        closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
         int[] prev = new int[graph.getNumberofNodes()];
         int prevId = -1;
 
@@ -122,7 +123,6 @@ public class PathFinder {
 
     private void addForAstar(Node node, PriorityQueue queue, int[] prev, Node target, boolean[][] closed) {
         ArrayList<Node> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
-
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             
@@ -133,7 +133,6 @@ public class PathFinder {
                 updatePriority(neighbour, queue);
                 prev[neighbour.getId() - 1] = node.getId();
             }
-            queue.add(neighbour);
         }
     }
     
@@ -142,15 +141,15 @@ public class PathFinder {
         queue.add(node);
     }
 
-    //Returns the euclidian distance of two nodes
-    private double getHeuristics(Node start, Node target) {
-        double a = Math.abs(start.getX() - target.getX());
-        double b = Math.abs(start.getY() - target.getY());
-
-        double distance = Math.sqrt((a * a) + (b * b));
-
-        return distance / 20;
-    }
+//    //Returns the euclidian distance of two nodes
+//    private double getHeuristics(Node start, Node target) {
+//        double a = Math.abs(start.getX() - target.getX());
+//        double b = Math.abs(start.getY() - target.getY());
+//
+//        double distance = Math.sqrt((a * a) + (b * b));
+//
+//        return distance / 20;
+//    }
 
     private int getManhattanHeuristics(Node start, Node target) {
         int startrow = (start.getId() - 1) / graph.getColumns();
@@ -161,5 +160,9 @@ public class PathFinder {
         int distance = Math.abs(startrow - targetrow) + Math.abs(startcolumn - targetcolumn);
 
         return distance;
+    }
+    
+    public boolean[][] getClosed(){
+        return closed;
     }
 }

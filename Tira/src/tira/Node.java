@@ -72,6 +72,12 @@ public class Node implements Comparable<Node> {
         if (this.heuristics + this.dist < node.heuristics + node.dist) {
             return -1;
         }
+        if((this.heuristics + this.dist) == (node.heuristics + node.dist) && this.dist > node.dist){
+            return -1;
+        }
+        if((this.heuristics + this.dist) == (node.heuristics + node.dist) && this.dist < node.dist){
+            return 1;
+        }
         return 0;
     }
 }
