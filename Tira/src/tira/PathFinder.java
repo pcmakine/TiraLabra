@@ -5,7 +5,8 @@
 package tira;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -24,39 +25,40 @@ public class PathFinder {
     }
 
     public Node[] bfs(int startId, int goalId) {
-        LinkedHashMap<Integer, Node> open = new LinkedHashMap();
+        LinkedList<Integer> openList = new LinkedList();
         closed = new boolean[graph.getRows()][graph.getColumns()];
-        Node start = graph.getNode(startId);
-        Node goal = graph.getNode(goalId);
-
+        boolean[][] open = new boolean[graph.getRows()][graph.getColumns()];
         int[] prev = new int[graph.getNumberofNodes()];
+        
+        openList.add(startId);
+        open[graph.idToRow(startId)][graph.idToColumn(startId)] = true;
 
-        open.put(start.getId(), start);
-        prev[start.getId() - 1] = -1;
+        prev[startId - 1] = -1;
 
-        while (!open.isEmpty()) {
-            int id = open.keySet().iterator().next();
-            Node node = open.get(id);
-            open.remove(id);
+        while (!openList.isEmpty()) {
+            int id = openList.pollFirst();
+            open[graph.idToRow(id)][graph.idToColumn(id)] = false;
+            Node node = graph.getNode(id);
             if (!closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 closed[graph.idToRow(id)][graph.idToColumn(id)] = true;
 
-                if (node == goal) {
+                if (node == graph.getNode(goalId)) {
                     return getSolution(prev, node.getId(), startId);
                 }
-                add(node, open, closed, prev);
+                add(node, openList, open, closed, prev);
             }
         }
         return null;
     }
 
-    private void add(Node node, LinkedHashMap open, boolean[][] closed, int[] prev) {
+    private void add(Node node, LinkedList openList, boolean[][] open, boolean[][] closed, int[] prev) {
         ArrayList<Node> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             int id = neighbour.getId();
-            if (!open.containsKey(id) && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
-                open.put(id, neighbour);
+            if (!open[graph.idToRow(node.getId())][graph.idToColumn(node.getId())] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
+                openList.add(id);
+                open[graph.idToRow(id)][graph.idToColumn(id)] = true;
                 prev[id - 1] = node.getId();
             }
         }

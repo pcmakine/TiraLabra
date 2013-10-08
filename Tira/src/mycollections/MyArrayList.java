@@ -4,8 +4,6 @@
  */
 package mycollections;
 
-import java.lang.reflect.Array;
-
 /**
  *
  * @author Pete
@@ -17,7 +15,7 @@ public class MyArrayList<E> {
     private static int inflateMultiplier; //how much we increase the array's size every time it has to be increased
 
     public MyArrayList() {
-        this(20);
+        this(32);
     }
 
     public MyArrayList(int initialSize) {
@@ -26,7 +24,7 @@ public class MyArrayList<E> {
         }
         this.size = 0;
         this.array = (E[]) new Object[initialSize];
-        inflateMultiplier = 3;
+        inflateMultiplier = 2;
     }
 
     public void add(E e) {
@@ -50,9 +48,10 @@ public class MyArrayList<E> {
             inflated[i] = array[i];
         }
         array = inflated;
+        
     }
     
-    public void set(E element, int index){
+    public void set(int index, E element){
         array[index] = element;
     }
 
@@ -74,6 +73,10 @@ public class MyArrayList<E> {
     }
 
     public E get(int index) {
-        return  array[index];
+        return array[index];
+    }
+    
+    public int getCapacity(){
+        return array.length;
     }
 }

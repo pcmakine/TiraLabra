@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tira;
+package mycollections;
 
 import mycollections.MyArrayList;
 import org.junit.After;
