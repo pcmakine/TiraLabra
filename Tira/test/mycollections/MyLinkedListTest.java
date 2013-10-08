@@ -44,7 +44,7 @@ public class MyLinkedListTest {
 
         nodeList.insert(node, 3);
 
-        assertEquals(3, (int) nodeList.peekFirst());
+        assertEquals(3, (int) nodeList.peekFirst().getValue());
     }
 
     @Test
@@ -62,5 +62,22 @@ public class MyLinkedListTest {
         assertEquals(2, (int) nodeList.pollFirst());
         assertEquals(3, (int) nodeList.pollFirst());
         assertEquals(null, nodeList.pollFirst());
-    } 
+    }
+
+    @Test
+    public void removeWorks() {
+        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        Node a = new Node(1, 1, 1);
+        Node b = new Node(2, 1, 1);
+        Node c = new Node(3, 1, 1);
+
+        nodeList.insert(a, 1);
+        nodeList.insert(b, 2);
+        nodeList.insert(c, 3);
+
+        assertEquals(1, (int) nodeList.pollFirst());
+        assertEquals(2, (int) nodeList.pollFirst());
+        assertEquals(3, (int) nodeList.pollFirst());
+        assertEquals(null, nodeList.pollFirst());
+    }
 }

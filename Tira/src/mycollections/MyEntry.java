@@ -8,29 +8,29 @@ package mycollections;
  *
  * @author Pete
  */
-public class ListNode<K, V> {
-    private ListNode next;
-    private ListNode prev;
+public class MyEntry<K, V> {
+    private MyEntry next;
+    private MyEntry prev;
     private final K key;
     private V value;
 
-    public ListNode getPrev() {
+    public MyEntry getPrev() {
         return prev;
     }
     
-    public ListNode(K key, V value){
+    public MyEntry(K key, V value){
         this.key = key;
         this.value = value;
     }
 
-    public ListNode getNext() {
+    public MyEntry getNext() {
         return next;
     }
 
-    public void setNext(ListNode next) {
+    public void setNext(MyEntry next) {
         this.next = next;
     }
-        public void setPrev(ListNode prev) {
+        public void setPrev(MyEntry prev) {
         this.prev = prev;
     }
         

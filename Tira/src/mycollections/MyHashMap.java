@@ -10,59 +10,83 @@ import java.util.ArrayList;
  *
  * @author Pete
  */
-
-//dependencies hashcode() method and Math.floor()
+//dependencies hashcode()
 public class MyHashMap<K, V> {
-    private MyArrayList<MyLinkedList<K, V>> elements;;
+
+    private MyLinkedList<K, V>[] elements;
     private double constant = 0.61803;
-//    int[] powersofTwo = {32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 
-//    65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864,
-//    134217728, 268435456, 536870912, 1073741824};
     private int size;
-    
-    //maybe there shouldn't be initialcapacity? then myarraylist capacity would always be power of two
-    public MyHashMap(int initialCapacity){
-        elements = new MyArrayList(initialCapacity);
+    private final static int treashold = 2;
+
+    public MyHashMap(int initialCapacity) {
+        if (initialCapacity <= 0 || !isPowerOfTwo(initialCapacity)) {
+            throw new IllegalArgumentException("Illegal capacity: " + initialCapacity);
+        }
+
+        elements = new MyLinkedList[initialCapacity];
     }
-    
-    public void put(K key, V value){
+
+    private boolean isPowerOfTwo(int number) {
+        return (number & -number) == number;
+    }
+
+    public void put(K key, V value) {
         int hash = key.hashCode();
         int index = getIndex(hash);
-        
-        if(elements.get(index) == null){
+
+        if (elements[index] == null) {
             MyLinkedList l = new MyLinkedList();
             l.insert(key, value);
-            elements.set(index, l);
-        }else{
-            elements.get(index).insert(key, value);
+            elements[index] = l;
+        } else {
+            elements[index].insert(key, value);
         }
         size++;
+        if(size / elements.length > treashold){
+            rehash();
+        }
     }
 
-    private int getIndex(int key){
-        int m = elements.getCapacity();
+    private int getIndex(int key) {
+        int m = elements.length;
         int index = (int) (m * fr(constant * key));
         return index;
     }
-           
-    public double fr(double x){
+
+    public double fr(double x) {
         return x - (int) x;
     }
-    
-    public V get(K key){
+
+    public V get(K key) {
         int hash = key.hashCode();
         int index = getIndex(hash);
-        
-        if(elements.get(index) == null){
+
+        if (elements[index] == null) {
             return null;
-        }else{
-            return elements.get(index).get(key);
+        } else {
+            return (V) elements[index].get(key).getValue();
         }
     }
-    
-    
-    private void reshuffle(){
-        
+
+    public V remove(K key) {
+        int hash = key.hashCode();
+        int index = getIndex(hash);
+
+        if (elements[index] == null) {
+            return null;
+        } else {
+            size--;
+            return (V) elements[index].remove(key).getValue();
+        }
     }
-    
+
+    private void rehash() {
+        MyLinkedList<K, V>[] bigTable = new MyLinkedList[elements.length*2];
+        
+        for (int i = 0; i < elements.length; i++) {
+            if (elements[i] != null) {
+                MyEntry node = elements[i].peekFirst();
+            }
+        }
+    }
 }
