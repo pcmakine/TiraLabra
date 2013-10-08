@@ -5,6 +5,7 @@
 package mycollections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -13,9 +14,11 @@ import java.util.ArrayList;
 public class MyPriorityQueue<E extends Comparable<E>> {
 
     private ArrayList<E> elements;
+    private HashMap<E, Integer> indexes;
 
     public MyPriorityQueue() {
         this.elements = new ArrayList();
+        this.indexes = new HashMap();
     }
 
     //adds the element to the right place in the queue
@@ -27,25 +30,44 @@ public class MyPriorityQueue<E extends Comparable<E>> {
         }
         if (i > elements.size() - 1) {
             elements.add(e);
+            indexes.put(e, elements.size() - 1);
         } else {
             elements.set(i, e);
+            indexes.put(e, i);
         }
     }
 
     //returns and removes the first element of the queue
     public E poll() {
+        if (elements.isEmpty()) {
+            return null;
+        }
         E min = elements.get(0);
         if (elements.size() > 1) {
             elements.set(0, elements.remove(elements.size() - 1));
             heapify(0);
         } else {
+            indexes.remove(elements.get(0));
             elements.remove(0);
         }
+        indexes.remove(min);
         return min;
     }
 
-    public boolean isEmpty() {
-        return false;
+    public void incKey(E element) {
+        int index = indexes.get(element);
+
+        elements.set(index, element);
+        heapify(index);
+    }
+
+    public void decKey(E element) {
+        int index = indexes.get(element);
+
+        while (index >= 1 && (elements.get(index).compareTo(elements.get(parent(index)))) < 0) {
+            swap(index, parent(index));
+            index = parent(index);
+        }
     }
 
     private void heapify(int i) {
@@ -61,6 +83,7 @@ public class MyPriorityQueue<E extends Comparable<E>> {
             }
             if (elements.get(i).compareTo(elements.get(smallest)) > 0) {
                 swap(i, smallest);
+                heapify(smallest);
             }
         } else if (l == elements.size() - 1 && elements.get(i).compareTo(elements.get(l)) > 0) {
             swap(i, l);
@@ -72,12 +95,15 @@ public class MyPriorityQueue<E extends Comparable<E>> {
         if (i > elements.size() - 1) {
             temp = null;
             elements.add(elements.get(j));
+            indexes.put(elements.get(elements.size() - 1), elements.size() - 1);
         } else {
             temp = elements.get(i);
         }
 
         elements.set(i, elements.get(j));
+        indexes.put(elements.get(i), i);
         elements.set(j, temp);
+        indexes.put(temp, j);
     }
 
     private int parent(int i) {
@@ -90,5 +116,9 @@ public class MyPriorityQueue<E extends Comparable<E>> {
 
     private int right(int i) {
         return 2 * i + 1;
+    }
+
+    public boolean isEmpty() {
+        return elements.isEmpty();
     }
 }

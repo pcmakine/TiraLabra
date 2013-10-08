@@ -42,10 +42,6 @@ public class MyArrayListTest {
         MyArrayList test = new MyArrayList();
         test.add(5);
         
-        MyArrayList<Node> test2 = new MyArrayList();
-        Node node = new Node(1, 2, 3);
-        test2.add(node);
-        
         int[] expected = new int[16];
         for (int i = 0; i < 16; i++) {
             expected[i] = i;
@@ -54,16 +50,24 @@ public class MyArrayListTest {
         for (int i = 0; i < 16; i++) {
             list.add(i);
         }
-        assertArrayEquals(expected, list.toIntArray());
+        assertArrayEquals(expected, intArray(list));
+    }
+    
+    private int[] intArray(MyArrayList list){
+        int[] intArray = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            intArray[i] = (int) list.get(i);
+        }
+        return intArray;
     }
     
     @Test
     public void elementsReturnedCorrectly(){
-        MyArrayList list = new MyArrayList();
+        MyArrayList<Integer> list = new MyArrayList();
         list.add(2);
         list.add(4);
         
-        int four = (int) list.get(1);
+        int four = list.get(1);
         assertEquals(4, four);
     }
 }

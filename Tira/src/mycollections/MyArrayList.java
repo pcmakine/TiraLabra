@@ -13,7 +13,7 @@ import java.lang.reflect.Array;
 public class MyArrayList<E> {
 
     private int size;           //number of elements in the list
-    private Object[] array;
+    private E[] array;
     private static int inflateMultiplier; //how much we increase the array's size every time it has to be increased
 
     public MyArrayList() {
@@ -25,16 +25,16 @@ public class MyArrayList<E> {
             throw new IllegalArgumentException("Illegal Capacity: " + initialSize + ". Capacity must be at least 1");
         }
         this.size = 0;
-        this.array = new Object[initialSize];
+        this.array = (E[]) new Object[initialSize];
         inflateMultiplier = 3;
     }
 
     public void add(E e) {
-        Object[] inflated;
+        E[] inflated;
         if (this.size < array.length) {
             insert(e);
         } else {
-            inflated = new Object[array.length * inflateMultiplier];
+            inflated = (E[]) new Object[array.length * inflateMultiplier];
             extendArray(inflated);
             insert(e);
         }
@@ -45,33 +45,24 @@ public class MyArrayList<E> {
         size++;
     }
 
-    private void extendArray(Object[] inflated) {
+    private void extendArray(E[] inflated) {
         for (int i = 0; i < array.length; i++) {
             inflated[i] = array[i];
         }
         array = inflated;
     }
+    
+    public void set(E element, int index){
+        array[index] = element;
+    }
 
-    public Object[] toArray() {
+    public E[] toArray() {
         trim();
         return array;
     }
-
-    public int[] toIntArray() {
-        trim();
-        if (array[0] instanceof Integer) {
-            int[] intArray = new int[array.length];
-            this.toArray();
-            for (int i = 0; i < array.length; i++) {
-                intArray[i] = (int) array[i];
-            }
-            return intArray;
-        }
-        return null;
-    }
-
+    
     public void trim() {
-        Object[] trimmed = new Object[size];
+        E[] trimmed = (E[]) new Object[size];
         for (int i = 0; i < size; i++) {
             trimmed[i] = array[i];
         }
@@ -83,6 +74,6 @@ public class MyArrayList<E> {
     }
 
     public E get(int index) {
-        return (E) array[index];
+        return  array[index];
     }
 }
