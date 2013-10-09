@@ -2,23 +2,23 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mycollections;
+package mycollections.linkedlist;
 
 /**
  *
  * @author Pete
  */
-public class MyLinkedList<K, V> {
+public class MyLinkedList<E> {
 
-    private MyEntry<K, V> header;
+    private ListNode<E> header;
     private int size;
 
     public MyLinkedList() {
     }
 
-    public void insert(K key, V value) {
-        MyEntry node = new MyEntry(key, value);
-        
+    public void add(E value) {
+        ListNode node = new ListNode(value);
+
         if (header == null) {
             insertInEmptyList(node);
         } else if (header.getPrev() == null) {
@@ -29,34 +29,34 @@ public class MyLinkedList<K, V> {
         size++;
     }
 
-    private void insertInEmptyList(MyEntry node) {
+    private void insertInEmptyList(ListNode node) {
         node.setNext(null);
         node.setPrev(null);
         header = node;
     }
 
-    private void insertInOneEntryList(MyEntry node) {
+    private void insertInOneEntryList(ListNode node) {
         header.setPrev(node);
         header.setNext(node);
         node.setPrev(header);
         node.setNext(header);
     }
 
-    private void insertInMultiEntryList(MyEntry node) {
-        MyEntry last = header.getPrev();
+    private void insertInMultiEntryList(ListNode node) {
+        ListNode last = header.getPrev();
         header.setPrev(node);
         node.setNext(header);
         node.setPrev(last);
         last.setNext(node);
     }
 
-    public V pollFirst() {
+    public E pollFirst() {
         if (header == null) {
             return null;
         }
-        MyEntry<K, V> first = header;
-        MyEntry<K, V> second = header.getNext();
-        MyEntry<K, V> last = header.getPrev();
+        ListNode<E> first = header;
+        ListNode<E> second = header.getNext();
+        ListNode<E> last = header.getPrev();
 
         if (second == null) {
             header = null;
@@ -72,14 +72,26 @@ public class MyLinkedList<K, V> {
         size--;
         return first.getValue();
     }
+    
+    public E getValue(E value){
+        ListNode<E> node = get(value);
+        if(node == null){
+            return null;
+        }else{
+            return node.getValue();
+        }
+    }
 
-    public MyEntry get(K key) {
-        if (header.getKey() == key) {
+    public ListNode get(E value) {
+        if (header == null) {
+            return null;
+        }
+        if (header.getValue() == value) {
             return header;
         }
-        MyEntry<K, V> node = header.getNext();
-        while (node != header) {
-            if (node.getKey() == key) {
+        ListNode<E> node = header.getNext();
+        while (node != header && node != null) {
+            if (node.getValue() == value) {
                 return node;
             }
             node = node.getNext();
@@ -87,8 +99,8 @@ public class MyLinkedList<K, V> {
         return null;
     }
 
-    public MyEntry remove(K key) {
-        MyEntry node = get(key);
+    public E remove(E value) {
+        ListNode<E> node = get(value);
 
         if (node == null) {
             return null;
@@ -96,12 +108,12 @@ public class MyLinkedList<K, V> {
 
         if (node == header && header.getNext() == null) {
             size--;
-            return removeFromOneEntryList(node);
+            return removeFromOneEntryList(node).getValue();
         }
 
         if (node.getNext().getNext() == node) {
             size--;
-            return removeFromTwoEntryList(node);
+            return removeFromTwoEntryList(node).getValue();
         }
 
         node.getPrev().setNext(node.getNext());
@@ -110,26 +122,30 @@ public class MyLinkedList<K, V> {
             header = header.getNext();
         }
         size--;
-        return node;
+        return node.getValue();
     }
 
-    private MyEntry removeFromOneEntryList(MyEntry node) {
+    private ListNode<E> removeFromOneEntryList(ListNode<E> node) {
         header = null;
         return node;
     }
 
-    private MyEntry removeFromTwoEntryList(MyEntry node) {
+    private ListNode<E> removeFromTwoEntryList(ListNode<E> node) {
         node.getNext().setNext(null);
         node.getNext().setPrev(null);
         header = node.getNext();        //whether the removable node is the current header or not, the other will be the header after the removal
         return node;
     }
 
-    public MyEntry peekFirst() {
-        return header;
+    public E peekFirst() {
+        return header.getValue();
+    }
+
+    public int size() {
+        return size;
     }
     
-    public int size(){
-        return size;
+    public boolean isEmpty(){
+        return size == 0;
     }
 }

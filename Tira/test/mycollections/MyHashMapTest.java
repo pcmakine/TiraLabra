@@ -4,6 +4,8 @@
  */
 package mycollections;
 
+import mycollections.hashmap.MyHashMap;
+import mycollections.hashmap.MyEntryList;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tira.Node;
+import logic.Node;
 
 /**
  *
@@ -62,7 +64,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void putWorks() {
+    public void putAndGetWorks() {
         MyHashMap<Node, Integer> map = new MyHashMap(32);
         Node node = new Node(1, 1, 1);
         Node otherNode = new Node(2, 1, 1);
@@ -73,32 +75,22 @@ public class MyHashMapTest {
         assertEquals(99, (int) map.get(otherNode));
     }
 
-    @Test //doesn't necessarily always pass, but should pass usually
+    @Test //doesn't necessarily always pass, but should pass most of the time
     public void hashingPutsOnAverageTwoOnEachBucketWhenTwiceAsManyElementsAsHashTableSize() {
         int sum = 0;
         int testRuns = 10;
         allSum = 0;
         int mapSize = 131072;
-        for (int j = 0; j < testRuns; j++) {
-
-            MyHashMap<Node, Integer> map = new MyHashMap(mapSize);
-            for (int i = 0; i < mapSize * 2; i++) {
-                map.put(new Node(i + 1, 1, 1), i);
-            }
-            MyLinkedList lists[] = map.getTable();
-            int max = 0;
-            max = findMaxSize(lists, max);
-            sum = sum + max;
-        }
+        sum = averages(testRuns, mapSize, sum);
         int limit = (int) ((((mapSize * 2.0)) / mapSize) + 2);
         int avg = sum / testRuns;
         System.out.println("Biggest bucket on average: " + avg + " mapSize: " + mapSize);
-        System.out.println("Average bucket size: " + (allSum / mapSize/testRuns) + " mapSize: " + mapSize);
-        
-        assertEquals(true, (allSum/mapSize/testRuns) == 2);
+        System.out.println("Average bucket size: " + (allSum / mapSize / testRuns) + " mapSize: " + mapSize);
+
+        assertEquals(true, (allSum / mapSize / testRuns) == 2);
     }
 
-    private int findMaxSize(MyLinkedList[] lists, int max) {
+    private int findAverageSize(MyEntryList[] lists, int max) {
         for (int i = 0; i < lists.length; i++) {
             if (lists[i] != null) {
                 allSum = allSum + lists[i].size();
@@ -109,5 +101,66 @@ public class MyHashMapTest {
             }
         }
         return max;
+    }
+
+    private int averages(int testRuns, int mapSize, int sum) {
+        for (int j = 0; j < testRuns; j++) {
+
+            MyHashMap<Node, Integer> map = new MyHashMap(mapSize);
+            for (int i = 0; i < mapSize * 2; i++) {
+                map.put(new Node(i + 1, 1, 1), i);
+            }
+            MyEntryList lists[] = map.getTable();
+            int max = 0;
+            max = findAverageSize(lists, max);
+            sum = sum + max;
+        }
+        return sum;
+    }
+
+    @Test
+    public void rehashingDoublesArraySize() {
+        MyHashMap map = new MyHashMap(2);
+
+        for (int i = 0; i < 5; i++) {
+            map.put(new Node(i + 1, 1, 1), i);
+        }
+        assertEquals(4, map.getTable().length);
+    }
+
+    @Test
+    public void rehashingPreservesElements() {
+        MyHashMap map = new MyHashMap(2);
+        int n = 9;
+        Node[] nodes = new Node[n];
+        
+        for (int i = 0; i < n; i++) {
+            Node node = new Node(i + 1, 1, 1);
+            map.put(node, i);
+            nodes[i] = node;
+        }
+
+        for (int i = 0; i < n; i++) {
+            assertEquals(i, map.get(nodes[i]));
+        }
+    }
+
+    @Test
+    public void removeWorks() {
+        MyHashMap map = new MyHashMap(2);
+        Node[] nodes = new Node[5];
+
+        for (int i = 0; i < 5; i++) {
+            Node node = new Node(i + 1, 1, 1);
+            map.put(node, i);
+            nodes[i] = node;
+        }
+        
+        map.remove(nodes[2]);
+        assertEquals(null, map.get(nodes[2]));
+
+//        for (int i = 0; i < 9; i++) {
+//            assertEquals(i, map.get(nodes[i]));
+//        }
     }
 }

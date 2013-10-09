@@ -2,30 +2,30 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tira;
+package logicwithmycollections;
 
-import java.util.ArrayList;
-import java.util.List;
+import logic.*;
+import mycollections.MyArrayList;
 
 /**
  *
  * @author pcmakine
  */
-public class Graph {
+public class MGraph {
 
     private int ROWS;
     private int COLUMNS;
     private int graphPos;
     private int maxId;
     private boolean[][] nodeArray;
-    private Node[][] nodeMatrix;
+    private MNode[][] nodeMatrix;
 
-    public Graph(int size) {
+    public MGraph(int size) {
         init(size);
         makeNodeMatrix();
     }
 
-    public Graph(int size, int walls) {
+    public MGraph(int size, int walls) {
         init(size);
         if (walls < size * size) {
             makeRandomMatrix(walls);
@@ -33,7 +33,6 @@ public class Graph {
     }
 
     private void init(int size) {
-//        this.nodes = new HashMap();
         this.ROWS = size;
         this.COLUMNS = size;
         graphPos = 5;
@@ -41,8 +40,8 @@ public class Graph {
 
     }
 
-    public ArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
-        ArrayList ret = new ArrayList();
+    public MyArrayList<MNode> getVerticalAndHorizontalNeighbours(int node) {
+        MyArrayList ret = new MyArrayList();
         int top = node - COLUMNS;
         int below = node + COLUMNS;
         int left = node - 1;
@@ -75,7 +74,7 @@ public class Graph {
     }
 
     public void makeRandomMatrix(int walls) {
-        this.nodeMatrix = new Node[ROWS][COLUMNS];
+        this.nodeMatrix = new MNode[ROWS][COLUMNS];
         int id = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -90,7 +89,7 @@ public class Graph {
     }
 
     public void makeNodeMatrix() {
-        this.nodeMatrix = new Node[ROWS][COLUMNS];
+        this.nodeMatrix = new MNode[ROWS][COLUMNS];
         int id = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -101,12 +100,12 @@ public class Graph {
     }
 
     public void addNode(int id) {
-        int x = (((id - 1) % getColumns() * Node.getWidth()) + graphPos * Node.getWidth());
-        int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight() + graphPos * Node.getHeight());
-        nodeMatrix[idToRow(id)][idToColumn(id)] = new Node(id, x, y);
+        int x = (((id - 1) % getColumns() * MNode.getWidth()) + graphPos * MNode.getWidth());
+        int y = (int) Math.ceil(((id - 1) / getColumns()) * MNode.getHeight() + graphPos * MNode.getHeight());
+        nodeMatrix[idToRow(id)][idToColumn(id)] = new MNode(id, x, y);
     }
 
-    public void removeNode(Node node) {
+    public void removeNode(MNode node) {
         int id = node.getId();
         nodeMatrix[idToRow(id)][idToColumn(id)] = null;
     }
@@ -115,11 +114,11 @@ public class Graph {
         nodeMatrix = null;
     }
 
-    public Node getNode(int id) {
+    public MNode getNode(int id) {
         return nodeMatrix[idToRow(id)][idToColumn(id)];
     }
 
-    public Node[][] getNodes() {
+    public MNode[][] getNodes() {
         return nodeMatrix;
     }
 

@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tira;
+package logic;
 
+import logic.PathFinder;
+import logic.Node;
+import logic.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -162,40 +165,8 @@ public class PathFinderTest {
         int biggestSize = 566;
         int wallsPortion = 10;
         
-//                long startTime = System.currentTimeMillis();
-//        small = new Graph(smallSize);
-//        small.addNode(1);
-//        small.addNode(smallSize*smallSize);
-//        long stopTime = System.currentTimeMillis();
-//        long elapsedTime = (stopTime - startTime);
-//        System.out.println("small made in " + elapsedTime + " ms.");
-//
-//        startTime = System.currentTimeMillis();
-//        bigger = new Graph(biggerSize);
-//        bigger.addNode(1);
-//        bigger.addNode(biggerSize*biggerSize);
-//        stopTime = System.currentTimeMillis();
-//        elapsedTime = (stopTime - startTime);
-//        System.out.println("bigger made in " + elapsedTime + " ms.");
-//
-//        startTime = System.currentTimeMillis();
-//        big = new Graph(bigSize);
-//        big.addNode(1);
-//        big.addNode(bigSize*bigSize);
-//        stopTime = System.currentTimeMillis();
-//        elapsedTime = (stopTime - startTime);
-//        System.out.println("big made in " + elapsedTime + " ms.");
-//
-//        startTime = System.currentTimeMillis();
-//        biggest = new Graph(biggestSize);
-//        biggest.addNode(1);
-//        biggest.addNode(biggestSize*biggestSize);
-//        stopTime = System.currentTimeMillis();
-//        elapsedTime = (stopTime - startTime);
-//        System.out.println("biggest made in " + elapsedTime + " ms.");
-
-        long startTime = System.currentTimeMillis();
-        small = new Graph(smallSize, (smallSize * smallSize) / wallsPortion);
+                long startTime = System.currentTimeMillis();
+        small = new Graph(smallSize);
         small.addNode(1);
         small.addNode(smallSize*smallSize);
         long stopTime = System.currentTimeMillis();
@@ -203,7 +174,7 @@ public class PathFinderTest {
         System.out.println("small made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / wallsPortion);
+        bigger = new Graph(biggerSize);
         bigger.addNode(1);
         bigger.addNode(biggerSize*biggerSize);
         stopTime = System.currentTimeMillis();
@@ -211,7 +182,7 @@ public class PathFinderTest {
         System.out.println("bigger made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        big = new Graph(bigSize, (bigSize * bigSize) / wallsPortion);
+        big = new Graph(bigSize);
         big.addNode(1);
         big.addNode(bigSize*bigSize);
         stopTime = System.currentTimeMillis();
@@ -219,12 +190,44 @@ public class PathFinderTest {
         System.out.println("big made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
-        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / wallsPortion);
+        biggest = new Graph(biggestSize);
         biggest.addNode(1);
         biggest.addNode(biggestSize*biggestSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
         System.out.println("biggest made in " + elapsedTime + " ms.");
+
+//        long startTime = System.currentTimeMillis();
+//        small = new Graph(smallSize, (smallSize * smallSize) / wallsPortion);
+//        small.addNode(1);
+//        small.addNode(smallSize*smallSize);
+//        long stopTime = System.currentTimeMillis();
+//        long elapsedTime = (stopTime - startTime);
+//        System.out.println("small made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        bigger = new Graph(biggerSize, (biggerSize * biggerSize) / wallsPortion);
+//        bigger.addNode(1);
+//        bigger.addNode(biggerSize*biggerSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("bigger made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        big = new Graph(bigSize, (bigSize * bigSize) / wallsPortion);
+//        big.addNode(1);
+//        big.addNode(bigSize*bigSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("big made in " + elapsedTime + " ms.");
+//
+//        startTime = System.currentTimeMillis();
+//        biggest = new Graph(biggestSize, (biggestSize * biggestSize) / wallsPortion);
+//        biggest.addNode(1);
+//        biggest.addNode(biggestSize*biggestSize);
+//        stopTime = System.currentTimeMillis();
+//        elapsedTime = (stopTime - startTime);
+//        System.out.println("biggest made in " + elapsedTime + " ms.");
 
     }
 }

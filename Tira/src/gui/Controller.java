@@ -4,9 +4,11 @@
  */
 package gui;
 
+import logic.Node;
+import logic.Graph;
+import logic.PathFinder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import tira.*;
 
 /**
  *

@@ -2,14 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tira;
+package logicwithmycollections;
+
+import logic.*;
 
 /**
  *
  * @author pcmakine
  */
 
-public class Node implements Comparable<Node> {
+public class MNode implements Comparable<MNode> {
 
     private int id;
     private int x;
@@ -19,13 +21,13 @@ public class Node implements Comparable<Node> {
     private static int WIDTH = 20;
     private static int HEIGHT = 20;
 
-    public Node(int id, int x, int y) {
+    public MNode(int id, int x, int y) {
         this.id = id;
         this.x = x;
         this.y = y;
     }
     
-    public Node(int id){
+    public MNode(int id){
         this.id = id;
     }
 
@@ -65,7 +67,7 @@ public class Node implements Comparable<Node> {
     }
 
     @Override
-    public int compareTo(Node node) {
+    public int compareTo(MNode node) {
         if (this.heuristics + this.dist > node.heuristics + node.dist) {
             return 1;
         }

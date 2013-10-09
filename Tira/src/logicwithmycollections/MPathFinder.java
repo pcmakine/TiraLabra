@@ -2,30 +2,31 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tira;
+package logicwithmycollections;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import logic.*;
+
 import java.util.Stack;
+import mycollections.MyArrayList;
+import mycollections.MyPriorityQueue;
+import mycollections.linkedlist.MyLinkedList;
 
 /**
  *
  * @author pcmakine
  */
 //http://www.policyalmanac.org/games/aStarTutorial.htm
-public class PathFinder {
+public class MPathFinder {
 
-    private Graph graph;
+    private MGraph graph;
     private boolean closed[][];
 
-    public PathFinder(Graph graph) {
+    public MPathFinder(MGraph graph) {
         this.graph = graph;
     }
 
-    public Node[] bfs(int startId, int goalId) {
-        LinkedList<Integer> openList = new LinkedList();
+    public MNode[] bfs(int startId, int goalId) {
+        MyLinkedList<Integer> openList = new MyLinkedList();
         closed = new boolean[graph.getRows()][graph.getColumns()];
         boolean[][] open = new boolean[graph.getRows()][graph.getColumns()];
         int[] prev = new int[graph.getNumberofNodes()];
@@ -38,7 +39,7 @@ public class PathFinder {
         while (!openList.isEmpty()) {
             int id = openList.pollFirst();
             open[graph.idToRow(id)][graph.idToColumn(id)] = false;
-            Node node = graph.getNode(id);
+            MNode node = graph.getNode(id);
             if (!closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 closed[graph.idToRow(id)][graph.idToColumn(id)] = true;
 
@@ -51,10 +52,10 @@ public class PathFinder {
         return null;
     }
 
-    private void add(Node node, LinkedList openList, boolean[][] open, boolean[][] closed, int[] prev) {
-        ArrayList<Node> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
+    private void add(MNode node, MyLinkedList openList, boolean[][] open, boolean[][] closed, int[] prev) {
+        MyArrayList<MNode> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
         for (int i = 0; i < neighbours.size(); i++) {
-            Node neighbour = neighbours.get(i);
+            MNode neighbour = neighbours.get(i);
             int id = neighbour.getId();
             if (!open[graph.idToRow(neighbour.getId())][graph.idToColumn(neighbour.getId())] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 openList.add(id);
@@ -64,10 +65,10 @@ public class PathFinder {
         }
     }
 
-    private Node[] getSolution(int[] prev, int node, int origin) {
-        Stack<Node> resultStack = new Stack();
-        Node[] reverseOrder = new Node[prev.length];
-        Node[] ordered = new Node[prev.length];
+    private MNode[] getSolution(int[] prev, int node, int origin) {
+        Stack<MNode> resultStack = new Stack();
+        MNode[] reverseOrder = new MNode[prev.length];
+        MNode[] ordered = new MNode[prev.length];
         int nodes = 0;
         while (node != -1) {
             reverseOrder[nodes] = graph.getNode(node);
@@ -85,20 +86,20 @@ public class PathFinder {
         }
         return ordered;
     }
-    public Node[] aStar(int startId, int goalId) {
-        PriorityQueue<Node> open = new PriorityQueue();
+    public MNode[] aStar(int startId, int goalId) {
+        MyPriorityQueue<MNode> open = new MyPriorityQueue();
         closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
         int[] prev = new int[graph.getNumberofNodes()];
         int prevId = -1;
 
-        Node[][] nodes = graph.getNodes();
+        MNode[][] nodes = graph.getNodes();
         initDistances(nodes);
 
         graph.getNode(startId).setDist(0);
         open.add(graph.getNode(startId));
 
         while (!open.isEmpty()) {
-            Node node = open.poll();
+            MNode node = open.poll();
             int id = node.getId();
 
             if (!closed[graph.idToRow(id)][graph.idToColumn(id)]) {
@@ -112,10 +113,10 @@ public class PathFinder {
         return null;
     }
     
-        private void initDistances(Node[][] nodes) {
+        private void initDistances(MNode[][] nodes) {
         for (int i = 0; i < nodes.length; i++) {
             for (int j = 0; j < nodes[0].length; j++) {
-                Node node = nodes[i][j];
+                MNode node = nodes[i][j];
                 if (node != null) {
                     node.setDist(Integer.MAX_VALUE);
                 }
@@ -123,24 +124,32 @@ public class PathFinder {
         }
     }
 
-    private void addForAstar(Node node, PriorityQueue queue, int[] prev, Node target, boolean[][] closed) {
-        ArrayList<Node> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
+    private void addForAstar(MNode node, MyPriorityQueue queue, int[] prev, MNode target, boolean[][] closed) {
+        MyArrayList<MNode> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
         for (int i = 0; i < neighbours.size(); i++) {
-            Node neighbour = neighbours.get(i);
+            MNode neighbour = neighbours.get(i);
             
             int heuristics = getManhattanHeuristics(neighbour, target);
             neighbour.setHeuristics((int) heuristics);
             if (neighbour.getDist() > node.getDist() + 1) {
+                int oldDist = neighbour.getDist();
                 neighbour.setDist(node.getDist() + 1);
-                updatePriority(neighbour, queue);
+                updatePriority(neighbour, queue, oldDist, node.getDist()+1);
                 prev[neighbour.getId() - 1] = node.getId();
             }
         }
     }
     
-    private void updatePriority(Node node, PriorityQueue queue){
-        queue.remove(node);
-        queue.add(node);
+    private void updatePriority(MNode node, MyPriorityQueue queue, int oldDist, int newDist){
+        if (oldDist < newDist) {
+            if (!queue.incKey(node)) {
+                queue.add(node);
+            }
+        }else{
+            if(!queue.decKey(node)){
+                queue.add(node);
+            }
+        }
     }
 
 //    //Returns the euclidian distance of two nodes
@@ -153,7 +162,7 @@ public class PathFinder {
 //        return distance / 20;
 //    }
 
-    private int getManhattanHeuristics(Node start, Node target) {
+    private int getManhattanHeuristics(MNode start, MNode target) {
         int startrow = (start.getId() - 1) / graph.getColumns();
         int startcolumn = (start.getId() - 1) % graph.getColumns();
         int targetrow = (target.getId() - 1) / graph.getColumns();

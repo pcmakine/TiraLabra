@@ -54,20 +54,29 @@ public class MyPriorityQueue<E extends Comparable<E>> {
         return min;
     }
 
-    public void incKey(E element) {
-        int index = indexes.get(element);
+    public boolean incKey(E element) {
+        if (indexes.get(element) != null) {
+            int index = indexes.get(element);
 
-        elements.set(index, element);
-        heapify(index);
+            elements.set(index, element);
+            heapify(index);
+            return true;
+        }
+        return false;
     }
 
-    public void decKey(E element) {
-        int index = indexes.get(element);
+    public boolean decKey(E element) {
+        if (indexes.get(element) != null) {
 
-        while (index >= 1 && (elements.get(index).compareTo(elements.get(parent(index)))) < 0) {
-            swap(index, parent(index));
-            index = parent(index);
+            int index = indexes.get(element);
+
+            while (index >= 1 && (elements.get(index).compareTo(elements.get(parent(index)))) < 0) {
+                swap(index, parent(index));
+                index = parent(index);
+            }
+            return true;
         }
+        return false;
     }
 
     private void heapify(int i) {

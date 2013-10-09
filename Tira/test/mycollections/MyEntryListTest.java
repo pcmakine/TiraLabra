@@ -4,25 +4,26 @@
  */
 package mycollections;
 
+import mycollections.hashmap.MyEntryList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tira.Node;
+import logic.Node;
 
 /**
  *
  * @author Pete
  */
-public class MyLinkedListTest {
+public class MyEntryListTest {
 
     Node a;
     Node b;
     Node c;
 
-    public MyLinkedListTest() {
+    public MyEntryListTest() {
     }
 
     @BeforeClass
@@ -46,7 +47,7 @@ public class MyLinkedListTest {
 
     @Test
     public void insertWorksOnEmptyList() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
         Node node = new Node(1, 1, 1);
 
         nodeList.insert(node, 3);
@@ -56,7 +57,7 @@ public class MyLinkedListTest {
 
     @Test
     public void pollFirstWorks() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
@@ -69,7 +70,7 @@ public class MyLinkedListTest {
 
     @Test
     public void removeWorksForFirstEntry() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
@@ -85,7 +86,7 @@ public class MyLinkedListTest {
 
     @Test
     public void removeWorksForMiddleEntry() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
@@ -102,7 +103,7 @@ public class MyLinkedListTest {
 
     @Test
     public void removeWorksForOnlyEntry() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         Node removed = (Node) nodeList.remove(a).getKey();
@@ -113,7 +114,7 @@ public class MyLinkedListTest {
 
     @Test
     public void getWorks() {
-        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+        MyEntryList<Node, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         assertEquals(a, nodeList.get(a).getKey());

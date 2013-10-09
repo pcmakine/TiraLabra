@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mycollections;
+package mycollections.hashmap;
 
 import java.util.ArrayList;
 
@@ -11,9 +11,10 @@ import java.util.ArrayList;
  * @author Pete
  */
 //dependencies hashcode(). Only works for initialcapacity == 2^22 and smaller
+//current implementation does not decrease the table size at any point --> Not very efficient in using memory
 public class MyHashMap<K, V> {
 
-    private MyLinkedList<K, V>[] elements;
+    private MyEntryList<K, V>[] elements;
     private double constant = 0.61803;
     private int size;
     private final static int threshold = 2;
@@ -23,14 +24,14 @@ public class MyHashMap<K, V> {
             throw new IllegalArgumentException("Illegal capacity: " + initialCapacity);
         }
 
-        elements = new MyLinkedList[initialCapacity];
+        elements = new MyEntryList[initialCapacity];
     }
 
     private boolean isPowerOfTwo(int number) {
         return (number & -number) == number;
     }
-    
-    public boolean contains(K key){
+
+    public boolean contains(K key) {
         if (get(key) != null) {
             return true;
         }
@@ -42,14 +43,14 @@ public class MyHashMap<K, V> {
         int index = getIndex(hash, elements.length);
 
         if (elements[index] == null) {
-            MyLinkedList l = new MyLinkedList();
+            MyEntryList l = new MyEntryList();
             l.insert(key, value);
             elements[index] = l;
         } else {
             elements[index].insert(key, value);
         }
         size++;
-        if (size / elements.length > threshold) {
+        if ((1.0 * size) / elements.length > threshold) {
             rehash();
         }
     }
@@ -69,8 +70,12 @@ public class MyHashMap<K, V> {
 
         if (elements[index] == null) {
             return null;
-        } else {
-            return (V) elements[index].get(key).getValue();
+        }
+        MyEntry entry = elements[index].get(key);
+        if (entry != null) {
+            return (V) entry.getValue();
+        }else{
+            return null;
         }
     }
 
@@ -87,39 +92,41 @@ public class MyHashMap<K, V> {
     }
 
     private void rehash() {
-        MyLinkedList<K, V>[] bigTable = new MyLinkedList[elements.length * 2];
+        MyEntryList<K, V>[] bigTable = new MyEntryList[elements.length * 2];
 
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] != null && elements[i].peekFirst() != null) {
-                MyEntry node = elements[i].peekFirst();
-                put((K) node.getKey(), (V) node.getValue(), bigTable);               
-                while (node.getNext() != null && node.getNext() != node) {
-                    put((K) node.getNext().getKey(), (V) node.getNext().getValue(), bigTable); 
+                MyEntry first = elements[i].peekFirst();
+                put((K) first.getKey(), (V) first.getValue(), bigTable);
+                MyEntry node = first.getNext();
+                while (node != null && node != first) {
+                    put((K) node.getKey(), (V) node.getValue(), bigTable);
                     node = node.getNext();
                 }
             }
         }
+        elements = bigTable;
     }
 
-    public void put(K key, V value, MyLinkedList<K, V>[] bigTable) {
+    public void put(K key, V value, MyEntryList<K, V>[] bigTable) {
         int hash = key.hashCode();
         int index = getIndex(hash, bigTable.length);
 
         if (bigTable[index] == null) {
-            MyLinkedList l = new MyLinkedList();
+            MyEntryList l = new MyEntryList();
             l.insert(key, value);
             bigTable[index] = l;
         } else {
             bigTable[index].insert(key, value);
         }
     }
-    
-    public int size(){
+
+    public int size() {
         return size;
     }
-    
+
     //for testing
-    public MyLinkedList<K, V>[] getTable(){
+    public MyEntryList<K, V>[] getTable() {
         return elements;
     }
 }

@@ -31,7 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import tira.Node;
+import logic.Node;
 
 /**
  *
