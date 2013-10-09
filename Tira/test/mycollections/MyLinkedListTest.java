@@ -18,11 +18,18 @@ import tira.Node;
  */
 public class MyLinkedListTest {
 
+    Node a;
+    Node b;
+    Node c;
+
     public MyLinkedListTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+        Node a = new Node(1, 1, 1);
+        Node b = new Node(2, 1, 1);
+        Node c = new Node(3, 1, 1);
     }
 
     @AfterClass
@@ -50,10 +57,6 @@ public class MyLinkedListTest {
     @Test
     public void pollFirstWorks() {
         MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
-        Node a = new Node(1, 1, 1);
-        Node b = new Node(2, 1, 1);
-        Node c = new Node(3, 1, 1);
-
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
@@ -65,19 +68,56 @@ public class MyLinkedListTest {
     }
 
     @Test
-    public void removeWorks() {
+    public void removeWorksForFirstEntry() {
         MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
-        Node a = new Node(1, 1, 1);
-        Node b = new Node(2, 1, 1);
-        Node c = new Node(3, 1, 1);
+        nodeList.insert(a, 1);
+        nodeList.insert(b, 2);
+        nodeList.insert(c, 3);
+
+        Node removed = (Node) nodeList.remove(a).getKey();
+
+        assertEquals(a, removed);
+        assertEquals(b, (Node) nodeList.peekFirst().getKey());
+        assertEquals(c, (Node) nodeList.peekFirst().getNext().getKey());
+        assertEquals(b, (Node) nodeList.peekFirst().getNext().getNext().getKey());
+        assertEquals(c, (Node) nodeList.peekFirst().getPrev().getKey());
+    }
+
+    @Test
+    public void removeWorksForMiddleEntry() {
+        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
 
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
 
-        assertEquals(1, (int) nodeList.pollFirst());
-        assertEquals(2, (int) nodeList.pollFirst());
-        assertEquals(3, (int) nodeList.pollFirst());
+        Node removed = (Node) nodeList.remove(b).getKey();
+
+        assertEquals(b, removed);
+        assertEquals(a, (Node) nodeList.peekFirst().getKey());
+        assertEquals(c, (Node) nodeList.peekFirst().getNext().getKey());
+        assertEquals(a, (Node) nodeList.peekFirst().getNext().getNext().getKey());
+        assertEquals(c, (Node) nodeList.peekFirst().getPrev().getKey());
+    }
+
+    @Test
+    public void removeWorksForOnlyEntry() {
+        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+
+        nodeList.insert(a, 1);
+        Node removed = (Node) nodeList.remove(a).getKey();
+
+        assertEquals(a, removed);
         assertEquals(null, nodeList.pollFirst());
+    }
+
+    @Test
+    public void getWorks() {
+        MyLinkedList<Node, Integer> nodeList = new MyLinkedList();
+
+        nodeList.insert(a, 1);
+        assertEquals(a, nodeList.get(a).getKey());
+        nodeList.insert(b, 1);
+        assertEquals(b, nodeList.get(b).getKey());
     }
 }

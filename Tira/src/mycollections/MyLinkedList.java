@@ -11,6 +11,7 @@ package mycollections;
 public class MyLinkedList<K, V> {
 
     private MyEntry<K, V> header;
+    private int size;
 
     public MyLinkedList() {
     }
@@ -25,6 +26,7 @@ public class MyLinkedList<K, V> {
         } else {
             insertInMultiEntryList(node);
         }
+        size++;
     }
 
     private void insertInEmptyList(MyEntry node) {
@@ -58,6 +60,7 @@ public class MyLinkedList<K, V> {
 
         if (second == null) {
             header = null;
+            size--;
             return first.getValue();
         } else if (last == second) {
             second.setPrev(null);
@@ -66,6 +69,7 @@ public class MyLinkedList<K, V> {
             second.setPrev(last);
         }
         header = second;
+        size--;
         return first.getValue();
     }
 
@@ -91,10 +95,12 @@ public class MyLinkedList<K, V> {
         }
 
         if (node == header && header.getNext() == null) {
+            size--;
             return removeFromOneEntryList(node);
         }
 
         if (node.getNext().getNext() == node) {
+            size--;
             return removeFromTwoEntryList(node);
         }
 
@@ -103,6 +109,7 @@ public class MyLinkedList<K, V> {
         if (node == header) {
             header = header.getNext();
         }
+        size--;
         return node;
     }
 
@@ -120,5 +127,9 @@ public class MyLinkedList<K, V> {
 
     public MyEntry peekFirst() {
         return header;
+    }
+    
+    public int size(){
+        return size;
     }
 }

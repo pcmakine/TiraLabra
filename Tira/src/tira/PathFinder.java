@@ -56,7 +56,7 @@ public class PathFinder {
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             int id = neighbour.getId();
-            if (!open[graph.idToRow(node.getId())][graph.idToColumn(node.getId())] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
+            if (!open[graph.idToRow(neighbour.getId())][graph.idToColumn(neighbour.getId())] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 openList.add(id);
                 open[graph.idToRow(id)][graph.idToColumn(id)] = true;
                 prev[id - 1] = node.getId();
