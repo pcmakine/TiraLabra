@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import logicwithjava.Node;
+import logicwithmycollections.MNode;
 
 /**
  *
@@ -19,18 +20,18 @@ import logicwithjava.Node;
  */
 public class MyEntryListTest {
 
-    Node a;
-    Node b;
-    Node c;
+    MNode a;
+    MNode b;
+    MNode c;
 
     public MyEntryListTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        Node a = new Node(1, 1, 1);
-        Node b = new Node(2, 1, 1);
-        Node c = new Node(3, 1, 1);
+        MNode a = new MNode(1, 1, 1);
+        MNode b = new MNode(2, 1, 1);
+        MNode c = new MNode(3, 1, 1);
     }
 
     @AfterClass
@@ -47,8 +48,8 @@ public class MyEntryListTest {
 
     @Test
     public void insertWorksOnEmptyList() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
-        Node node = new Node(1, 1, 1);
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
+        MNode node = new MNode(1, 1, 1);
 
         nodeList.insert(node, 3);
 
@@ -57,7 +58,7 @@ public class MyEntryListTest {
 
     @Test
     public void pollFirstWorks() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
@@ -70,7 +71,7 @@ public class MyEntryListTest {
 
     @Test
     public void removeWorksForFirstEntry() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
         nodeList.insert(c, 3);
@@ -86,7 +87,7 @@ public class MyEntryListTest {
 
     @Test
     public void removeWorksForMiddleEntry() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         nodeList.insert(b, 2);
@@ -103,7 +104,7 @@ public class MyEntryListTest {
 
     @Test
     public void removeWorksForOnlyEntry() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         Node removed = (Node) nodeList.remove(a).getKey();
@@ -114,7 +115,7 @@ public class MyEntryListTest {
 
     @Test
     public void getWorks() {
-        MyEntryList<Node, Integer> nodeList = new MyEntryList();
+        MyEntryList<MNode, Integer> nodeList = new MyEntryList();
 
         nodeList.insert(a, 1);
         assertEquals(a, nodeList.get(a).getKey());
