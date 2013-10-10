@@ -89,7 +89,7 @@ public class MyEntryList<K, V> {
         }
         return null;
     }
-
+    
     public MyEntry remove(K key) {
         MyEntry node = get(key);
 

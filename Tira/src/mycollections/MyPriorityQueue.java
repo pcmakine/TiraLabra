@@ -14,11 +14,11 @@ import mycollections.hashmap.MyHashMap;
  */
 public class MyPriorityQueue<E extends Comparable<E>> {
 
-    private ArrayList<E> elements;
+    private MyArrayList<E> elements;
     private MyHashMap<E, Integer> indexes;
 
     public MyPriorityQueue() {
-        this.elements = new ArrayList();
+        this.elements = new MyArrayList();
         this.indexes = new MyHashMap();
     }
 
@@ -114,15 +114,15 @@ public class MyPriorityQueue<E extends Comparable<E>> {
     }
 
     private int parent(int i) {
-        return (int) Math.ceil(i / 2);
+        return (int) Math.ceil(i* 1.0 / 2)-1;
     }
 
     private int left(int i) {
-        return 2 * i;
+        return 2 * i+1;
     }
 
     private int right(int i) {
-        return 2 * i + 1;
+        return 2 * i + 2;
     }
 
     public boolean isEmpty() {

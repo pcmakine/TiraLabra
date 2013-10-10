@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import logicwithjava.Node;
+import logicwithmycollections.MNode;
 import static org.junit.Assert.*;
 
 /**
@@ -18,7 +19,11 @@ import static org.junit.Assert.*;
  * @author Pete
  */
 public class MyPriorityQueueTest {
-    MyPriorityQueue<Node> q;
+
+    private static MyPriorityQueue<MNode> q;
+    private static MNode a;
+    private static MNode b;
+    private static MNode c;
 
     public MyPriorityQueueTest() {
     }
@@ -34,6 +39,9 @@ public class MyPriorityQueueTest {
     @Before
     public void setUp() {
         q = new MyPriorityQueue();
+        a = new MNode(1, 1, 1);
+        b = new MNode(2, 1, 1);
+        c = new MNode(3, 1, 1);
     }
 
     @After
@@ -77,11 +85,10 @@ public class MyPriorityQueueTest {
 
     @Test
     public void incKeyWorks() {
-        Node a = new Node(1, 1, 1);
         a.setDist(5);
-        Node b = new Node(2, 1, 1);
+
         b.setDist(3);
-        Node c = new Node(3, 1, 1);
+
         c.setDist(2);
 
         q.add(a);
@@ -101,12 +108,10 @@ public class MyPriorityQueueTest {
 
     @Test
     public void decKeyWorks() {
-        MyPriorityQueue<Node> q = new MyPriorityQueue();
-        Node a = new Node(1, 1, 1);
+        MyPriorityQueue<MNode> q = new MyPriorityQueue();
+
         a.setDist(5);
-        Node b = new Node(2, 1, 1);
         b.setDist(4);
-        Node c = new Node(3, 1, 1);
         c.setDist(3);
 
         q.add(a);

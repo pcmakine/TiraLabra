@@ -12,7 +12,7 @@ public class MyArrayList<E> {
 
     private int size;           //number of elements in the list
     private E[] array;
-    private static final int inflateMultiplier  = 3; //how much we increase the array's size every time it has to be increased
+    private static final int inflateMultiplier = 3; //how much we increase the array's size every time it has to be increased
 
     public MyArrayList() {
         this(32);
@@ -47,18 +47,22 @@ public class MyArrayList<E> {
             inflated[i] = array[i];
         }
         array = inflated;
-        
+
     }
-    
-    public void set(int index, E element){
-        array[index] = element;
+
+    public void set(int index, E element) {
+        if (index > size - 1) {
+            add(element);
+        } else {
+            array[index] = element;
+        }
     }
 
     public E[] toArray() {
         trim();
         return array;
     }
-    
+
     public void trim() {
         E[] trimmed = (E[]) new Object[size];
         for (int i = 0; i < size; i++) {
@@ -74,8 +78,28 @@ public class MyArrayList<E> {
     public E get(int index) {
         return array[index];
     }
-    
-    public int getCapacity(){
+
+    public int getCapacity() {
         return array.length;
+    }
+
+    public E remove(int index) {
+        if (index >= 0) {
+            E ret = array[index];
+            if (index == size - 1) {
+                array[size - 1] = null;
+            } else {
+                for (int i = index; i < size - 1; i++) {
+                    array[i] = array[i + 1];
+                }
+            }
+            size--;
+            return ret;
+        }
+        return null;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 }

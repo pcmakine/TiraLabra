@@ -9,6 +9,7 @@ package mycollections.hashmap;
  * @author Pete
  */
 public class MyEntry<K, V> {
+
     private MyEntry next;
     private MyEntry prev;
     private final K key;
@@ -17,8 +18,8 @@ public class MyEntry<K, V> {
     public MyEntry getPrev() {
         return prev;
     }
-    
-    public MyEntry(K key, V value){
+
+    public MyEntry(K key, V value) {
         this.key = key;
         this.value = value;
     }
@@ -30,15 +31,20 @@ public class MyEntry<K, V> {
     public void setNext(MyEntry next) {
         this.next = next;
     }
-        public void setPrev(MyEntry prev) {
+
+    public void setPrev(MyEntry prev) {
         this.prev = prev;
     }
-        
-    public K getKey(){
+
+    public void setValue(V value) {
+        this.value = value;
+    }
+
+    public K getKey() {
         return key;
     }
-    
-    public V getValue(){
+
+    public V getValue() {
         return value;
     }
 }

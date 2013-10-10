@@ -52,7 +52,12 @@ public class MyHashMap<K, V> {
             l.insert(key, value);
             elements[index] = l;
         } else {
-            elements[index].insert(key, value);
+            MyEntry toReplace = elements[index].get(key);
+            if (toReplace == null) {
+                elements[index].insert(key, value);
+            }else{
+                toReplace.setValue(value);
+            }
         }
         size++;
         if ((1.0 * size) / elements.length > threshold) {
@@ -62,7 +67,14 @@ public class MyHashMap<K, V> {
 
     private int getIndex(int key, int m) {
         int index = (int) (m * fr(constant * key));
-        return index;
+        return abs(index);
+    }
+
+    private int abs(int x) {
+        if (x < 0) {
+            return x * -1;
+        }
+        return x;
     }
 
     public double fr(double x) {
