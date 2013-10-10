@@ -26,6 +26,7 @@ public class MPathFinderTest {
     private static MGraph bigger;
     private static MGraph big;
     private static MGraph biggest;
+    private static MGraph huge;
 
     public MPathFinderTest() {
     }
@@ -55,7 +56,7 @@ public class MPathFinderTest {
     @After
     public void tearDown() {
     }
-    
+
     @Test
     public void bfsFindsTheShortestRoute() {
         MPathFinder finder = new MPathFinder(graph);
@@ -97,20 +98,19 @@ public class MPathFinderTest {
     }
 
     @Test
-    public void aStarVisitsCorrectNodesNoWalls(){
+    public void aStarVisitsCorrectNodesNoWalls() {
         MGraph test = new MGraph(4);
         MPathFinder finder = new MPathFinder(test);
-        
+
         finder.aStar(13, 3);
-        boolean[][] expected = {{true, true, true, false}, 
+        boolean[][] expected = {{true, true, true, false},
             {true, false, false, false},
-            {true, false, false, false}, 
+            {true, false, false, false},
             {true, false, false, false}};
         boolean[][] visited = finder.getClosed();
-        
+
         assertArrayEquals(expected, visited);
     }
-    
 
     @Test
     public void testbfsTime() {
@@ -139,10 +139,11 @@ public class MPathFinderTest {
     public void testAstarTime() {
         int testRuns = 50;
 
-        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms. Nodes: " + (small.getColumns()) * small.getColumns());
+        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms. Nodes: " + (bigger.getColumns() * bigger.getColumns()));
+        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms. Nodes: " + (big.getColumns() * big.getColumns()));
+        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms. Nodes: " + (biggest.getColumns() * biggest.getColumns()));
+        System.out.println("Astar Elapsed time for huge: " + runAstarTimeTests(huge, testRuns) + "ms. Nodes: " + (huge.getColumns() * huge.getColumns()));
     }
 
     private long runAstarTimeTests(MGraph graph, int testRuns) {
@@ -163,15 +164,16 @@ public class MPathFinderTest {
         int biggerSize = 283;
         int bigSize = 400;
         int biggestSize = 566;
+        int hugeSize = 800;
         int wallsPortion = 10;
-        
+
         long startTime = System.currentTimeMillis();
         small = new MGraph(smallSize);
         small.addNode(1);
         small.addNode(smallSize * smallSize);
         long stopTime = System.currentTimeMillis();
         long elapsedTime = (stopTime - startTime);
-        System.out.println("small made in " + elapsedTime + " ms.");
+        //    System.out.println("small made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         bigger = new MGraph(biggerSize);
@@ -179,7 +181,7 @@ public class MPathFinderTest {
         bigger.addNode(biggerSize * biggerSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("bigger made in " + elapsedTime + " ms.");
+        //System.out.println("bigger made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         big = new MGraph(bigSize);
@@ -187,7 +189,7 @@ public class MPathFinderTest {
         big.addNode(bigSize * bigSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("big made in " + elapsedTime + " ms.");
+        // System.out.println("big made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         biggest = new MGraph(biggestSize);
@@ -195,7 +197,17 @@ public class MPathFinderTest {
         biggest.addNode(biggestSize * biggestSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("biggest made in " + elapsedTime + " ms.");
+
+        startTime = System.currentTimeMillis();
+        huge = new MGraph(hugeSize);
+        huge.addNode(1);
+        huge.addNode(hugeSize * hugeSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        
+        
+        
+        //System.out.println("biggest made in " + elapsedTime + " ms.");
 
 //        long startTime = System.currentTimeMillis();
 //        small = new MGraph(smallSize, (smallSize * smallSize) / wallsPortion);

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package logicwithjava;
+package gui;
 
 import gui.Window;
 import java.util.ArrayList;

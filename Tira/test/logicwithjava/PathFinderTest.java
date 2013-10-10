@@ -26,6 +26,7 @@ public class PathFinderTest {
     private static Graph bigger;
     private static Graph big;
     private static Graph biggest;
+    private static Graph huge;
 
     public PathFinderTest() {
     }
@@ -55,7 +56,7 @@ public class PathFinderTest {
     @After
     public void tearDown() {
     }
-    
+
     @Test
     public void bfsFindsTheShortestRoute() {
         PathFinder finder = new PathFinder(graph);
@@ -97,20 +98,19 @@ public class PathFinderTest {
     }
 
     @Test
-    public void aStarVisitsCorrectNodesNoWalls(){
+    public void aStarVisitsCorrectNodesNoWalls() {
         Graph test = new Graph(4);
         PathFinder finder = new PathFinder(test);
-        
+
         finder.aStar(13, 3);
-        boolean[][] expected = {{true, true, true, false}, 
+        boolean[][] expected = {{true, true, true, false},
             {true, false, false, false},
-            {true, false, false, false}, 
+            {true, false, false, false},
             {true, false, false, false}};
         boolean[][] visited = finder.getClosed();
-        
+
         assertArrayEquals(expected, visited);
     }
-    
 
     @Test
     public void testbfsTime() {
@@ -139,10 +139,11 @@ public class PathFinderTest {
     public void testAstarTime() {
         int testRuns = 50;
 
-        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms");
-        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms");
+        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms. Nodes: " + (small.getColumns())*small.getColumns());
+        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms. Nodes: " + (bigger.getColumns()*bigger.getColumns()));
+        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms. Nodes: " + (big.getColumns()*big.getColumns()));
+        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms. Nodes: " + (biggest.getColumns()*biggest.getColumns()));
+        System.out.println("Astar Elapsed time for huge: " + runAstarTimeTests(huge, testRuns) + "ms. Nodes: " + (huge.getColumns() * huge.getColumns()));
     }
 
     private long runAstarTimeTests(Graph graph, int testRuns) {
@@ -159,43 +160,51 @@ public class PathFinderTest {
     }
 
     private static void makeRandomGraphsForTimeTests() {
-        int smallSize = 200;
-        int biggerSize = 283;
-        int bigSize = 400;
-        int biggestSize = 566;
+        int smallSize = 200;    //40000 nodes
+        int biggerSize = 283;   // 80089 nodes
+        int bigSize = 400;      // 160000 nodes
+        int biggestSize = 566; // 320356 nodes
+        int hugeSize = 800;
         int wallsPortion = 10;
-        
-                long startTime = System.currentTimeMillis();
+
+        long startTime = System.currentTimeMillis();
         small = new Graph(smallSize);
         small.addNode(1);
-        small.addNode(smallSize*smallSize);
+        small.addNode(smallSize * smallSize);
         long stopTime = System.currentTimeMillis();
         long elapsedTime = (stopTime - startTime);
-        System.out.println("small made in " + elapsedTime + " ms.");
+        //System.out.println("small made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         bigger = new Graph(biggerSize);
         bigger.addNode(1);
-        bigger.addNode(biggerSize*biggerSize);
+        bigger.addNode(biggerSize * biggerSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("bigger made in " + elapsedTime + " ms.");
+       // System.out.println("bigger made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         big = new Graph(bigSize);
         big.addNode(1);
-        big.addNode(bigSize*bigSize);
+        big.addNode(bigSize * bigSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("big made in " + elapsedTime + " ms.");
+        //System.out.println("big made in " + elapsedTime + " ms.");
 
         startTime = System.currentTimeMillis();
         biggest = new Graph(biggestSize);
         biggest.addNode(1);
-        biggest.addNode(biggestSize*biggestSize);
+        biggest.addNode(biggestSize * biggestSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        System.out.println("biggest made in " + elapsedTime + " ms.");
+        
+               startTime = System.currentTimeMillis();
+        huge = new Graph(hugeSize);
+        huge.addNode(1);
+        huge.addNode(hugeSize * hugeSize);
+        stopTime = System.currentTimeMillis();
+        elapsedTime = (stopTime - startTime);
+        //System.out.println("biggest made in " + elapsedTime + " ms.");
 
 //        long startTime = System.currentTimeMillis();
 //        small = new Graph(smallSize, (smallSize * smallSize) / wallsPortion);

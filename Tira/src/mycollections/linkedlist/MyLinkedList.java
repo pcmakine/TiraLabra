@@ -29,6 +29,13 @@ public class MyLinkedList<E> {
         size++;
     }
 
+    public void addFirst(E value) {
+        ListNode node = new ListNode(value);
+        if (header == null) {
+            insertInEmptyList(node);
+        }
+    }
+
     private void insertInEmptyList(ListNode node) {
         node.setNext(null);
         node.setPrev(null);
@@ -40,6 +47,17 @@ public class MyLinkedList<E> {
         header.setNext(node);
         node.setPrev(header);
         node.setNext(header);
+    }
+
+    private void insertHeadOfOneEntryList(ListNode node) {
+        header.setPrev(node);
+        header.setNext(node);
+        
+        node.setPrev(header);
+        node.setNext(header);
+        
+        header = node;
+
     }
 
     private void insertInMultiEntryList(ListNode node) {
@@ -72,12 +90,12 @@ public class MyLinkedList<E> {
         size--;
         return first.getValue();
     }
-    
-    public E getValue(E value){
+
+    public E getValue(E value) {
         ListNode<E> node = get(value);
-        if(node == null){
+        if (node == null) {
             return null;
-        }else{
+        } else {
             return node.getValue();
         }
     }
@@ -144,8 +162,8 @@ public class MyLinkedList<E> {
     public int size() {
         return size;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return size == 0;
     }
 }
