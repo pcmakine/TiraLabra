@@ -4,8 +4,6 @@
  */
 package logicwithmycollections;
 
-import logic.*;
-
 /**
  *
  * @author pcmakine

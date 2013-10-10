@@ -20,10 +20,10 @@ public class MyHashMap<K, V> {
     private static final int threshold = 2;
     private static final int DEFAULT_INIT_CAPACITY = 16;
 
-    public MyHashMap(){
+    public MyHashMap() {
         this(DEFAULT_INIT_CAPACITY);
     }
-    
+
     public MyHashMap(int initialCapacity) {
         if (initialCapacity <= 0 || !isPowerOfTwo(initialCapacity) || initialCapacity > 4194304) {
             throw new IllegalArgumentException("Illegal capacity: " + initialCapacity);
@@ -79,7 +79,7 @@ public class MyHashMap<K, V> {
         MyEntry entry = elements[index].get(key);
         if (entry != null) {
             return (V) entry.getValue();
-        }else{
+        } else {
             return null;
         }
     }
@@ -92,7 +92,11 @@ public class MyHashMap<K, V> {
             return null;
         } else {
             size--;
-            return (V) elements[index].remove(key).getValue();
+            MyEntry<K, V> ret = elements[index].remove(key);
+            if (ret == null) {
+                return null;
+            }
+            return ret.getValue();
         }
     }
 

@@ -101,19 +101,16 @@ public class MyPriorityQueue<E extends Comparable<E>> {
     }
 
     private void swap(int i, int j) {
-        E temp;
         if (i > elements.size() - 1) {
-            temp = null;
             elements.add(elements.get(j));
             indexes.put(elements.get(elements.size() - 1), elements.size() - 1);
         } else {
-            temp = elements.get(i);
+            E temp = elements.get(i);
+            elements.set(i, elements.get(j));
+            indexes.put(elements.get(i), i);
+            elements.set(j, temp);
+            indexes.put(temp, j);
         }
-
-        elements.set(i, elements.get(j));
-        indexes.put(elements.get(i), i);
-        elements.set(j, temp);
-        indexes.put(temp, j);
     }
 
     private int parent(int i) {

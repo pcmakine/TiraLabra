@@ -31,7 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import logic.Node;
+import logicwithmycollections.MNode;
 
 /**
  *
@@ -49,7 +49,7 @@ public class Window extends JFrame {
     private JPanel controlArea;
     private PaintSurface drawer;
     private HashMap<Shape, Color> shapeColors;
-    private ArrayList<Node> results;
+    private ArrayList<MNode> results;
     private Color noNode = new Color(255, 100, 255);
     private int portionofNodesRemoved = 3;
 
@@ -87,7 +87,7 @@ public class Window extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (drawer.target != null && drawer.origin != null) {
                     results = new ArrayList();
-                    Node[] result;
+                    MNode[] result;
                     if (function.equals("bfs")) {
                         result = controller.getBfsResult(drawer.origin.getId(), drawer.target.getId());
                     } else {
@@ -180,12 +180,12 @@ public class Window extends JFrame {
     private class PaintSurface extends JComponent {
 
         ArrayList<Shape> shapes = new ArrayList<Shape>();
-        HashMap<Shape, Node> nodeSquares = new HashMap();
-        HashMap<Node, Shape> shapeNodes = new HashMap();
+        HashMap<Shape, MNode> nodeSquares = new HashMap();
+        HashMap<MNode, Shape> shapeNodes = new HashMap();
         int nodes;
         Point startDrag, endDrag;
-        Node origin;
-        Node target;
+        MNode origin;
+        MNode target;
 
         public PaintSurface() {
             this.nodes = 0;
@@ -256,7 +256,7 @@ public class Window extends JFrame {
                 }
 
                 //checks whether the user is trying to draw the line in an existing node. Returns the center of the node or null if there's no node
-                private ArrayList<Node> targetNodes(Point start, Point end) {
+                private ArrayList<MNode> targetNodes(Point start, Point end) {
                     boolean startin;
                     boolean endin;
                     ArrayList targets = new ArrayList();
@@ -301,7 +301,7 @@ public class Window extends JFrame {
         }
 
         private void removeNode(Shape clicked) {
-            Node node = nodeSquares.get(clicked);
+            MNode node = nodeSquares.get(clicked);
             int id = node.getId();
             controller.removeNode(node);
             nodeSquares.remove(clicked);
@@ -314,7 +314,7 @@ public class Window extends JFrame {
             nodes--;
         }
 
-        public void showResult(Node[] result) {
+        public void showResult(MNode[] result) {
             for (int i = 1; i < result.length; i++) {
                 if (i == result.length - 2 || result[i + 1] == null) {
                     break;
@@ -349,18 +349,18 @@ public class Window extends JFrame {
         }
 
         public void addRectangleNodes() {
-            Node[][] n = controller.getGraph().getNodes();
+            MNode[][] n = controller.getGraph().getNodes();
             
             for (int i = 0; i < n.length; i++) {
                 for (int j = 0; j < n[0].length; j++) {
-                    Node node = n[i][j];
+                    MNode node = n[i][j];
 
                     if (node != null) {
 
                         int x = node.getX();
                         int y = node.getY();
 
-                        Shape rect = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                        Shape rect = makeRectangle(x, y, x + MNode.getWidth(), y + MNode.getHeight());
 
                         if (!nodeSquares.containsKey(rect)) {
                             shapes.add(rect);
@@ -369,9 +369,9 @@ public class Window extends JFrame {
                             shapeNodes.put(node, rect);
                         }
                     } else {
-                        int x = j * Node.getWidth() + (Node.getWidth() * controller.getGraph().getPos());
-                        int y = i * Node.getWidth() + (Node.getHeight() * controller.getGraph().getPos());
-                        Shape r = makeRectangle(x, y, x + Node.getWidth(), y + Node.getHeight());
+                        int x = j * MNode.getWidth() + (MNode.getWidth() * controller.getGraph().getPos());
+                        int y = i * MNode.getWidth() + (MNode.getHeight() * controller.getGraph().getPos());
+                        Shape r = makeRectangle(x, y, x + MNode.getWidth(), y + MNode.getHeight());
                         shapes.add(r);
                         shapeColors.put(r, noNode);
                     }

@@ -4,8 +4,8 @@
  */
 package logic;
 
-import logic.Node;
-import logic.Graph;
+import logicwithjava.Node;
+import logicwithjava.Graph;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.junit.Test;

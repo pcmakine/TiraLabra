@@ -4,9 +4,9 @@
  */
 package logic;
 
-import logic.PathFinder;
-import logic.Node;
-import logic.Graph;
+import logicwithjava.PathFinder;
+import logicwithjava.Node;
+import logicwithjava.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

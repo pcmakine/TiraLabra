@@ -4,11 +4,9 @@
  */
 package gui;
 
-import logic.Node;
-import logic.Graph;
-import logic.PathFinder;
-import java.util.ArrayList;
-import java.util.HashMap;
+import logicwithmycollections.MGraph;
+import logicwithmycollections.MNode;
+import logicwithmycollections.MPathFinder;
 
 /**
  *
@@ -16,37 +14,37 @@ import java.util.HashMap;
  */
 public class Controller {
 
-    private Graph graph;
-    private PathFinder finder;
+    private MGraph graph;
+    private MPathFinder finder;
 
     public Controller() {
     }
 
-    public Node[][] createGraph(int size) {
-        this.graph = new Graph(size);
+    public MNode[][] createGraph(int size) {
+        this.graph = new MGraph(size);
         return graph.getNodes();
     }
 
     public void makeRandomGraph(int size, int walls){
-        graph = new Graph(size, walls);
+        graph = new MGraph(size, walls);
     }
 
-    public void removeNode(Node node) {
+    public void removeNode(MNode node) {
         graph.removeNode(node);
 
     }
 
-    public Node[] getBfsResult(int startId, int targetId) {
-        this.finder = new PathFinder(graph);
+    public MNode[] getBfsResult(int startId, int targetId) {
+        this.finder = new MPathFinder(graph);
         return finder.bfs(startId, targetId);
     }
 
-    public Node[] getAstarResult(int startId, int targetId) {
-        this.finder = new PathFinder(graph);
+    public MNode[] getAstarResult(int startId, int targetId) {
+        this.finder = new MPathFinder(graph);
         return finder.aStar(startId, targetId);
     }
 
-    public Graph getGraph() {
+    public MGraph getGraph() {
         return graph;
     }
 }

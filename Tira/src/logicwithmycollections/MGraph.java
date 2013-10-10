@@ -4,7 +4,6 @@
  */
 package logicwithmycollections;
 
-import logic.*;
 import mycollections.MyArrayList;
 
 /**
