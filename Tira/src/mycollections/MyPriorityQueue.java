@@ -6,6 +6,7 @@ package mycollections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import mycollections.hashmap.MyHashMap;
 
 /**
  *
@@ -14,11 +15,11 @@ import java.util.HashMap;
 public class MyPriorityQueue<E extends Comparable<E>> {
 
     private ArrayList<E> elements;
-    private HashMap<E, Integer> indexes;
+    private MyHashMap<E, Integer> indexes;
 
     public MyPriorityQueue() {
         this.elements = new ArrayList();
-        this.indexes = new HashMap();
+        this.indexes = new MyHashMap();
     }
 
     //adds the element to the right place in the queue

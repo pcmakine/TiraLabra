@@ -17,8 +17,13 @@ public class MyHashMap<K, V> {
     private MyEntryList<K, V>[] elements;
     private double constant = 0.61803;
     private int size;
-    private final static int threshold = 2;
+    private static final int threshold = 2;
+    private static final int DEFAULT_INIT_CAPACITY = 16;
 
+    public MyHashMap(){
+        this(DEFAULT_INIT_CAPACITY);
+    }
+    
     public MyHashMap(int initialCapacity) {
         if (initialCapacity <= 0 || !isPowerOfTwo(initialCapacity) || initialCapacity > 4194304) {
             throw new IllegalArgumentException("Illegal capacity: " + initialCapacity);
