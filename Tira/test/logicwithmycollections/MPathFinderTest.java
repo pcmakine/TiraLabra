@@ -113,6 +113,21 @@ public class MPathFinderTest {
     }
 
     @Test
+    public void aStarVisitsCorrectNodesWithWalls() {
+        MPathFinder finder = new MPathFinder(graph);
+
+        finder.aStar(21, 8);
+        boolean[][] expected = {{true, false, false, false, false},
+            {true, false, true, true, true},
+            {true, false, false, false, true},
+            {true, false, true, true, true},
+            {true, true, true, true, false}};
+        boolean[][] visited = finder.getClosed();
+
+        assertArrayEquals(expected, visited);
+    }
+
+    @Test
     public void testbfsTime() {
         int testRuns = 50;
         System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
@@ -204,9 +219,9 @@ public class MPathFinderTest {
         huge.addNode(hugeSize * hugeSize);
         stopTime = System.currentTimeMillis();
         elapsedTime = (stopTime - startTime);
-        
-        
-        
+
+
+
         //System.out.println("biggest made in " + elapsedTime + " ms.");
 
 //        long startTime = System.currentTimeMillis();

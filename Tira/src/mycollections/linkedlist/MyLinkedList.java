@@ -29,13 +29,6 @@ public class MyLinkedList<E> {
         size++;
     }
 
-    public void addFirst(E value) {
-        ListNode node = new ListNode(value);
-        if (header == null) {
-            insertInEmptyList(node);
-        }
-    }
-
     private void insertInEmptyList(ListNode node) {
         node.setNext(null);
         node.setPrev(null);
@@ -52,10 +45,10 @@ public class MyLinkedList<E> {
     private void insertHeadOfOneEntryList(ListNode node) {
         header.setPrev(node);
         header.setNext(node);
-        
+
         node.setPrev(header);
         node.setNext(header);
-        
+
         header = node;
 
     }
@@ -69,26 +62,7 @@ public class MyLinkedList<E> {
     }
 
     public E pollFirst() {
-        if (header == null) {
-            return null;
-        }
-        ListNode<E> first = header;
-        ListNode<E> second = header.getNext();
-        ListNode<E> last = header.getPrev();
-
-        if (second == null) {
-            header = null;
-            size--;
-            return first.getValue();
-        } else if (last == second) {
-            second.setPrev(null);
-            second.setNext(null);
-        } else {
-            second.setPrev(last);
-        }
-        header = second;
-        size--;
-        return first.getValue();
+       return removeElementAt(0);
     }
 
     public E getValue(E value) {
@@ -125,34 +99,84 @@ public class MyLinkedList<E> {
         }
 
         if (node == header && header.getNext() == null) {
-            size--;
             return removeFromOneEntryList(node).getValue();
         }
 
         if (node.getNext().getNext() == node) {
-            size--;
             return removeFromTwoEntryList(node).getValue();
         }
 
-        node.getPrev().setNext(node.getNext());
-        node.getNext().setPrev(node.getPrev());
-        if (node == header) {
-            header = header.getNext();
-        }
-        size--;
+        removeNode(node);
         return node.getValue();
     }
 
     private ListNode<E> removeFromOneEntryList(ListNode<E> node) {
-        header = null;
-        return node;
+        if (node == header) {
+            header = null;
+            size--;
+            return node;
+        }
+        return null;
     }
 
     private ListNode<E> removeFromTwoEntryList(ListNode<E> node) {
         node.getNext().setNext(null);
         node.getNext().setPrev(null);
         header = node.getNext();        //whether the removable node is the current header or not, the other will be the header after the removal
+        size--;
         return node;
+    }
+
+    public E removeElementAt(int index) {
+        if (size == 0 || index > (size - 1) || index < 0) {
+            return null;
+        } else if (size == 1) {
+            return removeFromOneEntryList(header).getValue();
+        } else if(size == 2){
+            ListNode<E> node = searchFromEnd(index);
+            return removeFromTwoEntryList(node).getValue();
+        }else if (index < (size / 2)) {
+            ListNode<E> node = searchFromBeginning(index);
+            removeNode(node);
+            return node.getValue();
+        } else {
+            ListNode<E> node = searchFromEnd(index);
+            removeNode(node);
+            return node.getValue();
+        }
+    }
+
+    private ListNode getElementAtOneEntryList(int index) {
+        if (index == 0) {
+            return header;
+        } else {
+            return null;
+        }
+    }
+
+    private ListNode searchFromBeginning(int index) {
+        ListNode<E> node = header;
+        for (int i = 0; i < index; i++) {
+            node = node.getNext();
+        }
+        return node;
+    }
+
+    private ListNode searchFromEnd(int index) {
+        ListNode<E> node = header;
+        for (int i = 0; i < (size - index); i++) {
+            node = node.getPrev();
+        }
+        return node;
+    }
+
+    private void removeNode(ListNode node) {
+        node.getPrev().setNext(node.getNext());
+        node.getNext().setPrev(node.getPrev());
+        if (node == header) {
+            header = node.getNext();
+        }
+        size--;
     }
 
     public E peekFirst() {

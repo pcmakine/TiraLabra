@@ -5,9 +5,9 @@
 package logicwithmycollections;
 
 
-import java.util.Stack;
 import mycollections.MyArrayList;
 import mycollections.MyPriorityQueue;
+import mycollections.MyStack;
 import mycollections.linkedlist.MyLinkedList;
 
 /**
@@ -65,7 +65,7 @@ public class MPathFinder {
     }
 
     private MNode[] getSolution(int[] prev, int node, int origin) {
-        Stack<MNode> resultStack = new Stack();
+        MyStack<MNode> resultStack = new MyStack();
         MNode[] reverseOrder = new MNode[prev.length];
         MNode[] ordered = new MNode[prev.length];
         int nodes = 0;

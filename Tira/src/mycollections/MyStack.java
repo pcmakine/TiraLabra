@@ -11,20 +11,26 @@ import mycollections.linkedlist.MyLinkedList;
  * @author pcmakine
  */
 public class MyStack<E> {
+
     private int size;
     private MyLinkedList<E> elements;
-    
-    public void MyStack(){
+
+    public MyStack() {
         this.size = 0;
         elements = new MyLinkedList();
     }
-    
-    public E peek(){
+
+    public E peek() {
         return elements.peekFirst();
     }
-    
-    public E pop(){
-        return elements.pollFirst();
+
+    public E pop() {
+        size--;
+        return elements.removeElementAt(elements.size() - 1);
     }
-    
+
+    public void push(E value) {
+        elements.add(value);
+        size++;
+    }
 }

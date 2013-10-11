@@ -66,16 +66,16 @@ public class MNode implements Comparable<MNode> {
 
     @Override
     public int compareTo(MNode node) {
-        if (this.heuristics + this.dist > node.heuristics + node.dist) {
+        if (this.heuristics + this.dist > node.getHeuristics() + node.getDist()) {
             return 1;
         }
-        if (this.heuristics + this.dist < node.heuristics + node.dist) {
+        if (this.heuristics + this.dist < node.getHeuristics() + node.getDist()) {
             return -1;
         }
-        if((this.heuristics + this.dist) == (node.heuristics + node.dist) && this.dist > node.dist){
+        if((this.heuristics + this.dist) == (node.getHeuristics() + node.getDist()) && this.dist > node.getDist()){
             return -1;
         }
-        if((this.heuristics + this.dist) == (node.heuristics + node.dist) && this.dist < node.dist){
+        if((this.heuristics + this.dist) == (node.getHeuristics() + node.getDist()) && this.dist < node.getDist()){
             return 1;
         }
         return 0;
