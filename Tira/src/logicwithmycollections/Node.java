@@ -9,7 +9,7 @@ package logicwithmycollections;
  * @author pcmakine
  */
 
-public class MNode implements Comparable<MNode> {
+public class Node implements Comparable<Node> {
 
     private int id;
     private int x;
@@ -19,13 +19,13 @@ public class MNode implements Comparable<MNode> {
     private static int WIDTH = 20;
     private static int HEIGHT = 20;
 
-    public MNode(int id, int x, int y) {
+    public Node(int id, int x, int y) {
         this.id = id;
         this.x = x;
         this.y = y;
     }
     
-    public MNode(int id){
+    public Node(int id){
         this.id = id;
     }
 
@@ -65,7 +65,7 @@ public class MNode implements Comparable<MNode> {
     }
 
     @Override
-    public int compareTo(MNode node) {
+    public int compareTo(Node node) {
         if (this.heuristics + this.dist > node.getHeuristics() + node.getDist()) {
             return 1;
         }

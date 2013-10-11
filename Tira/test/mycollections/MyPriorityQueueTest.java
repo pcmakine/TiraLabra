@@ -4,14 +4,12 @@
  */
 package mycollections;
 
-import mycollections.MyPriorityQueue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import logicwithjava.Node;
-import logicwithmycollections.MNode;
+import logicwithmycollections.Node;
 import static org.junit.Assert.*;
 
 /**
@@ -20,10 +18,10 @@ import static org.junit.Assert.*;
  */
 public class MyPriorityQueueTest {
 
-    private static MyPriorityQueue<MNode> q;
-    private static MNode a;
-    private static MNode b;
-    private static MNode c;
+    private static MyPriorityQueue<Node> q;
+    private static Node a;
+    private static Node b;
+    private static Node c;
 
     public MyPriorityQueueTest() {
     }
@@ -39,9 +37,9 @@ public class MyPriorityQueueTest {
     @Before
     public void setUp() {
         q = new MyPriorityQueue();
-        a = new MNode(1, 1, 1);
-        b = new MNode(2, 1, 1);
-        c = new MNode(3, 1, 1);
+        a = new Node(1, 1, 1);
+        b = new Node(2, 1, 1);
+        c = new Node(3, 1, 1);
     }
 
     @After
@@ -108,7 +106,7 @@ public class MyPriorityQueueTest {
 
     @Test
     public void decKeyWorks() {
-        MyPriorityQueue<MNode> q = new MyPriorityQueue();
+        MyPriorityQueue<Node> q = new MyPriorityQueue();
 
         a.setDist(5);
         b.setDist(4);

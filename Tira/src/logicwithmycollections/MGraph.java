@@ -16,8 +16,7 @@ public class MGraph {
     private int COLUMNS;
     private int graphPos;
     private int maxId;
-    private boolean[][] nodeArray;
-    private MNode[][] nodeMatrix;
+    private Node[][] nodeMatrix;
 
     public MGraph(int size) {
         init(size);
@@ -39,7 +38,7 @@ public class MGraph {
 
     }
 
-    public MyArrayList<MNode> getVerticalAndHorizontalNeighbours(int node) {
+    public MyArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
         MyArrayList ret = new MyArrayList();
         int top = node - COLUMNS;
         int below = node + COLUMNS;
@@ -73,7 +72,7 @@ public class MGraph {
     }
 
     public void makeRandomMatrix(int walls) {
-        this.nodeMatrix = new MNode[ROWS][COLUMNS];
+        this.nodeMatrix = new Node[ROWS][COLUMNS];
         int id = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -88,7 +87,7 @@ public class MGraph {
     }
 
     public void makeNodeMatrix() {
-        this.nodeMatrix = new MNode[ROWS][COLUMNS];
+        this.nodeMatrix = new Node[ROWS][COLUMNS];
         int id = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -99,12 +98,12 @@ public class MGraph {
     }
 
     public void addNode(int id) {
-        int x = (((id - 1) % getColumns() * MNode.getWidth()) + graphPos * MNode.getWidth());
-        int y = (int) Math.ceil(((id - 1) / getColumns()) * MNode.getHeight() + graphPos * MNode.getHeight());
-        nodeMatrix[idToRow(id)][idToColumn(id)] = new MNode(id, x, y);
+        int x = (((id - 1) % getColumns() * Node.getWidth()) + graphPos * Node.getWidth());
+        int y = (int) Math.ceil(((id - 1) / getColumns()) * Node.getHeight() + graphPos * Node.getHeight());
+        nodeMatrix[idToRow(id)][idToColumn(id)] = new Node(id, x, y);
     }
 
-    public void removeNode(MNode node) {
+    public void removeNode(Node node) {
         int id = node.getId();
         nodeMatrix[idToRow(id)][idToColumn(id)] = null;
     }
@@ -113,11 +112,11 @@ public class MGraph {
         nodeMatrix = null;
     }
 
-    public MNode getNode(int id) {
+    public Node getNode(int id) {
         return nodeMatrix[idToRow(id)][idToColumn(id)];
     }
 
-    public MNode[][] getNodes() {
+    public Node[][] getNodes() {
         return nodeMatrix;
     }
 

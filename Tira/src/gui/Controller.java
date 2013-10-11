@@ -5,7 +5,7 @@
 package gui;
 
 import logicwithmycollections.MGraph;
-import logicwithmycollections.MNode;
+import logicwithmycollections.Node;
 import logicwithmycollections.MPathFinder;
 
 /**
@@ -20,7 +20,7 @@ public class Controller {
     public Controller() {
     }
 
-    public MNode[][] createGraph(int size) {
+    public Node[][] createGraph(int size) {
         this.graph = new MGraph(size);
         return graph.getNodes();
     }
@@ -29,17 +29,17 @@ public class Controller {
         graph = new MGraph(size, walls);
     }
 
-    public void removeNode(MNode node) {
+    public void removeNode(Node node) {
         graph.removeNode(node);
 
     }
 
-    public MNode[] getBfsResult(int startId, int targetId) {
+    public Node[] getBfsResult(int startId, int targetId) {
         this.finder = new MPathFinder(graph);
         return finder.bfs(startId, targetId);
     }
 
-    public MNode[] getAstarResult(int startId, int targetId) {
+    public Node[] getAstarResult(int startId, int targetId) {
         this.finder = new MPathFinder(graph);
         return finder.aStar(startId, targetId);
     }

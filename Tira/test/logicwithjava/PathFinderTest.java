@@ -4,9 +4,7 @@
  */
 package logicwithjava;
 
-import logicwithjava.PathFinder;
-import logicwithjava.Node;
-import logicwithjava.Graph;
+import logicwithmycollections.Node;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,15 +23,23 @@ public class PathFinderTest {
     private static Graph small;
     private static Graph bigger;
     private static Graph big;
-    private static Graph biggest;
     private static Graph huge;
+    private static Graph huger;
+    private static Graph a;
+    private static Graph biggest;
+    private static int[] sizes = {200, 283, 400, 566, 800, 1131, 1599};
+    private static Graph[] graphs = {small, bigger, big, huge, huger, a, biggest};
 
     public PathFinderTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        makeRandomGraphsForTimeTests();
+        System.out.println("");
+        System.out.println("PathFinder test with java tools");
+        for (int i = 0; i < graphs.length; i++) {
+            graphs[i] = makeGraph(sizes[i], 1, sizes[i] * sizes[i]);
+        }
 
     }
 
@@ -114,12 +120,13 @@ public class PathFinderTest {
 
     @Test
     public void testbfsTime() {
-        int testRuns = 50;
-        System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
+        System.out.println("");
+        System.out.println("BFS time test with java tools:");
 
-        System.out.println("BFS Elapsed time for biggest: " + runBFSTimeTests(biggest, testRuns) + "ms");
+        int testRuns = 50;
+        for (int i = 0; i < 6; i++) {
+            System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runBFSTimeTests(graphs[i], testRuns) + "ms");
+        }
     }
 
     private long runBFSTimeTests(Graph graph, int testRuns) {
@@ -134,17 +141,18 @@ public class PathFinderTest {
         return elapsedAverage;
     }
 
-    //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testAstarTime() {
-        int testRuns = 50;
+        System.out.println("");
+        System.out.println("A* time test with java tools:");
 
-        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms. Nodes: " + (small.getColumns())*small.getColumns());
-        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms. Nodes: " + (bigger.getColumns()*bigger.getColumns()));
-        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms. Nodes: " + (big.getColumns()*big.getColumns()));
-        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms. Nodes: " + (biggest.getColumns()*biggest.getColumns()));
-        System.out.println("Astar Elapsed time for huge: " + runAstarTimeTests(huge, testRuns) + "ms. Nodes: " + (huge.getColumns() * huge.getColumns()));
+        int testRuns = 50;
+        for (int i = 0; i < graphs.length; i++) {
+            System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runAstarTimeTests(graphs[i], testRuns) + "ms.");
+        }
     }
+
+    
 
     private long runAstarTimeTests(Graph graph, int testRuns) {
         long elapsedAverage;
@@ -159,53 +167,19 @@ public class PathFinderTest {
         return elapsedAverage;
     }
 
-    private static void makeRandomGraphsForTimeTests() {
-        int smallSize = 200;    //40000 nodes
-        int biggerSize = 283;   // 80089 nodes
-        int bigSize = 400;      // 160000 nodes
-        int biggestSize = 566; // 320356 nodes
-        int hugeSize = 800;
-        int wallsPortion = 10;
-
+    private static Graph makeGraph(int size, int originId, int goalId) {
         long startTime = System.currentTimeMillis();
-        small = new Graph(smallSize);
-        small.addNode(1);
-        small.addNode(smallSize * smallSize);
+        Graph test = new Graph(size);
+        test.addNode(originId);
+        test.addNode(goalId);
         long stopTime = System.currentTimeMillis();
         long elapsedTime = (stopTime - startTime);
-        //System.out.println("small made in " + elapsedTime + " ms.");
+//        System.out.println("Graph of " + (size * size) + " nodes made in " + elapsedTime + " ms.");
+        return test;
+    }
 
-        startTime = System.currentTimeMillis();
-        bigger = new Graph(biggerSize);
-        bigger.addNode(1);
-        bigger.addNode(biggerSize * biggerSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-       // System.out.println("bigger made in " + elapsedTime + " ms.");
-
-        startTime = System.currentTimeMillis();
-        big = new Graph(bigSize);
-        big.addNode(1);
-        big.addNode(bigSize * bigSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-        //System.out.println("big made in " + elapsedTime + " ms.");
-
-        startTime = System.currentTimeMillis();
-        biggest = new Graph(biggestSize);
-        biggest.addNode(1);
-        biggest.addNode(biggestSize * biggestSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-        
-               startTime = System.currentTimeMillis();
-        huge = new Graph(hugeSize);
-        huge.addNode(1);
-        huge.addNode(hugeSize * hugeSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
+    private static void makeRandomGraphsForTimeTests() {
         //System.out.println("biggest made in " + elapsedTime + " ms.");
-
 //        long startTime = System.currentTimeMillis();
 //        small = new Graph(smallSize, (smallSize * smallSize) / wallsPortion);
 //        small.addNode(1);
@@ -237,6 +211,5 @@ public class PathFinderTest {
 //        stopTime = System.currentTimeMillis();
 //        elapsedTime = (stopTime - startTime);
 //        System.out.println("biggest made in " + elapsedTime + " ms.");
-
     }
 }

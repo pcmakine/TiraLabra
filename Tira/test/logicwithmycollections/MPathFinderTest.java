@@ -4,9 +4,6 @@
  */
 package logicwithmycollections;
 
-import logicwithjava.PathFinder;
-import logicwithjava.Node;
-import logicwithjava.Graph;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,16 +22,23 @@ public class MPathFinderTest {
     private static MGraph small;
     private static MGraph bigger;
     private static MGraph big;
-    private static MGraph biggest;
     private static MGraph huge;
+    private static MGraph huger;
+    private static MGraph a;
+    private static MGraph biggest;
+    private static int[] sizes = {200, 283, 400, 566, 800, 1131, 1599};
+    private static MGraph[] graphs = {small, bigger, big, huge, huger, a, biggest};
 
     public MPathFinderTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        makeRandomGraphsForTimeTests();
-
+        System.out.println("");
+        System.out.println("PathFinder test with my collections");
+        for (int i = 0; i < graphs.length; i++) {
+            graphs[i] = makeGraph(sizes[i], 1, sizes[i] * sizes[i]);
+        }
     }
 
     @AfterClass
@@ -63,13 +67,13 @@ public class MPathFinderTest {
         MPathFinder finder1 = new MPathFinder(graph1);
 
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
-        MNode[] result = finder.bfs(21, 8);
+        Node[] result = finder.bfs(21, 8);
         int[] resultIds = resultArray(result);
 
         assertArrayEquals(expected, resultIds);
     }
 
-    private int[] resultArray(MNode[] result) {
+    private int[] resultArray(Node[] result) {
         int count = 0;
         for (int i = 0; i < result.length; i++) {
             if (result[i] != null) {
@@ -91,7 +95,7 @@ public class MPathFinderTest {
         MPathFinder finder = new MPathFinder(graph);
 
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
-        MNode[] result = finder.aStar(21, 8);
+        Node[] result = finder.aStar(21, 8);
         int[] resultIds = resultArray(result);;
 
         assertArrayEquals(expected, resultIds);
@@ -129,12 +133,13 @@ public class MPathFinderTest {
 
     @Test
     public void testbfsTime() {
-        int testRuns = 50;
-        System.out.println("BFS Elapsed time for small: " + runBFSTimeTests(small, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for bigger: " + runBFSTimeTests(bigger, testRuns) + "ms");
-        System.out.println("BFS Elapsed time for big: " + runBFSTimeTests(big, testRuns) + "ms");
+        System.out.println("");
+        System.out.println("BFS time test with my collections:");
 
-        System.out.println("BFS Elapsed time for biggest: " + runBFSTimeTests(biggest, testRuns) + "ms");
+        int testRuns = 50;
+        for (int i = 0; i < 6; i++) {
+            System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runBFSTimeTests(graphs[i], testRuns) + "ms");
+        }
     }
 
     private long runBFSTimeTests(MGraph graph, int testRuns) {
@@ -149,16 +154,15 @@ public class MPathFinderTest {
         return elapsedAverage;
     }
 
-    //doesn't seem to be very reliable. Huge variance.
     @Test
     public void testAstarTime() {
-        int testRuns = 50;
+        System.out.println("");
+        System.out.println("A* time test with my collections:");
 
-        System.out.println("Astar Elapsed time for small: " + runAstarTimeTests(small, testRuns) + "ms. Nodes: " + (small.getColumns()) * small.getColumns());
-        System.out.println("Astar Elapsed time for bigger: " + runAstarTimeTests(bigger, testRuns) + "ms. Nodes: " + (bigger.getColumns() * bigger.getColumns()));
-        System.out.println("Astar Elapsed time for big: " + runAstarTimeTests(big, testRuns) + "ms. Nodes: " + (big.getColumns() * big.getColumns()));
-        System.out.println("Astar Elapsed time for biggest: " + runAstarTimeTests(biggest, testRuns) + "ms. Nodes: " + (biggest.getColumns() * biggest.getColumns()));
-        System.out.println("Astar Elapsed time for huge: " + runAstarTimeTests(huge, testRuns) + "ms. Nodes: " + (huge.getColumns() * huge.getColumns()));
+        int testRuns = 50;
+        for (int i = 0; i < graphs.length; i++) {
+            System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runAstarTimeTests(graphs[i], testRuns) + "ms.");
+        }
     }
 
     private long runAstarTimeTests(MGraph graph, int testRuns) {
@@ -174,56 +178,19 @@ public class MPathFinderTest {
         return elapsedAverage;
     }
 
-    private static void makeRandomGraphsForTimeTests() {
-        int smallSize = 200;
-        int biggerSize = 283;
-        int bigSize = 400;
-        int biggestSize = 566;
-        int hugeSize = 800;
-        int wallsPortion = 10;
-
+    private static MGraph makeGraph(int size, int originId, int goalId) {
         long startTime = System.currentTimeMillis();
-        small = new MGraph(smallSize);
-        small.addNode(1);
-        small.addNode(smallSize * smallSize);
+        MGraph test = new MGraph(size);
+        test.addNode(originId);
+        test.addNode(goalId);
         long stopTime = System.currentTimeMillis();
         long elapsedTime = (stopTime - startTime);
-        //    System.out.println("small made in " + elapsedTime + " ms.");
+//        System.out.println("Graph of " + (size * size) + " nodes made in " + elapsedTime + " ms.");
+        return test;
+    }
 
-        startTime = System.currentTimeMillis();
-        bigger = new MGraph(biggerSize);
-        bigger.addNode(1);
-        bigger.addNode(biggerSize * biggerSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-        //System.out.println("bigger made in " + elapsedTime + " ms.");
-
-        startTime = System.currentTimeMillis();
-        big = new MGraph(bigSize);
-        big.addNode(1);
-        big.addNode(bigSize * bigSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-        // System.out.println("big made in " + elapsedTime + " ms.");
-
-        startTime = System.currentTimeMillis();
-        biggest = new MGraph(biggestSize);
-        biggest.addNode(1);
-        biggest.addNode(biggestSize * biggestSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-
-        startTime = System.currentTimeMillis();
-        huge = new MGraph(hugeSize);
-        huge.addNode(1);
-        huge.addNode(hugeSize * hugeSize);
-        stopTime = System.currentTimeMillis();
-        elapsedTime = (stopTime - startTime);
-
-
-
+    private static void makeRandomGraphsForTimeTests() {
         //System.out.println("biggest made in " + elapsedTime + " ms.");
-
 //        long startTime = System.currentTimeMillis();
 //        small = new MGraph(smallSize, (smallSize * smallSize) / wallsPortion);
 //        small.addNode(1);
@@ -255,6 +222,5 @@ public class MPathFinderTest {
 //        stopTime = System.currentTimeMillis();
 //        elapsedTime = (stopTime - startTime);
 //        System.out.println("biggest made in " + elapsedTime + " ms.");
-
     }
 }

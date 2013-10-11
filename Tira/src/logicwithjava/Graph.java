@@ -5,8 +5,7 @@
 package logicwithjava;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import logicwithmycollections.Node;
 /**
  *
  * @author pcmakine

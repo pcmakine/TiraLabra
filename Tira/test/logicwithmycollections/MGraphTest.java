@@ -4,15 +4,10 @@
  */
 package logicwithmycollections;
 
-import logicwithjava.Node;
-import logicwithjava.Graph;
-import java.util.Map;
+
 import junit.framework.TestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
 import mycollections.MyArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -78,7 +73,7 @@ public class MGraphTest {
         assertArrayEquals(firstExpected, firstNeighbours);
     }
 
-    private int[] nodeListToIdArray(MyArrayList<MNode> list) {
+    private int[] nodeListToIdArray(MyArrayList<Node> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i).getId();
