@@ -45,6 +45,7 @@ public class MyPriorityQueue<E extends Comparable<E>> {
         }
         E min = elements.get(0);
         if (elements.size() > 1) {
+//            indexes.remove(elements.get(elements.size()-1));
             elements.set(0, elements.remove(elements.size() - 1));
             heapify(0);
         } else {

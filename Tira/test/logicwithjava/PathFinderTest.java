@@ -29,6 +29,7 @@ public class PathFinderTest {
     private static Graph biggest;
     private static int[] sizes = {200, 283, 400, 566, 800, 1131, 1599};
     private static Graph[] graphs = {small, bigger, big, huge, huger, a, biggest};
+    private static int testRuns = 30;
 
     public PathFinderTest() {
     }
@@ -56,7 +57,6 @@ public class PathFinderTest {
         graph.removeNode(graph.getNode(13));
         graph.removeNode(graph.getNode(14));
         graph.removeNode(graph.getNode(17));
-
     }
 
     @After
@@ -123,7 +123,6 @@ public class PathFinderTest {
         System.out.println("");
         System.out.println("BFS time test with java tools:");
 
-        int testRuns = 50;
         for (int i = 0; i < 6; i++) {
             System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runBFSTimeTests(graphs[i], testRuns) + "ms");
         }
@@ -146,7 +145,6 @@ public class PathFinderTest {
         System.out.println("");
         System.out.println("A* time test with java tools:");
 
-        int testRuns = 50;
         for (int i = 0; i < graphs.length; i++) {
             System.out.println("Graph of " + graphs[i].getColumns() * graphs[i].getRows() + " nodes: " + runAstarTimeTests(graphs[i], testRuns) + "ms.");
         }
