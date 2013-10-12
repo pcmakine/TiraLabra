@@ -23,6 +23,7 @@ public class Node implements Comparable<Node> {
         this.id = id;
         this.x = x;
         this.y = y;
+        this.dist = Integer.MAX_VALUE;
     }
     
     public Node(int id){

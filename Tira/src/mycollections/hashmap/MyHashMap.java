@@ -4,8 +4,6 @@
  */
 package mycollections.hashmap;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Pete
@@ -36,7 +34,7 @@ public class MyHashMap<K, V> {
         return (number & -number) == number;
     }
 
-    public boolean contains(K key) {
+    public boolean containsKey(K key) {
         if (get(key) != null) {
             return true;
         }

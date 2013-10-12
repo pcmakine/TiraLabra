@@ -112,7 +112,7 @@ public class Window extends JFrame {
 
                 int graphSize = getNumericValue(graphSide.getText());
                 if (graphSize != -1) {
-                    controller.makeRandomGraph(graphSize, (graphSize * graphSize) / 5);
+                    controller.makeRandomGraph(graphSize, (graphSize * graphSize) / 3);
                     drawer.nodes = graphSize * graphSize;
                     drawer.addRectangleNodes();
                    // removeManyNodes();
@@ -128,19 +128,6 @@ public class Window extends JFrame {
         drawer.target = null;
         drawer.origin = null;
     }
-
-//    private void removeManyNodes() {
-//        for (int i = 0; i < remove.size(); i++) {
-//
-//            Node node = controller.getGraph().getNode(remove.get(i));
-//            Shape s = drawer.shapeNodes.get(node);
-//            drawer.nodeSquares.remove(s);
-//            // drawer.shapes.remove(s);
-//            shapeColors.remove(s);
-//            shapeColors.put(s, noNode);
-//            drawer.nodes--;
-//        }
-//    }
 
     private int getNumericValue(String text) {
         int value;
@@ -214,30 +201,6 @@ public class Window extends JFrame {
                     repaint();
                 }
 
-//                @Override
-//                public void mouseDragged(MouseEvent e) {
-//
-//                    endDrag = new Point(e.getX(), e.getY());
-//                    startDrag = new Point(e.getX(), e.getY());
-//                    Shape clicked = new Ellipse2D.Double(e.getX() - 0, e.getY() - 0, 1.0 * 0, 1.0 * 0);
-//                    for (Shape s : shapes) {
-//                        if (s.contains(e.getX(), e.getY())) {
-//                            clicked = s;
-//                        }
-//                    }
-//                    if (Math.abs(lineLength(startDrag.x, startDrag.y, endDrag.x, endDrag.y)) > 10 && !(clicked instanceof Ellipse2D)) {
-//                        Node node = nodeSquares.get(clicked);
-//                        controller.removeNodesAllNeighbours(node);
-//                        nodeSquares.remove(clicked);
-//                        nodeMap.remove(node.getId());
-//                        shapes.remove(clicked);
-//                        shapeColors.remove(clicked);
-//                    }
-////                    startDrag = null;
-////                    endDrag = null;
-//                    repaint();
-//
-//                }
                 private double lineLength(int startX, int startY, int targetX, int targetY) {
                     double a = Math.abs(startX - targetX);
                     double b = Math.abs(startY - targetY);
@@ -307,7 +270,6 @@ public class Window extends JFrame {
             nodeSquares.remove(clicked);
             int row = controller.getGraph().idToRow(id);
             int column = controller.getGraph().idToColumn(id);
-            //  shapes.remove(clicked);
             shapeColors.remove(clicked);
             shapeColors.put(clicked, noNode);
             shapeNodes.remove(node);
@@ -315,21 +277,10 @@ public class Window extends JFrame {
         }
 
         public void showResult(Node[] result) {
-            for (int i = 1; i < result.length; i++) {
-                if (i == result.length - 2 || result[i + 1] == null) {
-                    break;
-                }
-//                for (Shape s : shapes) {
-//                    if (nodeSquares.get(s) == result[i]) {
-//                        shapeColors.remove(s);
-//                        shapeColors.put(s, Color.cyan);
-//                    }
-
+            for (int i = 1; i < result.length-1; i++) {
                 Shape s = (shapeNodes.get(result[i]));
                 shapeColors.remove(s);
                 shapeColors.put(s, Color.cyan);
-
-
                 repaint();
             }
             repaint();
@@ -384,12 +335,7 @@ public class Window extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             Color[] colors = {Color.YELLOW, Color.BLUE,};
-            //Color[] colors = {Color.YELLOW, Color.MAGENTA, Color.CYAN, Color.RED, Color.BLUE, Color.PINK};
             int colorIndex = 0;
-            //drawGraph();
-//
-//            Shape re = makeRectangle(60, 100, 60 + Node.getWidth(), 100 + Node.getHeight());
-//            shapes.add(re);
 
             g2.setStroke(new BasicStroke(2));
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.50f));
@@ -398,17 +344,8 @@ public class Window extends JFrame {
                 g2.setPaint(Color.BLACK);
                 g2.draw(s);
                 g2.setPaint(shapeColors.get(s));
-//                g2.setPaint(colors[(colorIndex++) % colors.length]);
                 g2.fill(s);
             }
-
-//            for (Map.Entry<Node, Point> entry : centers.entrySet()) {
-//                g2.setPaint(Color.BLACK);
-//                Point point = entry.getValue();
-//                Font myFont = new Font("Serif", Font.ITALIC | Font.BOLD, 12);
-//
-//                g2.drawString((entry.getKey().getId() + ""), point.x, point.y);
-//            }
 
             paintBackground(g2);
 

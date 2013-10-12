@@ -4,8 +4,6 @@
  */
 package mycollections;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import mycollections.hashmap.MyHashMap;
 
 /**
@@ -45,7 +43,7 @@ public class MyPriorityQueue<E extends Comparable<E>> {
         }
         E min = elements.get(0);
         if (elements.size() > 1) {
-//            indexes.remove(elements.get(elements.size()-1));
+            indexes.remove(elements.get(elements.size()-1));
             elements.set(0, elements.remove(elements.size() - 1));
             heapify(0);
         } else {
@@ -68,7 +66,7 @@ public class MyPriorityQueue<E extends Comparable<E>> {
     }
 
     public boolean decKey(E element) {
-        if (indexes.get(element) != null) {
+        if (indexes.containsKey(element)) {
 
             int index = indexes.get(element);
 
@@ -128,5 +126,9 @@ public class MyPriorityQueue<E extends Comparable<E>> {
 
     public boolean isEmpty() {
         return elements.isEmpty();
+    }
+    
+    public boolean contains(E element){
+        return indexes.containsKey(element);
     }
 }

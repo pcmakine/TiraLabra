@@ -4,7 +4,7 @@
  */
 package logicwithmycollections;
 
-
+import java.util.LinkedList;
 import mycollections.MyArrayList;
 import mycollections.MyPriorityQueue;
 import mycollections.MyStack;
@@ -19,17 +19,20 @@ public class MPathFinder {
 
     private MGraph graph;
     private boolean closed[][];
+    private int visited;
 
     public MPathFinder(MGraph graph) {
         this.graph = graph;
+        this.visited = 0;
     }
 
     public Node[] bfs(int startId, int goalId) {
+        visited = 0;
         MyLinkedList<Integer> openList = new MyLinkedList();
         closed = new boolean[graph.getRows()][graph.getColumns()];
         boolean[][] open = new boolean[graph.getRows()][graph.getColumns()];
         int[] prev = new int[graph.getNumberofNodes()];
-        
+
         openList.add(startId);
         open[graph.idToRow(startId)][graph.idToColumn(startId)] = true;
 
@@ -41,6 +44,7 @@ public class MPathFinder {
             Node node = graph.getNode(id);
             if (!closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 closed[graph.idToRow(id)][graph.idToColumn(id)] = true;
+                visited++;
 
                 if (node == graph.getNode(goalId)) {
                     return getSolution(prev, node.getId(), startId);
@@ -56,7 +60,7 @@ public class MPathFinder {
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
             int id = neighbour.getId();
-            if (!open[graph.idToRow(neighbour.getId())][graph.idToColumn(neighbour.getId())] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
+            if (!open[graph.idToRow(id)][graph.idToColumn(id)] && !closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 openList.add(id);
                 open[graph.idToRow(id)][graph.idToColumn(id)] = true;
                 prev[id - 1] = node.getId();
@@ -67,7 +71,7 @@ public class MPathFinder {
     private Node[] getSolution(int[] prev, int node, int origin) {
         MyStack<Node> resultStack = new MyStack();
         Node[] reverseOrder = new Node[prev.length];
-        Node[] ordered = new Node[prev.length];
+
         int nodes = 0;
         while (node != -1) {
             reverseOrder[nodes] = graph.getNode(node);
@@ -79,20 +83,22 @@ public class MPathFinder {
             node = prev[node - 1];
         }
         int j = 0;
+        Node[] ordered = new Node[nodes];
         for (int i = nodes - 1; i >= 0; i--) {
             ordered[j] = reverseOrder[i];
             j++;
         }
         return ordered;
     }
+
     public Node[] aStar(int startId, int goalId) {
+        visited = 0;
         MyPriorityQueue<Node> open = new MyPriorityQueue();
         closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
         int[] prev = new int[graph.getNumberofNodes()];
         int prevId = -1;
 
         Node[][] nodes = graph.getNodes();
-        initDistances(nodes);
 
         graph.getNode(startId).setDist(0);
         open.add(graph.getNode(startId));
@@ -103,6 +109,7 @@ public class MPathFinder {
 
             if (!closed[graph.idToRow(id)][graph.idToColumn(id)]) {
                 closed[graph.idToRow(id)][graph.idToColumn(id)] = true;
+                visited++;
                 if (node == graph.getNode(goalId)) {
                     return getSolution(prev, node.getId(), startId);
                 }
@@ -111,55 +118,29 @@ public class MPathFinder {
         }
         return null;
     }
-    
-        private void initDistances(Node[][] nodes) {
-        for (int i = 0; i < nodes.length; i++) {
-            for (int j = 0; j < nodes[0].length; j++) {
-                Node node = nodes[i][j];
-                if (node != null) {
-                    node.setDist(Integer.MAX_VALUE);
-                }
-            }
-        }
-    }
 
     private void addForAstar(Node node, MyPriorityQueue queue, int[] prev, Node target, boolean[][] closed) {
         MyArrayList<Node> neighbours = graph.getVerticalAndHorizontalNeighbours(node.getId());
         for (int i = 0; i < neighbours.size(); i++) {
             Node neighbour = neighbours.get(i);
+            neighbour.setHeuristics((int) getManhattanHeuristics(neighbour, target));
             
-            int heuristics = getManhattanHeuristics(neighbour, target);
-            neighbour.setHeuristics((int) heuristics);
-            if (neighbour.getDist() > node.getDist() + 1) {
-                int oldDist = neighbour.getDist();
+            if(closed[graph.idToRow(neighbour.getId())][graph.idToColumn(neighbour.getId())] && node.getDist() +1 >= neighbour.getDist()){
+                continue;
+            }
+            if (!queue.contains(neighbour) || (neighbour.getDist() > node.getDist() + 1)) {
                 neighbour.setDist(node.getDist() + 1);
-                updatePriority(neighbour, queue, oldDist, node.getDist()+1);
+                updatePriority(neighbour, queue, node.getDist() + 1);
                 prev[neighbour.getId() - 1] = node.getId();
             }
         }
     }
-    
-    private void updatePriority(Node node, MyPriorityQueue queue, int oldDist, int newDist){
-        if (oldDist < newDist) {
-            if (!queue.incKey(node)) {
-                queue.add(node);
-            }
-        }else{
-            if(!queue.decKey(node)){
-                queue.add(node);
-            }
+
+    private void updatePriority(Node node, MyPriorityQueue queue, int newDist) {
+        if (!queue.decKey(node)) {
+            queue.add(node);
         }
     }
-
-//    //Returns the euclidian distance of two nodes
-//    private double getHeuristics(Node start, Node target) {
-//        double a = Math.abs(start.getX() - target.getX());
-//        double b = Math.abs(start.getY() - target.getY());
-//
-//        double distance = Math.sqrt((a * a) + (b * b));
-//
-//        return distance / 20;
-//    }
 
     private int getManhattanHeuristics(Node start, Node target) {
         int startrow = (start.getId() - 1) / graph.getColumns();
@@ -171,8 +152,12 @@ public class MPathFinder {
 
         return distance;
     }
-    
-    public boolean[][] getClosed(){
+
+    public boolean[][] getClosed() {
         return closed;
+    }
+
+    public int getVisited() {
+        return visited;
     }
 }
