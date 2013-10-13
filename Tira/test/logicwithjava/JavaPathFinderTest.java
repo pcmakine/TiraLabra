@@ -16,26 +16,26 @@ import static org.junit.Assert.*;
  *
  * @author Pete
  */
-public class PathFinderTest {
+public class JavaPathFinderTest {
 
-    private Graph graph;
-    private Graph graph1;
-    private static Graph small;
-    private static Graph bigger;
-    private static Graph big;
-    private static Graph huge;
-    private static Graph huger;
-    private static Graph a;
-    private static Graph biggest;
-    private static int[] sizes = {283, 400, 566, 800, 1131, 1599};
-    private static Graph[] graphs = {bigger, big, huge, huger, a, biggest};
-    private static Graph biggerRandom;
-    private static Graph bigRandom;
-    private static Graph hugeRandom;
-    private static Graph[] randoms = {biggerRandom, bigRandom, hugeRandom};
+    private JavaGraph graph;
+    private JavaGraph graph1;
+    private static JavaGraph small;
+    private static JavaGraph bigger;
+    private static JavaGraph big;
+    private static JavaGraph huge;
+    private static JavaGraph huger;
+    private static JavaGraph a;
+    private static JavaGraph biggest;
+    private static int[] sizes = {283, 400, 566, 800, 1131, 1599, 4000};
+    private static JavaGraph[] graphs = {small, bigger, big, huge, huger, biggest, a};
+    private static JavaGraph biggerRandom;
+    private static JavaGraph bigRandom;
+    private static JavaGraph hugeRandom;
+    private static JavaGraph[] randoms = {biggerRandom, bigRandom, hugeRandom};
     private static int testRuns = 50;
 
-    public PathFinderTest() {
+    public JavaPathFinderTest() {
     }
 
     @BeforeClass
@@ -57,7 +57,7 @@ public class PathFinderTest {
 
     @Before
     public void setUp() {
-        graph = new Graph(5);
+        graph = new JavaGraph(5);
         graph.removeNode(graph.getNode(2));
         graph.removeNode(graph.getNode(7));
         graph.removeNode(graph.getNode(12));
@@ -72,8 +72,8 @@ public class PathFinderTest {
 
     @Test
     public void bfsFindsTheShortestRoute() {
-        PathFinder finder = new PathFinder(graph);
-        PathFinder finder1 = new PathFinder(graph1);
+        JavaPathFinder finder = new JavaPathFinder(graph);
+        JavaPathFinder finder1 = new JavaPathFinder(graph1);
 
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
         Node[] result = finder.bfs(21, 8);
@@ -101,7 +101,7 @@ public class PathFinderTest {
 
     @Test
     public void aStarFindsTheShortestRoute() {
-        PathFinder finder = new PathFinder(graph);
+        JavaPathFinder finder = new JavaPathFinder(graph);
 
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
         Node[] result = finder.aStar(21, 8);
@@ -112,8 +112,8 @@ public class PathFinderTest {
 
     @Test
     public void aStarVisitsCorrectNodesNoWalls() {
-        Graph test = new Graph(4);
-        PathFinder finder = new PathFinder(test);
+        JavaGraph test = new JavaGraph(4);
+        JavaPathFinder finder = new JavaPathFinder(test);
 
         finder.aStar(13, 3);
         boolean[][] expected = {{true, true, true, false},
@@ -130,7 +130,7 @@ public class PathFinderTest {
         System.out.println("");
         System.out.println("BFS time test using java tools:");
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 4; i++) {
             System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "bfs") + "ms");
         }
 
@@ -157,10 +157,10 @@ public class PathFinderTest {
         }
     }
 
-    private long runTimeTests(Graph graph, int testRuns, String algo) {
+    private long runTimeTests(JavaGraph graph, int testRuns, String algo) {
         long elapsedAverage;
         Node[] sol = new Node[1];
-        PathFinder finder = new PathFinder(graph);
+        JavaPathFinder finder = new JavaPathFinder(graph);
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
             if (algo.equals("bfs")) {
@@ -179,9 +179,9 @@ public class PathFinderTest {
         return elapsedAverage;
     }
 
-    private static Graph makeGraph(int size, int originId, int goalId) {
+    private static JavaGraph makeGraph(int size, int originId, int goalId) {
         long startTime = System.currentTimeMillis();
-        Graph test = new Graph(size);
+        JavaGraph test = new JavaGraph(size);
         test.addNode(originId);
         test.addNode(goalId);
         long stopTime = System.currentTimeMillis();
@@ -190,9 +190,9 @@ public class PathFinderTest {
         return test;
     }
 
-    private static Graph makeRandomGraph(int size, int originId, int goalId, int wallsPortion) {
+    private static JavaGraph makeRandomGraph(int size, int originId, int goalId, int wallsPortion) {
         long startTime = System.currentTimeMillis();
-        Graph test = new Graph(size, (size * size) / wallsPortion);
+        JavaGraph test = new JavaGraph(size, (size * size) / wallsPortion);
         test.addNode(originId);
         test.addNode(goalId);
         long stopTime = System.currentTimeMillis();

@@ -15,26 +15,26 @@ import static org.junit.Assert.*;
  *
  * @author Pete
  */
-public class MPathFinderTest {
+public class PathFinderTest {
 
-    private MGraph graph;
-    private MGraph graph1;
-    private static MGraph small;
-    private static MGraph bigger;
-    private static MGraph big;
-    private static MGraph huge;
-    private static MGraph huger;
-    private static MGraph veryBig;
-    private static MGraph biggest;
+    private Graph graph;
+    private Graph graph1;
+    private static Graph crazy;
+    private static Graph bigger;
+    private static Graph big;
+    private static Graph huge;
+    private static Graph huger;
+    private static Graph veryBig;
+    private static Graph biggest;
     private static int[] sizes = {283, 400, 566, 800, 1131, 1599};
-    private static MGraph[] graphs = {bigger, big, huge, huger, veryBig, biggest};
-    private static MGraph biggerRandom;
-    private static MGraph bigRandom;
-    private static MGraph hugeRandom;
-    private static MGraph[] randoms = {biggerRandom, bigRandom, hugeRandom};
+    private static Graph[] graphs = {bigger, big, huge, huger, veryBig, biggest};
+    private static Graph biggerRandom;
+    private static Graph bigRandom;
+    private static Graph hugeRandom;
+    private static Graph[] randoms = {biggerRandom, bigRandom, hugeRandom};
     private static int testRuns = 50;
 
-    public MPathFinderTest() {
+    public PathFinderTest() {
     }
 
     @BeforeClass
@@ -55,7 +55,7 @@ public class MPathFinderTest {
 
     @Before
     public void setUp() {
-        graph = new MGraph(5);
+        graph = new Graph(5);
         graph.removeNode(graph.getNode(2));
         graph.removeNode(graph.getNode(7));
         graph.removeNode(graph.getNode(12));
@@ -71,8 +71,8 @@ public class MPathFinderTest {
 
     @Test
     public void bfsFindsTheShortestRoute() {
-        MPathFinder finder = new MPathFinder(graph);
-        MPathFinder finder1 = new MPathFinder(graph1);
+        PathFinder finder = new PathFinder(graph);
+        PathFinder finder1 = new PathFinder(graph1);
 
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
         Node[] result = finder.bfs(21, 8);
@@ -100,7 +100,7 @@ public class MPathFinderTest {
 
     @Test
     public void aStarFindsTheShortestRoute() {
-        MPathFinder finder = new MPathFinder(graph);
+        PathFinder finder = new PathFinder(graph);
         int[] expected = {21, 22, 23, 18, 19, 20, 15, 10, 9, 8};
         Node[] result = finder.aStar(21, 8);
         int[] resultIds = resultArray(result);;
@@ -110,8 +110,8 @@ public class MPathFinderTest {
 
     @Test
     public void aStarVisitsCorrectNodesNoWalls() {
-        MGraph test = new MGraph(4);
-        MPathFinder finder = new MPathFinder(test);
+        Graph test = new Graph(4);
+        PathFinder finder = new PathFinder(test);
 
         finder.aStar(13, 3);
         boolean[][] expected = {{true, true, true, false},
@@ -126,7 +126,7 @@ public class MPathFinderTest {
 
     @Test
     public void aStarVisitsCorrectNodesWithWalls() {
-        MPathFinder finder = new MPathFinder(graph);
+        PathFinder finder = new PathFinder(graph);
 
         finder.aStar(21, 8);
         boolean[][] expected = {{true, false, false, false, false},
@@ -142,7 +142,7 @@ public class MPathFinderTest {
     
     @Test
     public void bfsVisitsCorrectNodesWithWalls() {
-        MPathFinder finder = new MPathFinder(graph);
+        PathFinder finder = new PathFinder(graph);
 
         finder.bfs(21, 24);
         boolean[][] expected = {{false, false, false, false, false},
@@ -188,10 +188,10 @@ public class MPathFinderTest {
         }
     }
 
-    private long runTimeTests(MGraph graph, int testRuns, String algo) {
+    private long runTimeTests(Graph graph, int testRuns, String algo) {
         long elapsedAverage;
         Node[] sol = new Node[1];
-        MPathFinder finder = new MPathFinder(graph);
+        PathFinder finder = new PathFinder(graph);
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
             if (algo.equals("bfs")) {
@@ -210,9 +210,9 @@ public class MPathFinderTest {
         return elapsedAverage;
     }
 
-    private static MGraph makeGraph(int size, int originId, int goalId) {
+    private static Graph makeGraph(int size, int originId, int goalId) {
         long startTime = System.currentTimeMillis();
-        MGraph test = new MGraph(size);
+        Graph test = new Graph(size);
         test.addNode(originId);
         test.addNode(goalId);
         long stopTime = System.currentTimeMillis();
@@ -221,9 +221,9 @@ public class MPathFinderTest {
         return test;
     }
 
-    private static MGraph makeRandomGraph(int size, int originId, int goalId, int wallsPortion) {
+    private static Graph makeRandomGraph(int size, int originId, int goalId, int wallsPortion) {
         long startTime = System.currentTimeMillis();
-        MGraph test = new MGraph(size, (size * size) / wallsPortion);
+        Graph test = new Graph(size, (size * size) / wallsPortion);
         test.addNode(originId);
         test.addNode(goalId);
         long stopTime = System.currentTimeMillis();

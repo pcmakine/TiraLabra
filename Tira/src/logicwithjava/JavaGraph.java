@@ -2,28 +2,29 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package logicwithmycollections;
+package logicwithjava;
 
-import mycollections.MyArrayList;
-
+import java.util.ArrayList;
+import logicwithmycollections.Node;
 /**
  *
  * @author pcmakine
  */
-public class MGraph {
+public class JavaGraph {
 
     private int ROWS;
     private int COLUMNS;
     private int graphPos;
     private int maxId;
+    private boolean[][] nodeArray;
     private Node[][] nodeMatrix;
 
-    public MGraph(int size) {
+    public JavaGraph(int size) {
         init(size);
         makeNodeMatrix();
     }
 
-    public MGraph(int size, int walls) {
+    public JavaGraph(int size, int walls) {
         init(size);
         if (walls < size * size) {
             makeRandomMatrix(walls);
@@ -31,6 +32,7 @@ public class MGraph {
     }
 
     private void init(int size) {
+//        this.nodes = new HashMap();
         this.ROWS = size;
         this.COLUMNS = size;
         graphPos = 5;
@@ -38,8 +40,8 @@ public class MGraph {
 
     }
 
-    public MyArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
-        MyArrayList ret = new MyArrayList();
+    public ArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
+        ArrayList ret = new ArrayList();
         int top = node - COLUMNS;
         int below = node + COLUMNS;
         int left = node - 1;

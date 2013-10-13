@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package logicwithjava;
+package logicwithmycollections;
 
-import java.util.ArrayList;
-import logicwithmycollections.Node;
+import mycollections.MyArrayList;
+
 /**
  *
  * @author pcmakine
@@ -16,7 +16,6 @@ public class Graph {
     private int COLUMNS;
     private int graphPos;
     private int maxId;
-    private boolean[][] nodeArray;
     private Node[][] nodeMatrix;
 
     public Graph(int size) {
@@ -32,7 +31,6 @@ public class Graph {
     }
 
     private void init(int size) {
-//        this.nodes = new HashMap();
         this.ROWS = size;
         this.COLUMNS = size;
         graphPos = 5;
@@ -40,8 +38,8 @@ public class Graph {
 
     }
 
-    public ArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
-        ArrayList ret = new ArrayList();
+    public MyArrayList<Node> getVerticalAndHorizontalNeighbours(int node) {
+        MyArrayList ret = new MyArrayList();
         int top = node - COLUMNS;
         int below = node + COLUMNS;
         int left = node - 1;

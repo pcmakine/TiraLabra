@@ -4,6 +4,7 @@
  */
 package mycollections.hashmap;
 
+import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class MyHashMapTest {
     @Test //shouldn't throw any exceptions
     public void constructorWorkingForPowersOfTwo() {
         MyHashMap<Node, Integer> map = new MyHashMap(4);
-        MyHashMap<Node, Integer> map2 = new MyHashMap(4194304);
+        MyHashMap<Node, Integer> map2 = new MyHashMap(1048576);
     }
 
     @Test
@@ -157,9 +158,5 @@ public class MyHashMapTest {
         
         map.remove(nodes[2]);
         assertEquals(null, map.get(nodes[2]));
-
-//        for (int i = 0; i < 9; i++) {
-//            assertEquals(i, map.get(nodes[i]));
-//        }
     }
 }

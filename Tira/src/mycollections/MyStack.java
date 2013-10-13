@@ -33,4 +33,8 @@ public class MyStack<E> {
         elements.add(value);
         size++;
     }
+    
+    public boolean isEmpty(){
+        return size == 0;
+    }
 }

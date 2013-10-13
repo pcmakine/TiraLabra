@@ -2,16 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package logicwithjava;
+package logicwithmycollections;
 
-import logicwithjava.Graph;
+
 import junit.framework.TestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import logicwithmycollections.Node;
+import mycollections.MyArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -76,7 +73,7 @@ public class GraphTest {
         assertArrayEquals(firstExpected, firstNeighbours);
     }
 
-    private int[] nodeListToIdArray(List<Node> list) {
+    private int[] nodeListToIdArray(MyArrayList<Node> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i).getId();

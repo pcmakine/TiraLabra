@@ -24,8 +24,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -57,7 +55,7 @@ public class Window extends JFrame {
         this.controller = controller;
         this.shapeColors = new HashMap();
         createComponents();
-        this.setSize(600, 500);
+        this.setSize(700, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         drawer = new PaintSurface();
         this.add(drawer, BorderLayout.CENTER);

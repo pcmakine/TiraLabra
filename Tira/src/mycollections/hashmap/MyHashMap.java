@@ -23,10 +23,9 @@ public class MyHashMap<K, V> {
     }
 
     public MyHashMap(int initialCapacity) {
-        if (initialCapacity <= 0 || !isPowerOfTwo(initialCapacity) || initialCapacity > 4194304) {
+        if (initialCapacity <= 0 || !isPowerOfTwo(initialCapacity)) {
             throw new IllegalArgumentException("Illegal capacity: " + initialCapacity);
         }
-
         elements = new MyEntryList[initialCapacity];
     }
 

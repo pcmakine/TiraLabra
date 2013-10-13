@@ -4,9 +4,9 @@
  */
 package gui;
 
-import logicwithmycollections.MGraph;
+import logicwithmycollections.Graph;
 import logicwithmycollections.Node;
-import logicwithmycollections.MPathFinder;
+import logicwithmycollections.PathFinder;
 
 /**
  *
@@ -14,19 +14,19 @@ import logicwithmycollections.MPathFinder;
  */
 public class Controller {
 
-    private MGraph graph;
-    private MPathFinder finder;
+    private Graph graph;
+    private PathFinder finder;
 
     public Controller() {
     }
 
     public Node[][] createGraph(int size) {
-        this.graph = new MGraph(size);
+        this.graph = new Graph(size);
         return graph.getNodes();
     }
 
     public void makeRandomGraph(int size, int walls){
-        graph = new MGraph(size, walls);
+        graph = new Graph(size, walls);
     }
 
     public void removeNode(Node node) {
@@ -35,16 +35,16 @@ public class Controller {
     }
 
     public Node[] getBfsResult(int startId, int targetId) {
-        this.finder = new MPathFinder(graph);
+        this.finder = new PathFinder(graph);
         return finder.bfs(startId, targetId);
     }
 
     public Node[] getAstarResult(int startId, int targetId) {
-        this.finder = new MPathFinder(graph);
+        this.finder = new PathFinder(graph);
         return finder.aStar(startId, targetId);
     }
 
-    public MGraph getGraph() {
+    public Graph getGraph() {
         return graph;
     }
 }
