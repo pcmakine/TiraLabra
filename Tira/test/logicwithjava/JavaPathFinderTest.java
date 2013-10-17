@@ -25,15 +25,14 @@ public class JavaPathFinderTest {
     private static JavaGraph big;
     private static JavaGraph huge;
     private static JavaGraph huger;
-    private static JavaGraph a;
     private static JavaGraph biggest;
-    private static int[] sizes = {283, 400, 566, 800, 1131, 1599, 4000};
-    private static JavaGraph[] graphs = {small, bigger, big, huge, huger, biggest, a};
+    private static int[] sizes = {283, 400, 566, 800, 1131, 1599};
+    private static JavaGraph[] graphs = {small, bigger, big, huge, huger, biggest};
     private static JavaGraph biggerRandom;
     private static JavaGraph bigRandom;
     private static JavaGraph hugeRandom;
     private static JavaGraph[] randoms = {biggerRandom, bigRandom, hugeRandom};
-    private static int testRuns = 50;
+    private static int testRuns = 20;
 
     public JavaPathFinderTest() {
     }
@@ -47,7 +46,7 @@ public class JavaPathFinderTest {
         }
 
         for (int i = 0; i < randoms.length; i++) {
-            randoms[i] = makeRandomGraph(sizes[i], 1, sizes[i] * sizes[i], 3);
+            randoms[i] = makeRandomGraph(sizes[i], 1, sizes[i] * sizes[i], 4);
         }
     }
 
@@ -130,7 +129,7 @@ public class JavaPathFinderTest {
         System.out.println("");
         System.out.println("BFS time test using java tools:");
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "bfs") + "ms");
         }
 

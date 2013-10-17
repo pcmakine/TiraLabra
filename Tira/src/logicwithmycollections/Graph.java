@@ -139,27 +139,5 @@ public class Graph {
     public int getMaxId() {
         return maxId;
     }
-//    @Override
-//    public String toString() {
-//        String print = "";
-//        HashMap nodesClone = (HashMap) nodes.clone();
-//        Iterator it = nodesClone.keySet().iterator();
-//        while (it.hasNext()) {
-//            int key = (int) it.next();
-//            Node value = nodes.get(key);
-//            print = print + "Node: " + key + ", Neighbours: ";
-//            List neighbourList = value.getNeighbours();
-//            int i = 0;
-//            while (i < neighbourList.size()) {
-//                Node neighbour = (Node) neighbourList.get(i);
-//                print = print + neighbour.getId() + ", ";
-//                i++;
-//            }
-//
-//            print = print + "\n";
-//            it.remove(); // avoids a ConcurrentModificationException
-//        }
-//
-//        return print;
-//    }
+
 }

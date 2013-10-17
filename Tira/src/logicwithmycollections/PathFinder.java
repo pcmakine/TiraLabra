@@ -4,7 +4,6 @@
  */
 package logicwithmycollections;
 
-import java.util.LinkedList;
 import mycollections.MyArrayList;
 import mycollections.MyPriorityQueue;
 import mycollections.MyStack;
@@ -35,8 +34,6 @@ public class PathFinder {
 
         openList.add(startId);
         open[graph.idToRow(startId)][graph.idToColumn(startId)] = true;
-
-        prev[startId - 1] = -1;
 
         while (!openList.isEmpty()) {
             int id = openList.pollFirst();
@@ -85,11 +82,10 @@ public class PathFinder {
     }
 
     public Node[] aStar(int startId, int goalId) {
-        visited = 0;    
+        visited = 0;
         MyPriorityQueue<Node> open = new MyPriorityQueue();
         closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
         int[] prev = new int[graph.getNumberofNodes()];
-        int prevId = -1;
 
         Node[][] nodes = graph.getNodes();
 
@@ -135,7 +131,7 @@ public class PathFinder {
             queue.add(node);
         }
     }
-
+    
     private int getManhattanHeuristics(Node start, Node target) {
         int startrow = (start.getId() - 1) / graph.getColumns();
         int startcolumn = (start.getId() - 1) % graph.getColumns();

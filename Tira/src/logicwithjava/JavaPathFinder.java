@@ -36,8 +36,6 @@ public class JavaPathFinder {
         openList.add(startId);
         open[graph.idToRow(startId)][graph.idToColumn(startId)] = true;
 
-        prev[startId - 1] = -1;
-
         while (!openList.isEmpty()) {
             int id = openList.pollFirst();
             open[graph.idToRow(id)][graph.idToColumn(id)] = false;
@@ -91,7 +89,6 @@ public class JavaPathFinder {
         closed = new boolean[graph.getRows()][graph.getColumns()];  //true if closed, otherwise false
         boolean[][] openMatrix = new boolean[graph.getRows()][graph.getColumns()];
         int[] prev = new int[graph.getNumberofNodes()];
-        int prevId = -1;
 
         Node[][] nodes = graph.getNodes();
 

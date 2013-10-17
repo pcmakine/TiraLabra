@@ -32,7 +32,7 @@ public class PathFinderTest {
     private static Graph bigRandom;
     private static Graph hugeRandom;
     private static Graph[] randoms = {biggerRandom, bigRandom, hugeRandom};
-    private static int testRuns = 50;
+    private static int testRuns = 20;
 
     public PathFinderTest() {
     }
@@ -62,7 +62,6 @@ public class PathFinderTest {
         graph.removeNode(graph.getNode(13));
         graph.removeNode(graph.getNode(14));
         graph.removeNode(graph.getNode(17));
-
     }
 
     @After
@@ -90,7 +89,6 @@ public class PathFinderTest {
                 break;
             }
         }
-
         int[] ret = new int[count];
         for (int i = 0; i < count; i++) {
             ret[i] = result[i].getId();
@@ -139,7 +137,7 @@ public class PathFinderTest {
         assertArrayEquals(expected, visited);
         assertEquals(15, finder.getVisited());
     }
-    
+
     @Test
     public void bfsVisitsCorrectNodesWithWalls() {
         PathFinder finder = new PathFinder(graph);
@@ -162,47 +160,48 @@ public class PathFinderTest {
         System.out.println("BFS time test with my collections:");
 
         for (int i = 0; i < 6; i++) {
-            System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "bfs") + "ms");
-        }
+                System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "bfs", 1, graphs[i].getMaxId()) + "ms");
+            }
+        
 
         System.out.println("");
         System.out.println("BFS time tests with random graphs using my collections:");
         for (int i = 0; i < randoms.length; i++) {
-            System.out.print(", time: " + runTimeTests(randoms[i], testRuns, "bfs") + "ms.");
+            System.out.print(", time: " + runTimeTests(randoms[i], testRuns, "bfs", 1, graphs[i].getMaxId()) + "ms.");
             System.out.println("");
         }
     }
-    
-        @Test
+
+    @Test
     public void testAstarTime() {
         System.out.println("");
         System.out.println("A* time test with my collections:");
 
         for (int i = 0; i < graphs.length; i++) {
-            System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "astar") + "ms.");
+                System.out.println(", time: " + runTimeTests(graphs[i], testRuns, "astar", 1, graphs[i].getMaxId()) + "ms");
         }
         System.out.println("");
         System.out.println("A* time tests with random graphs using my collections:");
         for (int i = 0; i < randoms.length; i++) {
-            System.out.println(", time: " + runTimeTests(randoms[i], testRuns, "astar") + "ms.");
+            System.out.println(", time: " + runTimeTests(randoms[i], testRuns, "astar", 1, graphs[i].getMaxId()) + "ms.");
         }
     }
 
-    private long runTimeTests(Graph graph, int testRuns, String algo) {
+    private long runTimeTests(Graph graph, int testRuns, String algo, int startId, int goalId) {
         long elapsedAverage;
         Node[] sol = new Node[1];
         PathFinder finder = new PathFinder(graph);
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < testRuns; i++) {
             if (algo.equals("bfs")) {
-                sol = finder.bfs(1, graph.getMaxId());
+                sol = finder.bfs(startId, goalId);
             } else {
-                sol = finder.aStar(1, graph.getMaxId());
+                sol = finder.aStar(startId, goalId);
             }
         }
         if (sol == null) {
             System.out.print("No solution for a graph of " + graph.getColumns() * graph.getRows() + " nodes. Visited " + finder.getVisited() + " nodes");
-        }else{
+        } else {
             System.out.print("Length of path for a graph of " + graph.getColumns() * graph.getRows() + " nodes: " + sol.length + ". Visited " + finder.getVisited() + " nodes");
         }
         long stopTime = System.currentTimeMillis();
